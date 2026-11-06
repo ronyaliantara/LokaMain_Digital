@@ -1,0 +1,141 @@
+window.LOKAMAIN_LIVE_DATA = {
+  "updatedAt": 1793952377452,
+  "settings": {
+    "storeName": "LokaMain Digital",
+    "siteSubtitle": "Pilih game pembelajaran digital, lalu klik tombol WhatsApp di bawahnya untuk memesan.",
+    "logoImage": "assets/branding/banner-lokamain.png",
+    "footerText": "Hak Cipta © 2026 LokaMain Digital. Pembelajaran Game Edukasi Interaktif.",
+    "footerNote": "Semua game dapat dimainkan langsung di Smart TV, HP, Tablet, dan Komputer tanpa instalasi.",
+    "sellerName": "Admin LokaMain",
+    "whatsappNumber": "6287881258019",
+    "qrisImage": "assets/qris/qris-1793952371588.jpeg",
+    "qrisName": "LokaMain_Store",
+    "qrisCity": "",
+    "qrisRawPayload": "00020101021126570011ID.DANA.WWW011893600915303673559102090367355910303UMI51440014ID.CO.QRIS.WWW0215ID10266330641950303UMI5204737253033605802ID5924LokaMain_Store, Komputer6006Gresik6105611556304DF5E",
+    "qrisDynamicEnabled": true,
+    "buyerTemplate": "Halo {sellerName}, saya ingin memesan game pembelajaran digital:\n\nJudul Game: {title}\nKode Tiket: {code}\nHarga: Rp {price}\n\nMohon info pembayaran untuk mendapatkan link gamenya. Terima kasih!",
+    "sellerTemplate": "Halo Kak {buyerName}, terima kasih sudah memesan di {storeName}!\n\nBerikut akses game pembelajaran digital pesanan Anda:\nJudul Game: {title} ({code})\nLink Akses Game: {gameUrl}\n\nCara Pakai:\n1. Klik link di atas melalui browser HP, tablet, atau laptop.\n2. Game langsung berjalan tanpa instalasi tambahan.\n3. Simpan link ini untuk digunakan kembali kapan saja.\n\nSelamat bermain dan belajar!"
+  },
+  "games": [
+    {
+      "id": "LM-A",
+      "code": "SERI-A",
+      "title": "Hitung Cepat Pasar",
+      "category": "Matematika & Logika",
+      "grade": "SD Kelas 1–4",
+      "duration": "20 menit",
+      "device": "HP, Laptop & Proyektor",
+      "price": 29000,
+      "image": "assets/games/game-1793936327183.webp",
+      "shortDesc": "Latihan berhitung uang rupiah, kombinasi koin, dan kembalian belanja lewat simulasi kios mainan pasar malam.",
+      "gameUrl": "play.html?id=LM-A"
+    },
+    {
+      "id": "LM-B",
+      "code": "SERI-B",
+      "title": "Susun Kata Nusantara",
+      "category": "Bahasa & Budaya",
+      "grade": "TK B & SD Kelas 1–3",
+      "duration": "15 menit",
+      "device": "Layar Sentuh & Laptop",
+      "price": 25000,
+      "image": "assets/games/game-kata.jpg",
+      "shortDesc": "Permainan merangkai suku kata bahasa Indonesia dan melengkapi kalimat cerita pendek bertema keseharian.",
+      "gameUrl": "play.html?id=LM-B"
+    },
+    {
+      "id": "LM-C",
+      "code": "SERI-C",
+      "title": "Rantai Makanan Rimba",
+      "category": "Sains & Alam",
+      "grade": "SD Kelas 4–6",
+      "duration": "25 menit",
+      "device": "Laptop, Tablet & IFP Kelas",
+      "price": 35000,
+      "image": "assets/games/game-rimba.jpg",
+      "shortDesc": "Simulasi interaktif menyusun peran produsen, konsumen, dan pengurai pada ekosistem sawah, sungai, dan hutan.",
+      "gameUrl": "play.html?id=LM-C"
+    },
+    {
+      "id": "LM-D",
+      "code": "SERI-D",
+      "title": "Labirin Logika Robot",
+      "category": "Matematika & Logika",
+      "grade": "SD Kelas 3–6 & SMP",
+      "duration": "25 menit",
+      "device": "HP, Tablet & Laptop",
+      "price": 39000,
+      "image": "assets/games/game-robot.jpg",
+      "shortDesc": "Pengenalan berpikir komputasional dan algoritma dasar dengan menyusun blok langkah arah untuk mengantar robot.",
+      "gameUrl": "play.html?id=LM-D"
+    },
+    {
+      "id": "LM-E",
+      "code": "SERI-E",
+      "title": "Peta Pulau Indonesia",
+      "category": "Bahasa & Budaya",
+      "grade": "SD Kelas 3–6 & SMP",
+      "duration": "20 menit",
+      "device": "Proyektor Kelas & HP",
+      "price": 32000,
+      "image": "assets/games/game-pulau.jpg",
+      "shortDesc": "Eksplorasi peta kepulauan Nusantara untuk menebak provinsi, rumah adat, alat musik, dan satwa endemik.",
+      "gameUrl": "play.html?id=LM-E"
+    },
+    {
+      "id": "LM-F",
+      "code": "SERI-F",
+      "title": "Kosakata Ruang Kelas",
+      "category": "Bahasa & Budaya",
+      "grade": "TK & SD Kelas 1–4",
+      "duration": "15 menit",
+      "device": "HP, Tablet & Laptop",
+      "price": 25000,
+      "image": "assets/games/game-kelas.jpg",
+      "shortDesc": "Permainan kartu memori dan pencocokan gambar benda di sekolah dalam Bahasa Inggris dan Bahasa Indonesia.",
+      "gameUrl": "play.html?id=LM-F"
+    }
+  ],
+  "orders": [
+    {
+      "id": "ORD-104",
+      "date": "2026-11-05 19:40",
+      "buyerName": "Ibu Ratna (SDN 3 Sleman)",
+      "buyerPhone": "6281398765432",
+      "gameId": "LM-A",
+      "gameTitle": "Hitung Cepat Pasar",
+      "amount": 29000,
+      "status": "Menunggu Link"
+    },
+    {
+      "id": "ORD-103",
+      "date": "2026-11-05 18:15",
+      "buyerName": "Pak Hendra (Guru Kelas 5)",
+      "buyerPhone": "6285711223344",
+      "gameId": "LM-C",
+      "gameTitle": "Rantai Makanan Rimba",
+      "amount": 35000,
+      "status": "Link Terkirim"
+    },
+    {
+      "id": "ORD-102",
+      "date": "2026-11-05 15:20",
+      "buyerName": "Kak Dinda (Wali Murid)",
+      "buyerPhone": "6281233445566",
+      "gameId": "LM-B",
+      "gameTitle": "Susun Kata Nusantara",
+      "amount": 25000,
+      "status": "Link Terkirim"
+    },
+    {
+      "id": "ORD-101",
+      "date": "2026-11-05 11:05",
+      "buyerName": "Ibu Sari (SD Tunas Harapan)",
+      "buyerPhone": "6282199887766",
+      "gameId": "LM-E",
+      "gameTitle": "Peta Pulau Indonesia",
+      "amount": 32000,
+      "status": "Link Terkirim"
+    }
+  ]
+};

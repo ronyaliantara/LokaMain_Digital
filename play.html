@@ -1,0 +1,485 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Ruang Bermain Game Edukasi — LokaMain Digital</title>
+  <link rel="stylesheet" href="css/page.css">
+  <style>
+    /* === Layout Halaman Play === */
+    .play-header {
+      background-color: var(--card);
+      border-bottom: 1px solid var(--border);
+      padding: 14px 0;
+    }
+
+    .play-header .container {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 12px;
+    }
+
+    .play-brand {
+      font-size: 17px;
+      font-weight: 700;
+      color: var(--ink);
+      text-decoration: none;
+    }
+
+    .play-brand:hover {
+      color: var(--accent);
+    }
+
+    .play-nav {
+      display: flex;
+      gap: 8px;
+    }
+
+    .play-btn {
+      display: inline-flex;
+      align-items: center;
+      padding: 8px 16px;
+      border-radius: 8px;
+      font-size: 13.5px;
+      font-weight: 600;
+      text-decoration: none;
+      cursor: pointer;
+      border: 1px solid var(--border);
+      background: var(--card);
+      color: var(--ink);
+      font-family: inherit;
+      transition: background-color 0.15s, border-color 0.15s;
+    }
+
+    .play-btn:hover {
+      background-color: var(--bg);
+      border-color: var(--accent);
+    }
+
+    .play-btn-accent {
+      background-color: var(--accent);
+      border-color: var(--accent);
+      color: #ffffff;
+    }
+
+    .play-btn-accent:hover {
+      background-color: var(--wa-green-hover);
+      border-color: var(--wa-green-hover);
+    }
+
+    /* Main Layout: 2 kolom */
+    .play-main {
+      padding: 28px 0 40px;
+    }
+
+    .play-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 28px;
+      align-items: start;
+    }
+
+    .play-card {
+      background: var(--card);
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      padding: 24px;
+      display: flex;
+      flex-direction: column;
+      gap: 16px;
+    }
+
+    .play-game-title {
+      margin: 0;
+      font-size: 22px;
+      font-weight: 700;
+      color: var(--ink);
+    }
+
+    .play-meta {
+      font-size: 13px;
+      color: var(--accent);
+      font-weight: 600;
+      margin: 0;
+    }
+
+    .play-desc {
+      font-size: 14px;
+      color: var(--muted);
+      line-height: 1.6;
+      margin: 0;
+    }
+
+    .play-image-box {
+      border-radius: 8px;
+      overflow: hidden;
+      border: 1px solid var(--border);
+    }
+
+    .play-image-box img {
+      width: 100%;
+      height: auto;
+      display: block;
+    }
+
+    .play-actions {
+      display: flex;
+      gap: 10px;
+      flex-wrap: wrap;
+    }
+
+    /* Quiz Panel */
+    .quiz-panel {
+      background: var(--card);
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      padding: 24px;
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+      min-height: 420px;
+      gap: 16px;
+    }
+
+    .quiz-top-bar {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 12px;
+    }
+
+    .quiz-progress-text {
+      font-size: 14px;
+      font-weight: 600;
+      color: var(--ink);
+    }
+
+    .quiz-score-text {
+      font-size: 13px;
+      font-weight: 700;
+      color: var(--accent);
+      background: var(--accent-light);
+      padding: 3px 10px;
+      border-radius: 99px;
+    }
+
+    .quiz-question-text {
+      font-size: 17px;
+      font-weight: 600;
+      line-height: 1.5;
+      color: var(--ink);
+      margin: 8px 0 0;
+    }
+
+    .quiz-options-wrap {
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+    }
+
+    .quiz-opt-btn {
+      display: flex;
+      align-items: center;
+      text-align: left;
+      padding: 12px 16px;
+      border-radius: 8px;
+      font-size: 14px;
+      font-weight: 500;
+      cursor: pointer;
+      border: 1px solid var(--border);
+      background: var(--bg);
+      color: var(--ink);
+      font-family: inherit;
+      transition: background-color 0.15s, border-color 0.15s;
+    }
+
+    .quiz-opt-btn:hover:not(:disabled) {
+      border-color: var(--accent);
+      background-color: var(--accent-light);
+    }
+
+    .quiz-opt-btn:disabled {
+      cursor: default;
+      opacity: 0.7;
+    }
+
+    .quiz-opt-btn.is-correct {
+      background-color: #e2f3e8;
+      border-color: #0f6636;
+      color: #0f6636;
+      font-weight: 700;
+    }
+
+    .quiz-opt-btn.is-wrong {
+      background-color: #fff0f0;
+      border-color: #c44;
+      color: #a22;
+    }
+
+    .quiz-bottom-bar {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 12px;
+      padding-top: 12px;
+      border-top: 1px solid var(--border);
+    }
+
+    .quiz-feedback-text {
+      font-size: 13.5px;
+      color: var(--muted);
+    }
+
+    /* Layar selesai quiz */
+    .quiz-done {
+      text-align: center;
+      padding: 30px 0;
+    }
+
+    .quiz-done-emoji {
+      font-size: 48px;
+      margin-bottom: 12px;
+    }
+
+    .quiz-done h3 {
+      margin: 0 0 8px;
+      font-size: 20px;
+      color: var(--ink);
+    }
+
+    .quiz-done p {
+      margin: 0;
+      font-size: 14px;
+      color: var(--muted);
+    }
+
+    .quiz-done-score {
+      font-size: 28px;
+      font-weight: 800;
+      color: var(--accent);
+      margin: 12px 0;
+    }
+
+    @media (max-width: 768px) {
+      .play-grid {
+        grid-template-columns: 1fr;
+      }
+
+      .quiz-panel {
+        min-height: auto;
+      }
+    }
+
+    @media (max-width: 540px) {
+      .play-nav {
+        flex-direction: column;
+        gap: 6px;
+      }
+
+      .play-btn {
+        font-size: 12.5px;
+        padding: 7px 12px;
+      }
+    }
+  </style>
+</head>
+<body>
+
+  <header class="play-header">
+    <div class="container">
+      <a href="index.html" class="play-brand">LokaMain Digital</a>
+      <nav class="play-nav">
+        <a href="index.html#game-grid" class="play-btn">← Kembali ke Katalog</a>
+      </nav>
+    </div>
+  </header>
+
+  <main class="play-main">
+    <div class="container">
+      <div class="play-grid">
+        <!-- Kolom Kiri: Info Game -->
+        <div class="play-card">
+          <div>
+            <h1 class="play-game-title" id="play-title">Hitung Cepat Pasar</h1>
+            <p class="play-meta" id="play-meta">SERI-A · Matematika &amp; Logika · SD Kelas 1–4</p>
+          </div>
+
+          <p class="play-desc" id="play-desc">Selamat datang di ruang bermain interaktif.</p>
+
+          <div class="play-image-box">
+            <img id="play-image" src="assets/games/game-pasar.jpg" width="800" height="500" alt="Layar permainan">
+          </div>
+
+          <div class="play-actions">
+            <a href="index.html#game-grid" class="play-btn">Pilih Game Lain</a>
+            <a href="#" target="_blank" rel="noopener" id="play-order-wa" class="play-btn play-btn-accent">Pesan Lisensi Penuh via WA</a>
+          </div>
+        </div>
+
+        <!-- Kolom Kanan: Quiz Interaktif -->
+        <div class="quiz-panel" id="quiz-panel">
+          <div>
+            <div class="quiz-top-bar">
+              <span class="quiz-progress-text" id="quiz-progress">Soal 1 dari 3</span>
+              <span class="quiz-score-text" id="quiz-score">Skor: 0</span>
+            </div>
+            <h2 class="quiz-question-text" id="quiz-question">Memuat pertanyaan permainan...</h2>
+          </div>
+
+          <div id="quiz-options" class="quiz-options-wrap"></div>
+
+          <div class="quiz-bottom-bar">
+            <span class="quiz-feedback-text" id="quiz-feedback">Ketuk salah satu jawaban di atas.</span>
+            <button type="button" class="play-btn" id="quiz-next-btn">Soal Berikutnya</button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </main>
+
+  <script src="data/katalog-sync.js"></script>
+  <script src="js/store.js"></script>
+  <script>
+    const { loadStore, buildBuyerWhatsAppUrl } = window.LokaStore;
+
+    const store = loadStore();
+    const params = new URLSearchParams(window.location.search);
+    const id = params.get('id') || 'LM-A';
+    const game = store.games.find((g) => g.id === id) || store.games[0];
+
+    const QUESTION_BANKS = {
+      'LM-A': [
+        { q: 'Harga Gasing Kayu Rp 12.000 dan Layangan Rp 5.500. Berapa total uang pas yang harus dibayar?', opts: ['Rp 16.500', 'Rp 17.500', 'Rp 18.000'], ans: 1 },
+        { q: 'Budi membayar Rp 20.000 untuk membeli Perahu Bambu seharga Rp 14.500. Berapa uang kembaliannya?', opts: ['Rp 5.500', 'Rp 4.500', 'Rp 6.500'], ans: 0 },
+        { q: 'Kombinasi koin manakah yang berjumlah tepat Rp 13.000?', opts: ['10rb + 2rb + 500', '10rb + 2rb + 1rb', '5rb + 5rb + 2rb'], ans: 1 }
+      ],
+      'LM-B': [
+        { q: 'Susun suku kata berikut agar menjadi tempat kapal bersandar: BU - PE - HAN - LA', opts: ['PE - LA - BU - HAN', 'LA - BU - PE - HAN', 'PE - BU - LA - HAN'], ans: 0 },
+        { q: 'Susun suku kata alat musik bambu Jawa Barat: LUNG - ANG', opts: ['LUNG - ANG', 'ANG - KLUNG', 'KA - LUNG'], ans: 1 },
+        { q: 'Lengkapi kalimat: Ibu membeli sayur segar di ... tradisional.', opts: ['Pasar', 'Stasiun', 'Bandara'], ans: 0 }
+      ],
+      'LM-C': [
+        { q: 'Pada ekosistem sawah (Padi -> Belalang -> Katak -> Ular), manakah Konsumen Tingkat I?', opts: ['Padi', 'Belalang', 'Katak'], ans: 1 },
+        { q: 'Makhluk hidup yang menghasilkan makanan sendiri melalui fotosintesis disebut?', opts: ['Produsen', 'Konsumen', 'Pengurai'], ans: 0 },
+        { q: 'Jamur dan bakteri di tanah hutan berperan sebagai?', opts: ['Produsen Utama', 'Pengurai (Dekomposer)', 'Konsumen Puncak'], ans: 1 }
+      ],
+      'LM-D': [
+        { q: 'Robot menghadap ke Timur. Jika Maju 2 petak lalu Belok Kanan, ke arah manakah robot menghadap?', opts: ['Utara', 'Selatan', 'Barat'], ans: 1 },
+        { q: 'Agar robot maju 3 petak lurus tanpa rintangan, blok apakah yang paling tepat?', opts: ['Ulangi 3x (Maju 1 Petak)', 'Belok Kiri lalu Maju', 'Putar Balik 2x'], ans: 0 },
+        { q: 'Urutan langkah logis untuk menyelesaikan masalah dalam pemrograman disebut?', opts: ['Algoritma', 'Dekorasi', 'Kompilasi'], ans: 0 }
+      ],
+      'LM-E': [
+        { q: 'Rumah adat Betang dan satwa Orangutan berasal dari pulau manakah?', opts: ['Pulau Kalimantan', 'Pulau Sulawesi', 'Pulau Sumatera'], ans: 0 },
+        { q: 'Rumah Gadang dengan atap runcing menyerupai tanduk kerbau berasal dari provinsi?', opts: ['Sumatera Barat', 'Jawa Tengah', 'Bali'], ans: 0 },
+        { q: 'Burung Cenderawasih merupakan fauna endemik kebanggaan dari wilayah?', opts: ['Papua', 'Nusa Tenggara', 'Maluku Utara'], ans: 0 }
+      ],
+      'LM-F': [
+        { q: 'Benda di depan kelas yang digunakan guru untuk menulis disebut apa dalam Bahasa Inggris?', opts: ['Bookshelf', 'Blackboard', 'Schoolbag'], ans: 1 },
+        { q: 'Apakah bahasa Inggris dari Bola Dunia di sudut ruang kelas?', opts: ['Globe', 'Ruler', 'Chair'], ans: 0 },
+        { q: 'Tempat menyimpan buku-buku bacaan di perpustakaan kelas disebut?', opts: ['Pencil Case', 'Bookshelf', 'Window'], ans: 1 }
+      ]
+    };
+
+    const questions = QUESTION_BANKS[game.id] || [
+      {
+        q: game.sampleQuestion || `Pertanyaan interaktif untuk ${game.title}:`,
+        opts: game.sampleOptions || ['Pilihan A', 'Pilihan B', 'Pilihan C'],
+        ans: Number(game.sampleAnswer ?? 0)
+      }
+    ];
+
+    let qIdx = 0;
+    let score = 0;
+    let answered = false;
+
+    document.getElementById('play-title').textContent = game.title;
+    document.getElementById('play-meta').textContent = `${game.code} · ${game.category} · ${game.grade}`;
+    document.getElementById('play-desc').textContent = game.shortDesc;
+    document.getElementById('play-image').src = game.image;
+    document.getElementById('play-order-wa').href = buildBuyerWhatsAppUrl(game, store.settings);
+
+    function renderQuizStep() {
+      answered = false;
+      const item = questions[qIdx];
+      document.getElementById('quiz-progress').textContent = `Soal ${qIdx + 1} dari ${questions.length}`;
+      document.getElementById('quiz-score').textContent = `Skor: ${score}`;
+      document.getElementById('quiz-question').textContent = item.q;
+      document.getElementById('quiz-feedback').textContent = 'Ketuk salah satu jawaban di atas.';
+
+      const nextBtn = document.getElementById('quiz-next-btn');
+      nextBtn.textContent = qIdx < questions.length - 1 ? 'Soal Berikutnya' : 'Lihat Hasil';
+
+      const optsEl = document.getElementById('quiz-options');
+      optsEl.innerHTML = item.opts
+        .map(
+          (opt, i) => `<button type="button" class="quiz-opt-btn" data-opt="${i}">${opt}</button>`
+        )
+        .join('');
+
+      optsEl.querySelectorAll('[data-opt]').forEach((btn) => {
+        btn.addEventListener('click', () => {
+          if (answered) return;
+          answered = true;
+
+          const picked = Number(btn.getAttribute('data-opt'));
+          const correct = picked === item.ans;
+
+          // Disable semua tombol & tandai benar/salah
+          optsEl.querySelectorAll('[data-opt]').forEach((b) => {
+            b.disabled = true;
+            const bIdx = Number(b.getAttribute('data-opt'));
+            if (bIdx === item.ans) {
+              b.classList.add('is-correct');
+            }
+          });
+
+          if (correct) {
+            score += 100;
+            document.getElementById('quiz-score').textContent = `Skor: ${score}`;
+            document.getElementById('quiz-feedback').textContent = '✓ Tepat sekali! +100 Poin.';
+          } else {
+            btn.classList.add('is-wrong');
+            document.getElementById('quiz-feedback').textContent = '✗ Belum tepat. Jawaban yang benar ditandai hijau.';
+          }
+        });
+      });
+    }
+
+    function showQuizDone() {
+      const panel = document.getElementById('quiz-panel');
+      const maxScore = questions.length * 100;
+      const pct = Math.round((score / maxScore) * 100);
+      let emoji = '🎉';
+      let msg = 'Luar biasa!';
+      if (pct < 50) { emoji = '💪'; msg = 'Terus semangat belajar!'; }
+      else if (pct < 80) { emoji = '👍'; msg = 'Bagus, hampir sempurna!'; }
+
+      panel.innerHTML = `
+        <div class="quiz-done">
+          <div class="quiz-done-emoji">${emoji}</div>
+          <h3>Quiz Selesai!</h3>
+          <p class="quiz-done-score">${score} / ${maxScore} Poin</p>
+          <p>${msg} Kamu menjawab benar ${score / 100} dari ${questions.length} soal.</p>
+        </div>
+        <div style="display: flex; gap: 10px; justify-content: center; flex-wrap: wrap;">
+          <button type="button" class="play-btn" onclick="location.reload()">Ulangi Quiz</button>
+          <a href="index.html#game-grid" class="play-btn">Pilih Game Lain</a>
+        </div>
+      `;
+    }
+
+    document.getElementById('quiz-next-btn').addEventListener('click', () => {
+      if (!answered) return;
+      if (qIdx >= questions.length - 1) {
+        showQuizDone();
+      } else {
+        qIdx++;
+        renderQuizStep();
+      }
+    });
+
+    renderQuizStep();
+  </script>
+</body>
+</html>

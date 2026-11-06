@@ -1,0 +1,17 @@
+# =========================================================
+# LokaMain Digital - Git Ignore Configuration
+# =========================================================
+
+# 1. Aplikasi Admin & Server Sinkronisasi Lokal (HANYA PRIVAT DI LAPTOP & HP PEMILIK)
+# Folder ini TIDAK AKAN PERNAH di-upload ke GitHub publik!
+aplikasi_admin/
+
+# 2. Skrip Eksekutor Windows Lokal
+*.bat
+
+# 3. File Sampah Sistem Operasi & Node.js
+Thumbs.db
+.DS_Store
+*.log
+node_modules/
+
