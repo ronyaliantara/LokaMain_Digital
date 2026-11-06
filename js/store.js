@@ -33,7 +33,7 @@ const DEFAULT_STORE = {
       duration: '20 menit',
       device: 'HP, Laptop & Proyektor',
       price: 29000,
-      image: 'assets/games/game-1793962874784.png',
+      image: 'assets/games/game-pasar.jpg',
       shortDesc:
         'Latihan berhitung uang rupiah, kombinasi koin, dan kembalian belanja lewat simulasi kios mainan pasar malam.',
       howToPlay: [

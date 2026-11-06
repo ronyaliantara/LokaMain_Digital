@@ -1,10 +1,10 @@
-﻿window.LOKAMAIN_LIVE_DATA = {
+window.LOKAMAIN_LIVE_DATA = {
   "updatedAt": 1793962875813,
   "settings": {
     "storeName": "LokaMain Digital",
     "siteSubtitle": "Pilih game pembelajaran digital, lalu klik tombol WhatsApp di bawahnya untuk memesan.",
     "logoImage": "assets/branding/banner-lokamain.png",
-    "footerText": "Hak Cipta Â© 2026 LokaMain Digital. Pembelajaran Game Edukasi Interaktif.",
+    "footerText": "Hak Cipta © 2026 LokaMain Digital. Pembelajaran Game Edukasi Interaktif.",
     "footerNote": "Semua game dapat dimainkan langsung di Smart TV, HP, Tablet, dan Komputer tanpa instalasi.",
     "sellerName": "Admin LokaMain",
     "whatsappNumber": "6287881258019",
@@ -23,7 +23,7 @@
       "title": "Ular Tangga Kinestetik - Bahasa Arab (As-Sa'ah)",
       "category": "Bahasa Arab & Kinestetik (AI Pose)",
       "grade": "SMP Kelas VIII",
-      "duration": "20â€“30 menit",
+      "duration": "20–30 menit",
       "device": "Smart TV, Laptop & Proyektor",
       "price": 35000,
       "image": "assets/games/game-1793962874784.png",
@@ -35,11 +35,11 @@
       "code": "SERI-A",
       "title": "Hitung Cepat Pasar",
       "category": "Matematika & Logika",
-      "grade": "SD Kelas 1â€“4",
+      "grade": "SD Kelas 1–4",
       "duration": "20 menit",
       "device": "HP, Laptop & Proyektor",
       "price": 29000,
-      "image": "assets/games/game-1793962874784.png",
+      "image": "assets/games/game-pasar.jpg",
       "shortDesc": "Latihan berhitung uang rupiah, kombinasi koin, dan kembalian belanja lewat simulasi kios mainan pasar malam.",
       "gameUrl": "play.html?id=LM-A"
     },
@@ -48,7 +48,7 @@
       "code": "SERI-B",
       "title": "Susun Kata Nusantara",
       "category": "Bahasa & Budaya",
-      "grade": "TK B & SD Kelas 1â€“3",
+      "grade": "TK B & SD Kelas 1–3",
       "duration": "15 menit",
       "device": "Layar Sentuh & Laptop",
       "price": 30000,
@@ -61,7 +61,7 @@
       "code": "SERI-C",
       "title": "Rantai Makanan Rimba",
       "category": "Sains & Alam",
-      "grade": "SD Kelas 4â€“6",
+      "grade": "SD Kelas 4–6",
       "duration": "25 menit",
       "device": "Laptop, Tablet & IFP Kelas",
       "price": 35000,
@@ -74,7 +74,7 @@
       "code": "SERI-D",
       "title": "Labirin Logika Robot",
       "category": "Matematika & Logika",
-      "grade": "SD Kelas 3â€“6 & SMP",
+      "grade": "SD Kelas 3–6 & SMP",
       "duration": "25 menit",
       "device": "HP, Tablet & Laptop",
       "price": 39000,
@@ -87,7 +87,7 @@
       "code": "SERI-E",
       "title": "Peta Pulau Indonesia",
       "category": "Bahasa & Budaya",
-      "grade": "SD Kelas 3â€“6 & SMP",
+      "grade": "SD Kelas 3–6 & SMP",
       "duration": "20 menit",
       "device": "Proyektor Kelas & HP",
       "price": 32000,
@@ -100,7 +100,7 @@
       "code": "SERI-F",
       "title": "Kosakata Ruang Kelas",
       "category": "Bahasa & Budaya",
-      "grade": "TK & SD Kelas 1â€“4",
+      "grade": "TK & SD Kelas 1–4",
       "duration": "15 menit",
       "device": "HP, Tablet & Laptop",
       "price": 25000,
@@ -152,4 +152,3 @@
     }
   ]
 };
-
