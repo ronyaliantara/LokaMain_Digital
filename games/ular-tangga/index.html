@@ -780,10 +780,106 @@
         return 'Komputer / Laptop';
       }
 
+      // ====================================================================
+      // ENGINE KEAMANAN ENKRIPSI TOKEN & TANDA TANGAN DIGITAL (ANTI-HACK)
+      // ====================================================================
+      const LOKAMAIN_SECURITY = {
+        SECRET: 'LOKAMAIN_SECURE_AUTH_KEY_2026_V1',
+
+        toBase64Url(str) {
+          try {
+            return btoa(encodeURIComponent(str).replace(/%([0-9A-F]{2})/g, (m, p1) => String.fromCharCode('0x' + p1)))
+              .replace(/\+/g, '-').replace(/\//g, '_').replace(/=+$/, '');
+          } catch (e) {
+            return btoa(str).replace(/\+/g, '-').replace(/\//g, '_').replace(/=+$/, '');
+          }
+        },
+
+        fromBase64Url(b64) {
+          try {
+            let str = b64.replace(/-/g, '+').replace(/_/g, '/');
+            while (str.length % 4) str += '=';
+            return decodeURIComponent(Array.prototype.map.call(atob(str), c => '%' + ('00' + c.charCodeAt(0).toString(16)).slice(-2)).join(''));
+          } catch (e) {
+            let str = b64.replace(/-/g, '+').replace(/_/g, '/');
+            while (str.length % 4) str += '=';
+            return atob(str);
+          }
+        },
+
+        xorCipher(text, key) {
+          let res = '';
+          for (let i = 0; i < text.length; i++) {
+            res += String.fromCharCode(text.charCodeAt(i) ^ key.charCodeAt(i % key.length));
+          }
+          return res;
+        },
+
+        computeHash(text) {
+          let h1 = 5381, h2 = 2166136261;
+          for (let i = 0; i < text.length; i++) {
+            const code = text.charCodeAt(i);
+            h1 = ((h1 << 5) + h1) ^ code;
+            h2 = (h2 ^ code) * 16777619;
+          }
+          return Math.abs(h1).toString(36) + Math.abs(h2).toString(36);
+        },
+
+        verifyAndDecodeToken(token) {
+          try {
+            const decrypted = this.xorCipher(this.fromBase64Url(token), this.SECRET);
+            const parsed = JSON.parse(decrypted);
+            if (!parsed || !parsed.l || !parsed.n || !parsed.s) return null;
+            const expectedSig = this.computeHash(`${parsed.l}|${parsed.n}|${this.SECRET}`);
+            if (parsed.s !== expectedSig) {
+              console.warn('Tamper alert: Token signature mismatch!');
+              return null;
+            }
+            return { licenseId: parsed.l, buyerName: parsed.n, timestamp: parsed.t };
+          } catch (e) {
+            return null;
+          }
+        }
+      };
+
       // 2. Baca Identitas Lisensi dari URL atau Penyimpanan Lokal
       const params = new URLSearchParams(window.location.search);
-      let licenseKey = (params.get('lisensi') || params.get('license') || params.get('token') || params.get('pin') || localStorage.getItem('lokamain_license_key') || '').trim();
-      let buyerName = (params.get('nama') || params.get('sekolah') || params.get('guru') || params.get('pembeli') || localStorage.getItem('lokamain_buyer_name') || '').trim();
+      const rawToken = params.get('token') || params.get('auth');
+      let licenseKey = '';
+      let buyerName = '';
+      let isTokenTampered = false;
+
+      // Jika ada token terenkripsi di URL:
+      if (rawToken) {
+        const verified = LOKAMAIN_SECURITY.verifyAndDecodeToken(rawToken);
+        if (verified) {
+          licenseKey = verified.licenseId;
+          buyerName = verified.buyerName;
+
+          // Simpan ke memori lokal
+          localStorage.setItem('lokamain_license_key', licenseKey);
+          localStorage.setItem('lokamain_buyer_name', buyerName);
+
+          // BERSIHKAN URL BAR SEKETIKA (Agar token rahasia hilang dari address bar pembeli!)
+          try {
+            window.history.replaceState({}, document.title, window.location.pathname);
+          } catch(e) {}
+        } else {
+          isTokenTampered = true;
+          alert('⚠️ Kode Lisensi Tidak Valid atau Telah Dimodifikasi!\nAkses game ditolak.');
+        }
+      }
+
+      // Fallback jika tidak pakai token (misal dari localStorage atau parameter langsung)
+      if (!licenseKey && !isTokenTampered) {
+        licenseKey = (params.get('lisensi') || params.get('license') || params.get('pin') || localStorage.getItem('lokamain_license_key') || '').trim();
+        buyerName = (params.get('nama') || params.get('sekolah') || params.get('guru') || params.get('pembeli') || localStorage.getItem('lokamain_buyer_name') || '').trim();
+        if (params.get('lisensi') || params.get('nama')) {
+          try {
+            window.history.replaceState({}, document.title, window.location.pathname);
+          } catch(e) {}
+        }
+      }
 
       const kickModal = document.getElementById('sessionKickModal');
       const kickDeviceEl = document.getElementById('kickedByDeviceName');
