@@ -2486,7 +2486,14 @@ Panduan Penggunaan:
   }
 }
 
-// Inisialisasi Game saat DOM siap
-window.addEventListener('DOMContentLoaded', () => {
-  window.snakeGame = new SnakeAndLaddersGame();
-});
+// ======================================================================
+// INISIALISASI GAME: HANYA DIJALANKAN JIKA LISENSI RESMI TERVERIFIKASI
+// (Game TIDAK LAGI mulai otomatis saat DOMContentLoaded demi keamanan)
+// ======================================================================
+window.startSnakeGame = function() {
+  if (!window.snakeGame) {
+    window.snakeGame = new SnakeAndLaddersGame();
+    console.log('🎮 LokaMain Engine: Game Ular Tangga berhasil diaktifkan dengan lisensi resmi.');
+  }
+  return window.snakeGame;
+};

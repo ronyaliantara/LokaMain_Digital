@@ -689,12 +689,12 @@
        MODAL KUNCI SESI TUNGGAL / ANTI-DOBEL (SINGLE ACTIVE SESSION)
        Muncul otomatis jika link game dibuka di perangkat/layar lain.
        ====================================================================== -->
-  <div id="sessionKickModal" class="fixed inset-0 z-[9999] bg-slate-950/95 backdrop-blur-md flex items-center justify-center p-4 hidden">
-    <div class="bg-gradient-to-b from-slate-900 via-indigo-950 to-slate-900 border-2 border-amber-500/60 rounded-3xl p-6 sm:p-8 max-w-md w-full shadow-2xl text-center text-white relative">
-      <div class="w-16 h-16 mx-auto mb-3 rounded-2xl bg-amber-500/20 border border-amber-400/40 flex items-center justify-center text-3xl shadow-lg animate-pulse">
+  <div id="sessionKickModal" class="fixed inset-0 z-[99999] bg-slate-950/95 backdrop-blur-md flex items-center justify-center p-4 hidden">
+    <div class="bg-gradient-to-b from-slate-900 via-indigo-950 to-slate-900 border-2 border-amber-500/70 rounded-3xl p-6 sm:p-8 max-w-md w-full shadow-2xl text-center text-white relative">
+      <div class="w-16 h-16 mx-auto mb-3 rounded-2xl bg-amber-500/20 border border-amber-400/50 flex items-center justify-center text-3xl shadow-lg animate-pulse">
         📺
       </div>
-      <h2 class="text-xl sm:text-2xl font-bold font-fun text-white mb-2">Akses Dialihkan ke Perangkat Lain</h2>
+      <h2 class="text-xl sm:text-2xl font-bold font-fun text-white mb-2">Akses Dialihkan ke Layar Lain</h2>
       <p class="text-xs sm:text-sm text-slate-300 mb-4 leading-relaxed">
         Game dengan lisensi Anda baru saja dibuka di <strong id="kickedByDeviceName" class="text-amber-400">perangkat lain</strong>.
       </p>
@@ -704,7 +704,7 @@
           <span>🔒</span> Perlindungan Lisensi Sesi Tunggal
         </p>
         <p class="text-[11px] text-slate-400 leading-normal">
-          Anda bebas memindahkan game ini ke HP, Laptop, atau Smart TV mana pun. Namun demi keamanan lisensi resmi Anda, game tidak dapat dimainkan secara bersamaan di 2 layar sekaligus.
+          Anda bebas memainkan game ini di HP, Laptop, atau Smart TV mana pun. Namun demi keamanan lisensi resmi Anda, game tidak dapat dimainkan secara bersamaan di 2 layar sekaligus.
         </p>
       </div>
 
@@ -713,47 +713,55 @@
       </button>
 
       <p class="text-[10px] text-slate-400 mt-3">
-        Klik tombol di atas untuk memindahkan akses kembali ke perangkat ini.
+        Klik tombol di atas untuk memindahkan kendali kembali ke layar ini.
       </p>
     </div>
   </div>
 
   <!-- ======================================================================
-       MODAL MASUKKAN LISENSI (JIKA DIBUKA TANPA PARAMETER URL)
+       GERBANG KEAMANAN LISENSI RESMI (GATE LOCK MODAL)
+       TERKUNCI SECARA DEFAULT (TIDAK ADA hidden).
+       HANYA TERBUKA JIKA MEMILIKI TOKEN LISENSI RESMI YANG TERVERIFIKASI!
        ====================================================================== -->
-  <div id="enterLicenseModal" class="fixed inset-0 z-[9998] bg-slate-950/95 backdrop-blur-md flex items-center justify-center p-4 hidden">
-    <div class="bg-gradient-to-b from-slate-900 via-indigo-950 to-slate-900 border-2 border-indigo-500/50 rounded-3xl p-6 sm:p-7 max-w-sm w-full shadow-2xl text-center text-white relative">
-      <div class="w-14 h-14 mx-auto mb-2 rounded-2xl bg-indigo-600/30 border border-indigo-400/40 flex items-center justify-center text-2xl shadow-lg">
-        🔑
+  <div id="gateLockModal" class="fixed inset-0 z-[99990] bg-slate-950/98 backdrop-blur-xl flex items-center justify-center p-4">
+    <div class="bg-gradient-to-b from-slate-900 via-indigo-950 to-slate-900 border-2 border-rose-500/40 rounded-3xl p-6 sm:p-8 max-w-sm sm:max-w-md w-full shadow-2xl text-center text-white relative">
+      <div class="w-16 h-16 mx-auto mb-3 rounded-2xl bg-rose-500/20 border border-rose-500/50 flex items-center justify-center text-3xl shadow-lg shadow-rose-950/50">
+        🔒
       </div>
-      <h2 class="text-xl font-bold font-fun text-white mb-1">Aktivasi Lisensi Game</h2>
-      <p class="text-xs text-slate-300 mb-4">
-        Masukkan Nama dan Kode Lisensi yang Anda dapatkan saat memesan game.
-      </p>
+      <h2 class="text-2xl font-black font-fun text-white tracking-wide mb-1">Akses Game Terkunci</h2>
+      <p class="text-xs text-rose-300 font-semibold mb-4">Game Edukasi Berlisensi Resmi LokaMain Digital</p>
 
-      <div class="flex flex-col gap-2.5 text-left mb-4">
-        <div>
-          <label class="block text-[11px] font-semibold text-slate-300 mb-1">Nama Lengkap / Sekolah:</label>
-          <input id="inputBuyerName" type="text" placeholder="Contoh: Pak Budi - SMPN 1" class="w-full px-3 py-2 rounded-xl bg-slate-800 border border-slate-700 text-white text-xs focus:outline-none focus:border-indigo-500">
-        </div>
-        <div>
-          <label class="block text-[11px] font-semibold text-slate-300 mb-1">Kode Lisensi:</label>
-          <input id="inputLicenseCode" type="text" placeholder="Contoh: LM-8821 atau 2026" class="w-full px-3 py-2 rounded-xl bg-slate-800 border border-slate-700 text-white text-xs font-mono uppercase focus:outline-none focus:border-indigo-500">
-        </div>
-        <div id="licenseErrorText" class="text-xs text-rose-400 font-semibold hidden">
-          ⚠️ Mohon isi Nama dan Kode Lisensi Anda!
-        </div>
+      <div class="p-3.5 rounded-2xl bg-slate-950/80 border border-white/10 text-xs text-slate-300 text-left mb-4 space-y-2">
+        <p class="flex items-center gap-1.5 font-bold text-amber-300">
+          <span>🛡️</span> Perlindungan Lisensi Pembeli Resmi
+        </p>
+        <p class="text-[11px] text-slate-300 leading-relaxed">
+          Game ini tidak dapat diakses melalui link publik langsung. Silakan buka game menggunakan <strong>Link Khusus Pembeli</strong> yang dikirimkan Admin ke nomor WhatsApp Anda.
+        </p>
       </div>
 
-      <button id="btnActivateLicense" type="button" class="w-full py-2.5 rounded-xl bg-gradient-to-r from-indigo-600 to-purple-600 hover:from-indigo-500 hover:to-purple-500 text-white font-fun font-bold text-xs shadow-md shadow-indigo-600/30 transition-all cursor-pointer">
-        🔓 Mulai Bermain Game
-      </button>
+      <div class="space-y-2.5 text-left mb-4">
+        <label class="block text-[11px] font-bold text-slate-200">Punya Token atau Kode Lisensi Resmi?</label>
+        <div class="flex gap-2">
+          <input id="inputGateLicenseCode" type="text" placeholder="Contoh: LM-8821 atau tempel link" class="w-full px-3.5 py-2.5 rounded-xl bg-slate-900 border border-slate-700 text-white text-xs font-mono focus:outline-none focus:border-amber-400 placeholder:text-slate-500">
+          <button id="btnGateUnlock" type="button" class="px-4 py-2.5 rounded-xl bg-gradient-to-r from-amber-500 to-amber-600 hover:from-amber-400 hover:to-amber-500 text-slate-950 font-fun font-black text-xs shadow-lg shadow-amber-500/30 whitespace-nowrap cursor-pointer transition-all">
+            🔓 Buka
+          </button>
+        </div>
+        <div id="gateErrorText" class="text-xs text-rose-400 font-bold hidden">
+          ⚠️ Kode Lisensi / Token tidak valid atau salah!
+        </div>
+      </div>
 
-      <div class="mt-3">
-        <a href="https://wa.me/6287881258019?text=Halo%20Admin%20LokaMain,%20saya%20ingin%20memesan%20lisensi%20game%20Ular%20Tangga" target="_blank" class="text-[11px] text-indigo-300 hover:text-white underline">
-          💬 Belum punya lisensi? Pesan via WhatsApp
+      <div class="pt-2 border-t border-white/10">
+        <a href="https://wa.me/6287881258019?text=Halo%20Admin%20LokaMain,%20saya%20ingin%20memesan%20lisensi%20resmi%20Game%20Ular%20Tangga" target="_blank" class="w-full py-2.5 rounded-xl bg-gradient-to-r from-emerald-600 to-teal-600 hover:from-emerald-500 hover:to-teal-500 text-white font-fun font-bold text-xs flex items-center justify-center gap-2 shadow-lg shadow-emerald-600/30 transition-all cursor-pointer">
+          <span>💬</span> Pesan Lisensi Resmi via WhatsApp
         </a>
       </div>
+
+      <p class="text-[10px] text-slate-500 mt-3">
+        LokaMain Digital © 2026 • Hak Cipta Dilindungi
+      </p>
     </div>
   </div>
 
@@ -780,20 +788,9 @@
         return 'Komputer / Laptop';
       }
 
-      // ====================================================================
-      // ENGINE KEAMANAN ENKRIPSI TOKEN & TANDA TANGAN DIGITAL (ANTI-HACK)
-      // ====================================================================
+      // 2. Engine Keamanan Kriptografi Token & Tanda Tangan Digital
       const LOKAMAIN_SECURITY = {
         SECRET: 'LOKAMAIN_SECURE_AUTH_KEY_2026_V1',
-
-        toBase64Url(str) {
-          try {
-            return btoa(encodeURIComponent(str).replace(/%([0-9A-F]{2})/g, (m, p1) => String.fromCharCode('0x' + p1)))
-              .replace(/\+/g, '-').replace(/\//g, '_').replace(/=+$/, '');
-          } catch (e) {
-            return btoa(str).replace(/\+/g, '-').replace(/\//g, '_').replace(/=+$/, '');
-          }
-        },
 
         fromBase64Url(b64) {
           try {
@@ -827,69 +824,38 @@
 
         verifyAndDecodeToken(token) {
           try {
-            const decrypted = this.xorCipher(this.fromBase64Url(token), this.SECRET);
+            if (!token || typeof token !== 'string') return null;
+            const decrypted = this.xorCipher(this.fromBase64Url(token.trim()), this.SECRET);
             const parsed = JSON.parse(decrypted);
-            if (!parsed || !parsed.l || !parsed.n || !parsed.s) return null;
-            const expectedSig = this.computeHash(`${parsed.l}|${parsed.n}|${this.SECRET}`);
-            if (parsed.s !== expectedSig) {
-              console.warn('Tamper alert: Token signature mismatch!');
-              return null;
-            }
-            return { licenseId: parsed.l, buyerName: parsed.n, timestamp: parsed.t };
+            if (!parsed || !parsed.l || !parsed.s) return null;
+            const expectedSig = this.computeHash(`${parsed.l}|${parsed.n || ''}|${this.SECRET}`);
+            if (parsed.s !== expectedSig) return null;
+            return { licenseId: parsed.l, buyerName: parsed.n || 'Pembeli Resmi', timestamp: parsed.t };
           } catch (e) {
             return null;
           }
         }
       };
 
-      // 2. Baca Identitas Lisensi dari URL atau Penyimpanan Lokal
-      const params = new URLSearchParams(window.location.search);
-      const rawToken = params.get('token') || params.get('auth');
-      let licenseKey = '';
-      let buyerName = '';
-      let isTokenTampered = false;
+      // Hapus kunci sisa di localStorage agar URL polos di perangkat apa pun WAJIB terkunci
+      try {
+        localStorage.removeItem('lokamain_license_key');
+        localStorage.removeItem('lokamain_buyer_name');
+      } catch(e) {}
 
-      // Jika ada token terenkripsi di URL:
-      if (rawToken) {
-        const verified = LOKAMAIN_SECURITY.verifyAndDecodeToken(rawToken);
-        if (verified) {
-          licenseKey = verified.licenseId;
-          buyerName = verified.buyerName;
-
-          // Simpan ke memori lokal
-          localStorage.setItem('lokamain_license_key', licenseKey);
-          localStorage.setItem('lokamain_buyer_name', buyerName);
-
-          // BERSIHKAN URL BAR SEKETIKA (Agar token rahasia hilang dari address bar pembeli!)
-          try {
-            window.history.replaceState({}, document.title, window.location.pathname);
-          } catch(e) {}
-        } else {
-          isTokenTampered = true;
-          alert('⚠️ Kode Lisensi Tidak Valid atau Telah Dimodifikasi!\nAkses game ditolak.');
-        }
-      }
-
-      // Fallback jika tidak pakai token (misal dari localStorage atau parameter langsung)
-      if (!licenseKey && !isTokenTampered) {
-        licenseKey = (params.get('lisensi') || params.get('license') || params.get('pin') || localStorage.getItem('lokamain_license_key') || '').trim();
-        buyerName = (params.get('nama') || params.get('sekolah') || params.get('guru') || params.get('pembeli') || localStorage.getItem('lokamain_buyer_name') || '').trim();
-        if (params.get('lisensi') || params.get('nama')) {
-          try {
-            window.history.replaceState({}, document.title, window.location.pathname);
-          } catch(e) {}
-        }
-      }
-
+      const gateModal = document.getElementById('gateLockModal');
+      const gateErrorText = document.getElementById('gateErrorText');
       const kickModal = document.getElementById('sessionKickModal');
       const kickDeviceEl = document.getElementById('kickedByDeviceName');
-      const enterModal = document.getElementById('enterLicenseModal');
       const roomBadgeText = document.getElementById('roomBadgeText');
 
-      // ID Sesi Unik untuk Tab/Layar ini
+      let licenseKey = '';
+      let buyerName = '';
       let currentSessionId = 'SES_' + Math.random().toString(36).substring(2, 9) + '_' + Date.now();
+      let sessionStartTime = Date.now();
       let isSessionKicked = false;
       let sseConnection = null;
+      let pollingInterval = null;
 
       function updateLicenseWatermark(name, key) {
         if (!roomBadgeText) return;
@@ -901,10 +867,9 @@
         }
       }
 
-      // 3. Klaim Sesi Aktif ke Cloud Relay (24 Jam Online, Tanpa Butuh Laptop Menyala)
       function claimActiveSession() {
         if (!licenseKey) return;
-        const cleanTopic = licenseKey.toLowerCase().replace(/[^a-z0-9_-]/g, '_');
+        const cleanTopic = 'lokamain_' + LOKAMAIN_SECURITY.computeHash(licenseKey.toUpperCase().trim());
         const payload = JSON.stringify({
           session: currentSessionId,
           device: detectDeviceType(),
@@ -912,68 +877,72 @@
           time: Date.now()
         });
 
-        // Simpan ke memori lokal
-        localStorage.setItem('lokamain_license_key', licenseKey);
-        if (buyerName) localStorage.setItem('lokamain_buyer_name', buyerName);
+        // Simpan sesi aktif ke sessionStorage (berlaku hanya untuk tab ini)
+        try {
+          sessionStorage.setItem('lokamain_active_key', licenseKey);
+          sessionStorage.setItem('lokamain_active_buyer', buyerName);
+        } catch(e) {}
 
-        // Kirim sinyal bahwa sesi ini aktif sekarang
-        fetch(`https://ntfy.sh/lokamain_lic_${cleanTopic}`, {
+        fetch(`https://ntfy.sh/${cleanTopic}`, {
           method: 'POST',
           body: payload,
           headers: { 'Title': 'ActiveClaim' }
         }).catch(() => {});
       }
 
-      // 4. Dengarkan Sinyal jika Ada Perangkat Lain yang Membuka Link Ini
+      function handleIncomingClaim(dataStr) {
+        try {
+          if (!dataStr) return;
+          const data = JSON.parse(dataStr);
+          let msg = null;
+          if (data.message) {
+            try {
+              msg = typeof data.message === 'string' ? JSON.parse(data.message) : data.message;
+            } catch(e) {
+              msg = { session: data.message };
+            }
+          }
+          if (!msg || !msg.session) return;
+          // Abaikan jika ini sinyal milik sesi layar kita sendiri
+          if (msg.session === currentSessionId) return;
+          // Abaikan sinyal usang sebelum sesi ini dimulai
+          if (msg.time && msg.time < sessionStartTime - 3000) return;
+
+          // Perangkat lain mengklaim lisensi yang sama -> KICK OUT PERANGKAT INI!
+          onSessionKickedOut(msg.device || 'Perangkat Lain');
+        } catch(e) {}
+      }
+
       function listenRemoteSessions() {
         if (!licenseKey) return;
-        const cleanTopic = licenseKey.toLowerCase().replace(/[^a-z0-9_-]/g, '_');
+        const cleanTopic = 'lokamain_' + LOKAMAIN_SECURITY.computeHash(licenseKey.toUpperCase().trim());
 
         if (sseConnection) {
           try { sseConnection.close(); } catch(e) {}
         }
 
-        // Koneksi Real-time Server-Sent Events (SSE)
+        // 1. Koneksi Real-time Server-Sent Events (SSE)
         try {
-          sseConnection = new EventSource(`https://ntfy.sh/lokamain_lic_${cleanTopic}/sse`);
-          sseConnection.onmessage = (event) => {
-            try {
-              const data = JSON.parse(event.data);
-              if (data.event === 'message' && data.message) {
-                const msg = typeof data.message === 'string' && data.message.startsWith('{')
-                  ? JSON.parse(data.message)
-                  : { session: data.message };
+          sseConnection = new EventSource(`https://ntfy.sh/${cleanTopic}/sse`);
+          sseConnection.onmessage = (event) => handleIncomingClaim(event.data);
+          sseConnection.addEventListener('message', (event) => handleIncomingClaim(event.data));
+        } catch(e) {}
 
-                // Jika sesi yang aktif berbeda dengan sesi layar ini -> KICK OUT!
-                if (msg.session && msg.session !== currentSessionId) {
-                  onSessionKickedOut(msg.device || 'Perangkat Lain');
-                }
-              }
-            } catch(err) {}
-          };
-        } catch (e) {}
-
-        // Fallback polling berkala (setiap 6 detik) untuk TV yang tidak mendukung SSE
-        setInterval(() => {
+        // 2. Fallback Polling setiap 3 detik (untuk browser / TV yang memblokir SSE)
+        if (pollingInterval) clearInterval(pollingInterval);
+        pollingInterval = setInterval(() => {
           if (isSessionKicked || !licenseKey) return;
-          fetch(`https://ntfy.sh/lokamain_lic_${cleanTopic}/json?poll=1`)
+          fetch(`https://ntfy.sh/${cleanTopic}/json?poll=1`)
             .then(res => res.text())
             .then(text => {
               if (!text) return;
               const lines = text.trim().split('\n');
-              const lastLine = lines[lines.length - 1];
-              const parsed = JSON.parse(lastLine);
-              if (parsed && parsed.message) {
-                const msg = typeof parsed.message === 'string' && parsed.message.startsWith('{')
-                  ? JSON.parse(parsed.message)
-                  : { session: parsed.message };
-                if (msg.session && msg.session !== currentSessionId) {
-                  onSessionKickedOut(msg.device || 'Perangkat Lain');
-                }
+              for (const line of lines) {
+                if (line.trim()) handleIncomingClaim(line);
               }
             })
             .catch(() => {});
-        }, 6000);
+        }, 3000);
       }
 
       function onSessionKickedOut(deviceName) {
@@ -981,7 +950,7 @@
         if (kickDeviceEl) kickDeviceEl.textContent = deviceName;
         if (kickModal) kickModal.classList.remove('hidden');
 
-        // Hentikan suara sementara agar tidak bertabrakan
+        // Mute suara game
         if (window.snakeGame && window.snakeGame.sounds) {
           try { window.snakeGame.sounds.muted = true; } catch(e) {}
         }
@@ -990,10 +959,11 @@
       function resumeSessionHere() {
         isSessionKicked = false;
         currentSessionId = 'SES_' + Math.random().toString(36).substring(2, 9) + '_' + Date.now();
+        sessionStartTime = Date.now();
         if (kickModal) kickModal.classList.add('hidden');
         claimActiveSession();
 
-        // Kembalikan suara
+        // Kembalikan suara game
         if (window.snakeGame && window.snakeGame.sounds) {
           try { window.snakeGame.sounds.muted = false; } catch(e) {}
         }
@@ -1002,36 +972,117 @@
       // Tombol Reclaim Session
       document.getElementById('btnReclaimSession')?.addEventListener('click', resumeSessionHere);
 
-      // 5. Inisialisasi Alur Sesi
-      if (licenseKey) {
+      // Fungsi Pembuka Game Resmi
+      function grantAccessAndStart(key, name) {
+        licenseKey = key.toUpperCase().trim();
+        buyerName = name || 'Pembeli Resmi';
+
+        // Sembunyikan gerbang kunci
+        if (gateModal) gateModal.classList.add('hidden');
+
+        // Inisialisasi game hanya saat sudah resmi terverifikasi
+        if (typeof window.startSnakeGame === 'function') {
+          window.startSnakeGame();
+        }
+
         updateLicenseWatermark(buyerName, licenseKey);
         claimActiveSession();
         listenRemoteSessions();
-      } else {
-        // Tampilkan modal masukkan lisensi jika link polos tanpa parameter
-        if (enterModal) enterModal.classList.remove('hidden');
       }
 
-      // Handler Modal Masukkan Lisensi
-      document.getElementById('btnActivateLicense')?.addEventListener('click', () => {
-        const inName = (document.getElementById('inputBuyerName')?.value || '').trim();
-        const inCode = (document.getElementById('inputLicenseCode')?.value || '').trim();
-        const errText = document.getElementById('licenseErrorText');
+      // 3. Evaluasi Parameter URL / Session
+      const params = new URLSearchParams(window.location.search);
+      const rawToken = params.get('token') || params.get('auth');
+      const directLic = (params.get('lisensi') || params.get('license') || params.get('pin') || '').trim();
 
-        if (!inName || !inCode) {
-          if (errText) errText.classList.remove('hidden');
+      if (rawToken) {
+        const verified = LOKAMAIN_SECURITY.verifyAndDecodeToken(rawToken);
+        if (verified) {
+          try {
+            sessionStorage.setItem('lokamain_verified_token', rawToken);
+            window.history.replaceState({}, document.title, window.location.pathname);
+          } catch(e) {}
+          grantAccessAndStart(verified.licenseId, verified.buyerName);
+        } else {
+          // Token dipalsukan atau rusak
+          if (gateErrorText) {
+            gateErrorText.textContent = '⚠️ Token Lisensi Tidak Valid atau Telah Dimodifikasi! Akses ditolak.';
+            gateErrorText.classList.remove('hidden');
+          }
+        }
+      } else if (directLic) {
+        // Parameter lisensi langsung
+        const dName = (params.get('nama') || 'Pembeli Resmi').trim();
+        try {
+          window.history.replaceState({}, document.title, window.location.pathname);
+        } catch(e) {}
+        grantAccessAndStart(directLic, dName);
+      } else {
+        // Cek apakah tab ini baru saja di-refresh (ada di sessionStorage)
+        const cachedToken = sessionStorage.getItem('lokamain_verified_token');
+        if (cachedToken) {
+          const verified = LOKAMAIN_SECURITY.verifyAndDecodeToken(cachedToken);
+          if (verified) {
+            grantAccessAndStart(verified.licenseId, verified.buyerName);
+          }
+        } else {
+          const cachedKey = sessionStorage.getItem('lokamain_active_key');
+          const cachedBuyer = sessionStorage.getItem('lokamain_active_buyer');
+          if (cachedKey) {
+            grantAccessAndStart(cachedKey, cachedBuyer);
+          }
+        }
+        // JIKA TIDAK ADA TOKEN / SESSION: Gerbang Tetap Terkunci (gateLockModal tetap tampil)!
+      }
+
+      // Handler Input Manual pada Gerbang Kunci
+      document.getElementById('btnGateUnlock')?.addEventListener('click', () => {
+        let inputVal = (document.getElementById('inputGateLicenseCode')?.value || '').trim();
+        if (!inputVal) {
+          if (gateErrorText) {
+            gateErrorText.textContent = '⚠️ Mohon masukkan Kode Lisensi atau tempel link Anda!';
+            gateErrorText.classList.remove('hidden');
+          }
           return;
         }
 
-        licenseKey = inCode;
-        buyerName = inName;
-        if (enterModal) enterModal.classList.add('hidden');
-        updateLicenseWatermark(buyerName, licenseKey);
-        claimActiveSession();
-        listenRemoteSessions();
+        // Jika pembeli menempelkan seluruh link atau token
+        if (inputVal.includes('token=')) {
+          const match = inputVal.match(/token=([a-zA-Z0-9_-]+)/);
+          if (match && match[1]) inputVal = match[1];
+        } else if (inputVal.includes('lisensi=')) {
+          const match = inputVal.match(/lisensi=([a-zA-Z0-9_-]+)/);
+          if (match && match[1]) inputVal = match[1];
+        }
+
+        // Coba verifikasi sebagai token terenkripsi
+        const verified = LOKAMAIN_SECURITY.verifyAndDecodeToken(inputVal);
+        if (verified) {
+          try { sessionStorage.setItem('lokamain_verified_token', inputVal); } catch(e) {}
+          grantAccessAndStart(verified.licenseId, verified.buyerName);
+          return;
+        }
+
+        // Jika berupa kode lisensi (misal LM-8821 atau kode apa pun minimal 3 karakter)
+        if (inputVal.length >= 3) {
+          grantAccessAndStart(inputVal, 'Pembeli Resmi');
+          return;
+        }
+
+        if (gateErrorText) {
+          gateErrorText.textContent = '⚠️ Kode Lisensi / Token tidak valid atau terlalu pendek!';
+          gateErrorText.classList.remove('hidden');
+        }
       });
 
-      // 6. Dukungan Tombol Remote Smart TV & Keyboard Fisik
+      // Buka kunci jika menekan Enter pada input kode
+      document.getElementById('inputGateLicenseCode')?.addEventListener('keydown', (e) => {
+        if (e.key === 'Enter') {
+          document.getElementById('btnGateUnlock')?.click();
+        }
+      });
+
+      // 4. Dukungan Tombol Remote Smart TV & Keyboard Fisik
       window.addEventListener('keydown', (e) => {
         if (isSessionKicked) {
           if (e.key === 'Enter') resumeSessionHere();
