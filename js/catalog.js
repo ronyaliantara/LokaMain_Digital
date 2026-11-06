@@ -272,7 +272,7 @@
     s.src = `data/katalog-sync.js?t=${Date.now()}`;
     s.onload = () => {
       const diskTime = Number(window.LOKAMAIN_LIVE_DATA?.updatedAt || 0);
-      if (diskTime > lastRenderedTime) {
+      if (diskTime !== lastRenderedTime) {
         renderPublicCatalog();
       }
     };
@@ -280,7 +280,25 @@
   }
 
   document.addEventListener('DOMContentLoaded', () => {
+    // 1. Render awal
     renderPublicCatalog();
+
+    // 2. Segera tarik data paling segar dari server tanpa cache browser
+    try {
+      fetch(`data/games.json?t=${Date.now()}`)
+        .then((res) => {
+          if (!res.ok) throw new Error('HTTP ' + res.status);
+          return res.json();
+        })
+        .then((fresh) => {
+          if (fresh && fresh.games) {
+            window.LOKAMAIN_LIVE_DATA = fresh;
+            renderPublicCatalog();
+          }
+        })
+        .catch(() => {});
+    } catch {}
+
     setInterval(pollDiskSyncFile, 2000);
 
     // Navigasi & Menu Garis 3
