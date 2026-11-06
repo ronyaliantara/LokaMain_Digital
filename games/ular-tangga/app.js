@@ -2263,7 +2263,8 @@ class SnakeAndLaddersGame {
     btnGenShare?.addEventListener('click', () => {
       const buyer = (shareInput?.value || '').trim() || 'SMP Negeri 1';
       const cleanParam = encodeURIComponent(buyer);
-      const url = `${window.location.origin}${window.location.pathname}?sekolah=${cleanParam}`;
+      const lic = localStorage.getItem('lokamain_license_key') || 'LM-UT';
+      const url = `${window.location.origin}${window.location.pathname}?lisensi=${encodeURIComponent(lic)}&nama=${cleanParam}`;
 
       if (shareUrl) shareUrl.value = url;
       if (shareWa) {

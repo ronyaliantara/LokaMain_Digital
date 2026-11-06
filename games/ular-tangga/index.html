@@ -964,6 +964,24 @@
             window.snakeGame.handleQuizAnswer('B');
           }
         }
+
+        // Remote TV: Tombol Panah Bawah -> Jongkok Hindari Ular
+        if (e.key === 'ArrowDown') {
+          if (window.snakeGame && window.snakeGame.gameState === 'SQUAT_CHALLENGE') {
+            window.snakeGame.handleSquatSuccess();
+          }
+        }
+
+        // Remote TV: Tombol Panah Atas -> Panjat Tangga
+        if (e.key === 'ArrowUp') {
+          if (window.snakeGame && window.snakeGame.gameState === 'CLIMB_CHALLENGE') {
+            window.snakeGame.climbProgress = (window.snakeGame.climbProgress || 0) + 1;
+            window.snakeGame.handleClimbStep(window.snakeGame.climbProgress, 4);
+            if (window.snakeGame.climbProgress >= 4) {
+              window.snakeGame.handleClimbSuccess();
+            }
+          }
+        }
       });
     })();
   </script>
