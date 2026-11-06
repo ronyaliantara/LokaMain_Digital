@@ -1,10 +1,10 @@
-window.LOKAMAIN_LIVE_DATA = {
+﻿window.LOKAMAIN_LIVE_DATA = {
   "updatedAt": 1793962875813,
   "settings": {
     "storeName": "LokaMain Digital",
     "siteSubtitle": "Pilih game pembelajaran digital, lalu klik tombol WhatsApp di bawahnya untuk memesan.",
     "logoImage": "assets/branding/banner-lokamain.png",
-    "footerText": "Hak Cipta © 2026 LokaMain Digital. Pembelajaran Game Edukasi Interaktif.",
+    "footerText": "Hak Cipta Â© 2026 LokaMain Digital. Pembelajaran Game Edukasi Interaktif.",
     "footerNote": "Semua game dapat dimainkan langsung di Smart TV, HP, Tablet, dan Komputer tanpa instalasi.",
     "sellerName": "Admin LokaMain",
     "whatsappNumber": "6287881258019",
@@ -18,11 +18,24 @@ window.LOKAMAIN_LIVE_DATA = {
   },
   "games": [
     {
+      "id": "LM-UT",
+      "code": "SERI-UT",
+      "title": "Ular Tangga Kinestetik - Bahasa Arab (As-Sa'ah)",
+      "category": "Bahasa Arab & Kinestetik (AI Pose)",
+      "grade": "SMP Kelas VIII",
+      "duration": "20â€“30 menit",
+      "device": "Smart TV, Laptop & Proyektor",
+      "price": 35000,
+      "image": "assets/games/game-1793962874784.png",
+      "shortDesc": "Game edukasi berbasis gerak tubuh (AI Pose) materi waktu & jam (As-Sa'ah) Bahasa Arab dengan papan ular tangga interaktif 2 pemain.",
+      "gameUrl": "games/ular-tangga/"
+    },
+    {
       "id": "LM-A",
       "code": "SERI-A",
       "title": "Hitung Cepat Pasar",
       "category": "Matematika & Logika",
-      "grade": "SD Kelas 1–4",
+      "grade": "SD Kelas 1â€“4",
       "duration": "20 menit",
       "device": "HP, Laptop & Proyektor",
       "price": 29000,
@@ -35,7 +48,7 @@ window.LOKAMAIN_LIVE_DATA = {
       "code": "SERI-B",
       "title": "Susun Kata Nusantara",
       "category": "Bahasa & Budaya",
-      "grade": "TK B & SD Kelas 1–3",
+      "grade": "TK B & SD Kelas 1â€“3",
       "duration": "15 menit",
       "device": "Layar Sentuh & Laptop",
       "price": 30000,
@@ -48,7 +61,7 @@ window.LOKAMAIN_LIVE_DATA = {
       "code": "SERI-C",
       "title": "Rantai Makanan Rimba",
       "category": "Sains & Alam",
-      "grade": "SD Kelas 4–6",
+      "grade": "SD Kelas 4â€“6",
       "duration": "25 menit",
       "device": "Laptop, Tablet & IFP Kelas",
       "price": 35000,
@@ -61,7 +74,7 @@ window.LOKAMAIN_LIVE_DATA = {
       "code": "SERI-D",
       "title": "Labirin Logika Robot",
       "category": "Matematika & Logika",
-      "grade": "SD Kelas 3–6 & SMP",
+      "grade": "SD Kelas 3â€“6 & SMP",
       "duration": "25 menit",
       "device": "HP, Tablet & Laptop",
       "price": 39000,
@@ -74,7 +87,7 @@ window.LOKAMAIN_LIVE_DATA = {
       "code": "SERI-E",
       "title": "Peta Pulau Indonesia",
       "category": "Bahasa & Budaya",
-      "grade": "SD Kelas 3–6 & SMP",
+      "grade": "SD Kelas 3â€“6 & SMP",
       "duration": "20 menit",
       "device": "Proyektor Kelas & HP",
       "price": 32000,
@@ -87,7 +100,7 @@ window.LOKAMAIN_LIVE_DATA = {
       "code": "SERI-F",
       "title": "Kosakata Ruang Kelas",
       "category": "Bahasa & Budaya",
-      "grade": "TK & SD Kelas 1–4",
+      "grade": "TK & SD Kelas 1â€“4",
       "duration": "15 menit",
       "device": "HP, Tablet & Laptop",
       "price": 25000,
@@ -139,3 +152,4 @@ window.LOKAMAIN_LIVE_DATA = {
     }
   ]
 };
+

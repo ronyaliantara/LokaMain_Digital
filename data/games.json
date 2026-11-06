@@ -18,6 +18,19 @@
   },
   "games": [
     {
+      "id": "LM-UT",
+      "code": "SERI-UT",
+      "title": "Ular Tangga Kinestetik - Bahasa Arab (As-Sa'ah)",
+      "category": "Bahasa Arab & Kinestetik (AI Pose)",
+      "grade": "SMP Kelas VIII",
+      "duration": "20–30 menit",
+      "device": "Smart TV, Laptop & Proyektor",
+      "price": 35000,
+      "image": "assets/games/game-1793962874784.png",
+      "shortDesc": "Game edukasi berbasis gerak tubuh (AI Pose) materi waktu & jam (As-Sa'ah) Bahasa Arab dengan papan ular tangga interaktif 2 pemain.",
+      "gameUrl": "games/ular-tangga/"
+    },
+    {
       "id": "LM-A",
       "code": "SERI-A",
       "title": "Hitung Cepat Pasar",
