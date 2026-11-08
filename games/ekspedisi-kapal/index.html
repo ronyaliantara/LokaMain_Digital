@@ -1,0 +1,448 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Ekspedisi Nusantara - Kapal Hidung</title>
+<link rel="stylesheet" href="style.css">
+</head>
+<body>
+<header class="top">
+  <h1>⛵ Ekspedisi Nusantara <small>Kuis IPS SMP</small></h1>
+  <div class="top-r">
+    <!-- Badge Lisensi Pembeli Resmi -->
+    <span id="licenseBadge" class="pill" style="background:#e0e7ff;border-color:#4338ca;color:#3730a3;font-weight:bold;">Lisensi: Memverifikasi…</span>
+    <span id="camStatus" class="pill">Kamera…</span>
+    <button id="resetBtn" class="btn bg-white">🔄 Ulangi</button>
+    <button id="teacherBtn" class="btn bg-pink">⚙️ Guru</button>
+  </div>
+</header>
+
+<main>
+  <div id="players" class="players"></div>
+  <div class="layout">
+  <div id="stage" class="stage card">
+    <canvas id="cv" width="900" height="560"></canvas>
+    <div id="hud" class="hud hidden">
+      <div class="hud-tag" id="hudTag"></div>
+      <p id="qText"></p>
+    </div>
+    <div id="banner" class="banner hidden"></div>
+    <div id="panel" class="panel hidden">
+      <div class="card panel-in">
+        <span id="pTag" class="tag"></span>
+        <div id="pIcon" class="p-icon"></div>
+        <h3 id="pTitle"></h3>
+        <p id="pText"></p>
+        <div id="pTimer" class="p-timer"></div>
+        <p id="pExtra" class="p-extra"></p>
+        <button id="readyBtn" class="btn bg-teal big hidden">▶ SIAP!</button>
+        <div id="pBtns" class="p-btns hidden">
+          <button id="okBtn" class="btn bg-green">✅ Berhasil</button>
+          <button id="noBtn" class="btn bg-red">❌ Gagal</button>
+        </div>
+      </div>
+    </div>
+  </div>
+  <aside class="side">
+    <div class="card side-box"><h3>📷 Kamera</h3>
+      <div id="camBox" class="cambox"><video id="cam" autoplay playsinline muted></video><i id="noseDot"></i></div>
+      <p id="camHint" class="muted">Kamera belum aktif</p>
+    </div>
+    <div class="card side-box"><h3>🗺️ Peta Perjalanan <small>(finis: 5 benar)</small></h3>
+      <div id="map" class="map"></div>
+    </div>
+  </aside>
+</div>
+  <p class="hint">Geser <b>kepala ke kiri / kanan</b> di depan kamera untuk menggerakkan kapal. Tanpa kamera: gerakkan mouse atau tombol ← →.</p>
+</main>
+
+<!-- Mulai -->
+<div id="startModal" class="modal">
+  <div class="card modal-in">
+    <h2>🧭 Siapa yang ikut?</h2>
+    <p class="muted">Isi nama pemain. Kosongkan jika tidak ikut (minimal 2 pemain). Pemain bergantian berlayar di depan kamera.</p>
+    <div id="nameInputs" class="names"></div>
+    <p class="muted">Game selesai saat ada yang <b>benar 5 kali</b> (semua pemain dapat giliran sama), maksimal 10 ronde. Juara = paling banyak benar; siswa terbaik = skor tertinggi.</p>
+    <p id="startErr" class="err hidden">Minimal 2 pemain.</p>
+    <button id="startBtn" class="btn bg-teal big">🚀 Mulai Ekspedisi</button>
+  </div>
+</div>
+
+<!-- Selesai -->
+<div id="winModal" class="modal hidden">
+  <div class="card modal-in center">
+    <div class="big-emoji">🏆</div>
+    <h2 id="winTitle"></h2>
+    <p id="bestLine" class="best"></p>
+    <ol id="winRank" class="rank"></ol>
+    <button id="playAgainBtn" class="btn bg-teal big">🎮 Main Lagi</button>
+  </div>
+</div>
+
+<!-- PIN Guru -->
+<div id="pinModal" class="modal hidden">
+  <div class="card modal-in center">
+    <h3>🔒 Mode Guru</h3>
+    <p class="muted">PIN bawaan: <code>1234</code></p>
+    <input id="pinInput" type="password" maxlength="6" class="pin">
+    <p id="pinError" class="err hidden">PIN salah, coba lagi.</p>
+    <div class="row"><button id="pinCancel" class="btn bg-white">Batal</button><button id="pinOk" class="btn bg-pink">Buka</button></div>
+  </div>
+</div>
+
+<!-- Dashboard Guru -->
+<div id="teacherModal" class="modal hidden">
+  <div class="card teacher">
+    <div class="teacher-h">
+      <div><h2>⚙️ Bank Soal</h2><p id="countInfo"></p></div>
+      <button id="teacherClose" class="btn bg-white">✕ Tutup & Main</button>
+    </div>
+    <div class="teacher-bar">
+      <button id="tplBtn" class="btn bg-white">📄 Template Excel</button>
+      <button id="expBtn" class="btn bg-white">📤 Ekspor Excel</button>
+      <select id="impMode" class="btn bg-white"><option value="replace">Impor: Ganti semua</option><option value="append">Impor: Tambahkan</option></select>
+      <input type="file" id="impFile" accept=".xlsx,.xls,.csv" class="hidden">
+      <button id="impBtn" class="btn bg-green">📥 Impor Excel</button>
+      <button id="addBtn" class="btn bg-sky">➕ Tambah Soal</button>
+      <button id="defBtn" class="btn bg-red push">🔄 Reset Bawaan</button>
+    </div>
+    <div class="teacher-t">
+      <table>
+        <thead><tr><th>No</th><th>Pertanyaan</th><th>Pilihan A</th><th>Pilihan B</th><th>Kunci</th><th>Penjelasan</th><th></th></tr></thead>
+        <tbody id="qBody"></tbody>
+      </table>
+    </div>
+  </div>
+</div>
+
+<!-- ======================================================================
+     GERBANG KEAMANAN LISENSI RESMI (GATE LOCK MODAL)
+     TERKUNCI SECARA DEFAULT.
+     HANYA TERBUKA JIKA MEMILIKI TOKEN LISENSI RESMI YANG TERVERIFIKASI!
+     ====================================================================== -->
+<div id="gateLockModal" style="position: fixed; inset: 0; z-index: 99990; background: rgba(15, 23, 42, 0.94); backdrop-filter: blur(8px); display: flex; align-items: center; justify-content: center; padding: 14px;">
+  <div class="card" style="max-width: 440px; width: 100%; text-align: center; padding: 24px; background: #ffffff;">
+    <div style="font-size: 48px; margin-bottom: 8px;">🔒</div>
+    <h2 style="margin: 0 0 4px; font-size: 22px; color: var(--ink);">Akses Game Terkunci</h2>
+    <p style="font-size: 13px; color: #64748b; margin: 0 0 16px;">Game Edukasi Berlisensi Resmi LokaMain Digital</p>
+
+    <div style="background: #f8fafc; border: 2px solid #cbd5e1; border-radius: 12px; padding: 12px; text-align: left; margin-bottom: 16px; font-size: 12px; line-height: 1.5; color: #334155;">
+      <p style="margin: 0 0 4px; font-weight: 800; color: #0f172a;">🛡️ Lisensi Pembeli Resmi</p>
+      <p style="margin: 0;">Game ini tidak dapat diakses bebas tanpa lisensi. Silakan buka game menggunakan <strong>Link Khusus Pembeli</strong> yang dikirimkan Admin ke nomor WhatsApp Anda.</p>
+    </div>
+
+    <div style="text-align: left; margin-bottom: 16px;">
+      <label style="display: block; font-size: 11.5px; font-weight: 800; color: #0f172a; margin-bottom: 6px;">Punya Kode Lisensi atau Token?</label>
+      <div style="display: flex; gap: 8px;">
+        <input id="inputGateLicenseCode" type="text" placeholder="Tempel token atau kode di sini..." style="flex: 1; padding: 8px 10px; border: 3px solid var(--ink); border-radius: 10px; font-size: 13px; font-family: monospace;">
+        <button id="btnGateUnlock" type="button" class="btn bg-green" style="white-space: nowrap;">🔓 Buka</button>
+      </div>
+      <div id="gateErrorText" style="display: none; color: #dc2626; font-size: 12px; font-weight: 800; margin-top: 6px;">
+        ⚠️ Kode Lisensi / Token tidak valid atau salah!
+      </div>
+    </div>
+
+    <div style="border-top: 2px dashed #cbd5e1; padding-top: 14px;">
+      <a href="https://wa.me/6287881258019?text=Halo%20Admin%20LokaMain,%20saya%20ingin%20memesan%20lisensi%20resmi%20Game%20Ekspedisi%20Nusantara" target="_blank" class="btn bg-teal big" style="text-decoration: none; display: flex; align-items: center; justify-content: center; gap: 6px;">
+        💬 Pesan Lisensi Resmi via WhatsApp
+      </a>
+    </div>
+
+    <p style="font-size: 11px; color: #94a3b8; margin: 12px 0 0;">
+      LokaMain Digital © 2026 • Hak Cipta Dilindungi
+    </p>
+  </div>
+</div>
+
+<!-- MODAL SESI TUNGGAL (KICKED OUT) -->
+<div id="kickedModal" class="modal hidden" style="z-index: 99998;">
+  <div class="card modal-in center" style="max-width: 400px;">
+    <div style="font-size: 48px; margin-bottom: 8px;">⚠️</div>
+    <h2 style="margin: 0 0 6px;">Akses Dialihkan ke Layar Lain</h2>
+    <p class="muted" style="margin-bottom: 12px;">Game dengan lisensi Anda baru saja dibuka di <strong id="kickedByDeviceName" style="color: #ea580c;">perangkat lain</strong>.</p>
+    <div style="background: #fef2f2; border: 2px solid #f87171; border-radius: 10px; padding: 10px; text-align: left; font-size: 12px; margin-bottom: 14px; color: #991b1b;">
+      Demi keamanan lisensi, game tidak dapat dimainkan secara bersamaan di 2 layar sekaligus.
+    </div>
+    <button id="btnReclaimSession" type="button" class="btn bg-teal big">🔄 Gunakan Kembali di Layar Ini</button>
+  </div>
+</div>
+
+<script src="app.js"></script>
+<script src="guru.js"></script>
+
+<!-- ======================================================================
+     SCRIPT ENGINE LISENSI RESMI & SESI TUNGGAL
+     ====================================================================== -->
+<script>
+  (function initSingleActiveSessionEngine() {
+    // 1. Deteksi Tipe Perangkat
+    function detectDeviceType() {
+      const ua = navigator.userAgent.toLowerCase();
+      if (/smart-tv|smarttv|googletv|appletv|hbbtv|pov_tv|netcast|viera|webos|tizen|android tv/i.test(ua)) {
+        return 'Smart TV';
+      }
+      if (/mobile|android|iphone|ipod/i.test(ua)) return 'Smartphone';
+      if (/ipad|tablet/i.test(ua)) return 'Tablet';
+      return 'Komputer / Laptop';
+    }
+
+    // 2. Engine Keamanan Kriptografi Token & Tanda Tangan Digital
+    const LOKAMAIN_SECURITY = {
+      SECRET: 'LOKAMAIN_SECURE_AUTH_KEY_2026_V1',
+
+      fromBase64Url(b64) {
+        try {
+          let str = b64.replace(/-/g, '+').replace(/_/g, '/');
+          while (str.length % 4) str += '=';
+          return decodeURIComponent(Array.prototype.map.call(atob(str), c => '%' + ('00' + c.charCodeAt(0).toString(16)).slice(-2)).join(''));
+        } catch (e) {
+          let str = b64.replace(/-/g, '+').replace(/_/g, '/');
+          while (str.length % 4) str += '=';
+          return atob(str);
+        }
+      },
+
+      xorCipher(text, key) {
+        let res = '';
+        for (let i = 0; i < text.length; i++) {
+          res += String.fromCharCode(text.charCodeAt(i) ^ key.charCodeAt(i % key.length));
+        }
+        return res;
+      },
+
+      computeHash(text) {
+        let h1 = 5381, h2 = 2166136261;
+        for (let i = 0; i < text.length; i++) {
+          const code = text.charCodeAt(i);
+          h1 = ((h1 << 5) + h1) ^ code;
+          h2 = (h2 ^ code) * 16777619;
+        }
+        return Math.abs(h1).toString(36) + Math.abs(h2).toString(36);
+      },
+
+      verifyAndDecodeToken(token) {
+        try {
+          if (!token || typeof token !== 'string') return null;
+          const decrypted = this.xorCipher(this.fromBase64Url(token.trim()), this.SECRET);
+          const parsed = JSON.parse(decrypted);
+          if (!parsed || !parsed.l || !parsed.s) return null;
+          const expectedSig = this.computeHash(`${parsed.l}|${parsed.n || ''}|${this.SECRET}`);
+          if (parsed.s !== expectedSig) return null;
+          return { licenseId: parsed.l, buyerName: parsed.n || 'Pembeli Resmi', timestamp: parsed.t };
+        } catch (e) {
+          return null;
+        }
+      }
+    };
+
+    const gateModal = document.getElementById('gateLockModal');
+    const gateErrorText = document.getElementById('gateErrorText');
+    const kickModal = document.getElementById('kickedModal');
+    const kickDeviceEl = document.getElementById('kickedByDeviceName');
+    const licenseBadge = document.getElementById('licenseBadge');
+
+    let licenseKey = '';
+    let buyerName = '';
+    let currentSessionId = 'SES_' + Math.random().toString(36).substring(2, 9) + '_' + Date.now();
+    let sessionStartTime = Date.now();
+    let isSessionKicked = false;
+    let sseConnection = null;
+    let pollingInterval = null;
+
+    function updateLicenseWatermark(name, key) {
+      if (!licenseBadge) return;
+      const display = name || key || 'Resmi';
+      licenseBadge.textContent = `Lisensi: ${display}`;
+      licenseBadge.style.background = '#dcfce7';
+      licenseBadge.style.borderColor = '#15803d';
+      licenseBadge.style.color = '#166534';
+      licenseBadge.title = `Lisensi Resmi Terverifikasi\nPembeli: ${name || '-'}\nID: ${key || '-'}\nStatus: Sesi Aktif`;
+    }
+
+    function claimActiveSession() {
+      if (!licenseKey) return;
+      const cleanTopic = 'lokamain_' + LOKAMAIN_SECURITY.computeHash(licenseKey.toUpperCase().trim());
+      const payload = JSON.stringify({
+        session: currentSessionId,
+        device: detectDeviceType(),
+        buyer: buyerName || 'Pembeli Resmi',
+        time: Date.now()
+      });
+
+      try {
+        sessionStorage.setItem('lokamain_active_key', licenseKey);
+        sessionStorage.setItem('lokamain_active_buyer', buyerName);
+      } catch(e) {}
+
+      fetch(`https://ntfy.sh/${cleanTopic}`, {
+        method: 'POST',
+        body: payload,
+        headers: { 'Title': 'ActiveClaim' }
+      }).catch(() => {});
+    }
+
+    function handleIncomingClaim(dataStr) {
+      try {
+        if (!dataStr) return;
+        const data = JSON.parse(dataStr);
+        let msg = null;
+        if (data.message) {
+          try {
+            msg = typeof data.message === 'string' ? JSON.parse(data.message) : data.message;
+          } catch(e) {
+            msg = { session: data.message };
+          }
+        }
+        if (!msg || !msg.session) return;
+        if (msg.session === currentSessionId) return;
+        if (msg.time && msg.time < sessionStartTime - 3000) return;
+
+        onSessionKickedOut(msg.device || 'Perangkat Lain');
+      } catch(e) {}
+    }
+
+    function listenRemoteSessions() {
+      if (!licenseKey) return;
+      const cleanTopic = 'lokamain_' + LOKAMAIN_SECURITY.computeHash(licenseKey.toUpperCase().trim());
+
+      if (sseConnection) {
+        try { sseConnection.close(); } catch(e) {}
+      }
+
+      try {
+        sseConnection = new EventSource(`https://ntfy.sh/${cleanTopic}/sse`);
+        sseConnection.onmessage = (event) => handleIncomingClaim(event.data);
+        sseConnection.addEventListener('message', (event) => handleIncomingClaim(event.data));
+      } catch(e) {}
+
+      if (pollingInterval) clearInterval(pollingInterval);
+      pollingInterval = setInterval(() => {
+        if (isSessionKicked || !licenseKey) return;
+        fetch(`https://ntfy.sh/${cleanTopic}/json?poll=1`)
+          .then(res => res.text())
+          .then(text => {
+            if (!text) return;
+            const lines = text.trim().split('\n');
+            for (const line of lines) {
+              if (line.trim()) handleIncomingClaim(line);
+            }
+          })
+          .catch(() => {});
+      }, 3000);
+    }
+
+    function onSessionKickedOut(deviceName) {
+      isSessionKicked = true;
+      if (kickDeviceEl) kickDeviceEl.textContent = deviceName;
+      if (kickModal) kickModal.classList.remove('hidden');
+    }
+
+    function resumeSessionHere() {
+      isSessionKicked = false;
+      currentSessionId = 'SES_' + Math.random().toString(36).substring(2, 9) + '_' + Date.now();
+      sessionStartTime = Date.now();
+      if (kickModal) kickModal.classList.add('hidden');
+      claimActiveSession();
+    }
+
+    document.getElementById('btnReclaimSession')?.addEventListener('click', resumeSessionHere);
+
+    function grantAccessAndStart(key, name) {
+      licenseKey = (key || '').toUpperCase().trim();
+      buyerName = name || 'Pembeli Resmi';
+
+      if (gateModal) gateModal.style.display = 'none';
+
+      updateLicenseWatermark(buyerName, licenseKey);
+      claimActiveSession();
+      listenRemoteSessions();
+    }
+
+    // Evaluasi Parameter URL / Session
+    const params = new URLSearchParams(window.location.search);
+    const rawToken = params.get('token') || params.get('auth');
+    const directLic = (params.get('lisensi') || params.get('license') || params.get('pin') || '').trim();
+
+    if (rawToken) {
+      const verified = LOKAMAIN_SECURITY.verifyAndDecodeToken(rawToken);
+      if (verified) {
+        try {
+          sessionStorage.setItem('lokamain_verified_token', rawToken);
+          window.history.replaceState({}, document.title, window.location.pathname);
+        } catch(e) {}
+        grantAccessAndStart(verified.licenseId, verified.buyerName);
+      } else {
+        if (gateErrorText) {
+          gateErrorText.textContent = '⚠️ Token Lisensi Tidak Valid atau Telah Dimodifikasi! Akses ditolak.';
+          gateErrorText.style.display = 'block';
+        }
+      }
+    } else if (directLic) {
+      const dName = (params.get('nama') || 'Pembeli Resmi').trim();
+      try {
+        window.history.replaceState({}, document.title, window.location.pathname);
+      } catch(e) {}
+      grantAccessAndStart(directLic, dName);
+    } else {
+      const cachedToken = sessionStorage.getItem('lokamain_verified_token');
+      if (cachedToken) {
+        const verified = LOKAMAIN_SECURITY.verifyAndDecodeToken(cachedToken);
+        if (verified) {
+          grantAccessAndStart(verified.licenseId, verified.buyerName);
+        }
+      } else {
+        const cachedKey = sessionStorage.getItem('lokamain_active_key');
+        const cachedBuyer = sessionStorage.getItem('lokamain_active_buyer');
+        if (cachedKey) {
+          grantAccessAndStart(cachedKey, cachedBuyer);
+        }
+      }
+    }
+
+    // Handler Input Manual pada Gerbang Kunci
+    document.getElementById('btnGateUnlock')?.addEventListener('click', () => {
+      let inputVal = (document.getElementById('inputGateLicenseCode')?.value || '').trim();
+      if (!inputVal) {
+        if (gateErrorText) {
+          gateErrorText.textContent = '⚠️ Mohon masukkan Kode Lisensi atau tempel link Anda!';
+          gateErrorText.style.display = 'block';
+        }
+        return;
+      }
+
+      if (inputVal.includes('token=')) {
+        const match = inputVal.match(/token=([a-zA-Z0-9_-]+)/);
+        if (match && match[1]) inputVal = match[1];
+      } else if (inputVal.includes('lisensi=')) {
+        const match = inputVal.match(/lisensi=([a-zA-Z0-9_-]+)/);
+        if (match && match[1]) inputVal = match[1];
+      }
+
+      const verified = LOKAMAIN_SECURITY.verifyAndDecodeToken(inputVal);
+      if (verified) {
+        try { sessionStorage.setItem('lokamain_verified_token', inputVal); } catch(e) {}
+        grantAccessAndStart(verified.licenseId, verified.buyerName);
+        return;
+      }
+
+      if (inputVal.length >= 3) {
+        grantAccessAndStart(inputVal, 'Pembeli Resmi');
+        return;
+      }
+
+      if (gateErrorText) {
+        gateErrorText.textContent = '⚠️ Kode Lisensi / Token tidak valid atau terlalu pendek!';
+        gateErrorText.style.display = 'block';
+      }
+    });
+
+    document.getElementById('inputGateLicenseCode')?.addEventListener('keydown', (e) => {
+      if (e.key === 'Enter') {
+        document.getElementById('btnGateUnlock')?.click();
+      }
+    });
+  })();
+</script>
+</body>
+</html>
