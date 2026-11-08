@@ -1,399 +1,196 @@
 /**
- * LokaMain Digital - Engine Pengaman Lisensi & Anti-Pembajakan Otomatis
- * Pasang di game apa pun dengan menambahkan 1 baris sebelum </body>:
- * <script src="../lokamain-license.js"></script>
+ * LokaMain Digital - Gerbang Lisensi Game (versi 2, tanda tangan digital)
+ *
+ * Pasang di game apa pun dengan 1 baris sebelum </body>:
+ *   <script src="../lokamain-license.js"></script>
+ *
+ * Cara kerja:
+ *  - Admin membuat link pembeli berisi token yang DITANDATANGANI dengan kunci privat (hanya ada di laptop admin).
+ *  - Halaman ini hanya memegang kunci PUBLIK (games/lisensi-publik.json), jadi token tidak bisa dipalsukan.
+ *  - Kode lisensi polos (tanpa tanda tangan) tidak membuka game.
+ *  - Tidak ada layanan pihak ketiga dan tidak ada data pembeli yang dikirim ke luar.
+ *
+ * Batas yang jujur: situs ini statis, jadi gerbang ini tidak bisa mencegah orang teknis
+ * yang sengaja membongkar kode halaman. Fungsinya menghalangi akses tanpa link resmi,
+ * dan nama pembeli pada lencana membuat link yang disebar mudah dilacak.
  */
-(function initLokaMainLicenseEngine() {
+(function initLokaMainLicenseGate() {
   'use strict';
 
-  const SECRET = 'LOKAMAIN_SECURE_AUTH_KEY_2026_V1';
-  const WA_NUMBER = '6287881258019';
+  var SCRIPT_URL = (document.currentScript && document.currentScript.src) || location.href;
+  var DEFAULT_WA = '6287881258019';
+  var STORE_KEY = 'lokamain_token_v2';
+  var waNumber = DEFAULT_WA;
 
-  function detectDeviceType() {
-    const ua = navigator.userAgent.toLowerCase();
-    if (/smart-tv|smarttv|googletv|appletv|hbbtv|pov_tv|netcast|viera|webos|tizen|android tv/i.test(ua)) {
-      return 'Smart TV';
-    }
-    if (/mobile|android|iphone|ipod/i.test(ua)) return 'Smartphone';
-    if (/ipad|tablet/i.test(ua)) return 'Tablet';
-    return 'Komputer / Laptop';
+  function url(rel) { return new URL(rel, SCRIPT_URL).href; }
+
+  // ---------- util ----------
+  function b64urlToBytes(str) {
+    var s = String(str).replace(/-/g, '+').replace(/_/g, '/');
+    while (s.length % 4) s += '=';
+    var bin = atob(s);
+    var out = new Uint8Array(bin.length);
+    for (var i = 0; i < bin.length; i++) out[i] = bin.charCodeAt(i);
+    return out;
   }
 
-  const LOKAMAIN_SECURITY = {
-    fromBase64Url(b64) {
-      try {
-        let str = b64.replace(/-/g, '+').replace(/_/g, '/');
-        while (str.length % 4) str += '=';
-        return decodeURIComponent(Array.prototype.map.call(atob(str), c => '%' + ('00' + c.charCodeAt(0).toString(16)).slice(-2)).join(''));
-      } catch (e) {
-        let str = b64.replace(/-/g, '+').replace(/_/g, '/');
-        while (str.length % 4) str += '=';
-        return atob(str);
-      }
-    },
+  function esc(s) {
+    return String(s == null ? '' : s).replace(/[&<>"']/g, function (c) {
+      return { '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c];
+    });
+  }
 
-    xorCipher(text, key) {
-      let res = '';
-      for (let i = 0; i < text.length; i++) {
-        res += String.fromCharCode(text.charCodeAt(i) ^ key.charCodeAt(i % key.length));
-      }
-      return res;
-    },
-
-    computeHash(text) {
-      let h1 = 5381, h2 = 2166136261;
-      for (let i = 0; i < text.length; i++) {
-        const code = text.charCodeAt(i);
-        h1 = ((h1 << 5) + h1) ^ code;
-        h2 = (h2 ^ code) * 16777619;
-      }
-      return Math.abs(h1).toString(36) + Math.abs(h2).toString(36);
-    },
-
-    verifyAndDecodeToken(token) {
-      try {
-        if (!token || typeof token !== 'string') return null;
-        const decrypted = this.xorCipher(this.fromBase64Url(token.trim()), SECRET);
-        const parsed = JSON.parse(decrypted);
-        if (!parsed || !parsed.l || !parsed.s) return null;
-        const expectedSig = this.computeHash(`${parsed.l}|${parsed.n || ''}|${SECRET}`);
-        if (parsed.s !== expectedSig) return null;
-        return { licenseId: parsed.l, buyerName: parsed.n || 'Pembeli Resmi', timestamp: parsed.t };
-      } catch (e) {
-        return null;
-      }
+  var publicKeyPromise = null;
+  function getPublicKey() {
+    if (!publicKeyPromise) {
+      publicKeyPromise = fetch(url('lisensi-publik.json'), { cache: 'no-store' })
+        .then(function (r) { if (!r.ok) throw new Error('NO_KEY'); return r.json(); })
+        .then(function (jwk) {
+          return crypto.subtle.importKey('jwk', { kty: 'EC', crv: 'P-256', x: jwk.x, y: jwk.y, ext: true },
+            { name: 'ECDSA', namedCurve: 'P-256' }, false, ['verify']);
+        });
     }
-  };
+    return publicKeyPromise;
+  }
 
-  let licenseKey = '';
-  let buyerName = '';
-  let currentSessionId = 'SES_' + Math.random().toString(36).substring(2, 9) + '_' + Date.now();
-  let sessionStartTime = Date.now();
-  let isSessionKicked = false;
-  let sseConnection = null;
-  let pollingInterval = null;
+  // Mengembalikan {licenseId, buyerName} jika tanda tangan sah, selain itu melempar error.
+  async function verifyToken(token) {
+    if (!(window.crypto && crypto.subtle)) throw new Error('NO_CRYPTO');
+    var parts = String(token || '').trim().split('.');
+    if (parts.length !== 2 || !parts[0] || !parts[1]) throw new Error('BAD_TOKEN');
+    var key = await getPublicKey();
+    var ok = await crypto.subtle.verify({ name: 'ECDSA', hash: 'SHA-256' }, key,
+      b64urlToBytes(parts[1]), new TextEncoder().encode(parts[0]));
+    if (!ok) throw new Error('BAD_TOKEN');
+    var payload = JSON.parse(new TextDecoder().decode(b64urlToBytes(parts[0])));
+    if (!payload || !payload.l) throw new Error('BAD_TOKEN');
+    return { licenseId: String(payload.l), buyerName: String(payload.n || 'Pembeli Resmi') };
+  }
 
-  // Injeksi UI Gerbang Kunci & Badge Lisensi
-  function injectSecurityUI() {
+  function extractToken(text) {
+    var v = String(text || '').trim();
+    var m = v.match(/[?&](?:token|auth)=([A-Za-z0-9_.-]+)/);
+    return m ? m[1] : v;
+  }
+
+  // ---------- tampilan ----------
+  function injectUI() {
     if (document.getElementById('lokamain-gate-modal')) return;
-
-    const style = document.createElement('style');
-    style.id = 'lokamain-license-styles';
-    style.textContent = `
-      #lokamain-license-badge {
-        position: fixed;
-        top: 12px;
-        right: 12px;
-        z-index: 99980;
-        background: #e0e7ff;
-        border: 1.5px solid #4338ca;
-        color: #3730a3;
-        font-family: system-ui, -apple-system, sans-serif;
-        font-size: 11px;
-        font-weight: 700;
-        padding: 5px 10px;
-        border-radius: 99px;
-        box-shadow: 0 2px 6px rgba(0,0,0,0.12);
-        display: flex;
-        align-items: center;
-        gap: 6px;
-        pointer-events: auto;
-      }
-      #lokamain-license-badge.is-verified {
-        background: #dcfce7;
-        border-color: #15803d;
-        color: #166534;
-      }
-      #lokamain-gate-modal, #lokamain-kicked-modal {
-        position: fixed;
-        inset: 0;
-        z-index: 99999;
-        background: rgba(15, 23, 42, 0.94);
-        backdrop-filter: blur(8px);
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        padding: 14px;
-        font-family: system-ui, -apple-system, sans-serif;
-        box-sizing: border-box;
-      }
-      .lokamain-card {
-        background: #ffffff;
-        color: #0f172a;
-        max-width: 440px;
-        width: 100%;
-        border-radius: 18px;
-        padding: 24px;
-        text-align: center;
-        box-shadow: 0 10px 25px rgba(0,0,0,0.3);
-        box-sizing: border-box;
-      }
-      .lokamain-btn {
-        display: inline-flex;
-        align-items: center;
-        justify-content: center;
-        padding: 10px 16px;
-        border-radius: 10px;
-        font-size: 13px;
-        font-weight: 700;
-        cursor: pointer;
-        border: none;
-        text-decoration: none;
-        transition: transform 0.1s, background-color 0.15s;
-        box-sizing: border-box;
-      }
-      .lokamain-btn:active { transform: scale(0.98); }
-      .lokamain-btn-green { background: #16a34a; color: #ffffff; }
-      .lokamain-btn-green:hover { background: #15803d; }
-      .lokamain-btn-wa { background: #0b535c; color: #ffffff; width: 100%; padding: 12px; font-size: 14px; }
-      .lokamain-btn-wa:hover { background: #083e45; }
-    `;
+    var style = document.createElement('style');
+    style.textContent =
+      '#lokamain-license-badge{position:fixed;top:12px;right:12px;z-index:99980;background:#e0e7ff;border:1.5px solid #4338ca;color:#3730a3;font:700 11px system-ui,-apple-system,sans-serif;padding:5px 10px;border-radius:99px;box-shadow:0 2px 6px rgba(0,0,0,.12);display:none;align-items:center;gap:6px;max-width:60vw;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}' +
+      '#lokamain-license-badge.is-verified{display:flex;background:#dcfce7;border-color:#15803d;color:#166534}' +
+      '#lokamain-gate-modal{position:fixed;inset:0;z-index:99999;background:rgba(15,23,42,.96);display:flex;align-items:center;justify-content:center;padding:14px;font-family:system-ui,-apple-system,sans-serif;box-sizing:border-box}' +
+      '.lokamain-card{background:#fff;color:#0f172a;max-width:440px;width:100%;border-radius:18px;padding:24px;text-align:center;box-shadow:0 10px 25px rgba(0,0,0,.3);box-sizing:border-box}' +
+      '.lokamain-btn{display:inline-flex;align-items:center;justify-content:center;min-height:44px;padding:10px 16px;border-radius:10px;font:700 13px system-ui,sans-serif;cursor:pointer;border:none;text-decoration:none;box-sizing:border-box}' +
+      '.lokamain-btn:focus-visible,#lokamain-gate-input:focus-visible{outline:3px solid #f59e0b;outline-offset:2px}' +
+      '.lokamain-btn-green{background:#15803d;color:#fff}.lokamain-btn-green:hover{background:#166534}' +
+      '.lokamain-btn-wa{background:#0b535c;color:#fff;width:100%;font-size:14px}.lokamain-btn-wa:hover{background:#083e45}';
     document.head.appendChild(style);
 
-    const badge = document.createElement('div');
+    var badge = document.createElement('div');
     badge.id = 'lokamain-license-badge';
-    badge.innerHTML = '<span style="width:7px;height:7px;border-radius:50%;background:currentColor;"></span><span id="lokamain-badge-text">Lisensi: Memverifikasi…</span>';
+    badge.innerHTML = '<span style="width:7px;height:7px;border-radius:50%;background:currentColor;flex:none"></span><span id="lokamain-badge-text"></span>';
     document.body.appendChild(badge);
 
-    const gate = document.createElement('div');
+    var gate = document.createElement('div');
     gate.id = 'lokamain-gate-modal';
-    gate.innerHTML = `
-      <div class="lokamain-card">
-        <div style="font-size: 44px; margin-bottom: 6px;">🔒</div>
-        <h2 style="margin: 0 0 4px; font-size: 21px; font-weight: 800;">Akses Game Terkunci</h2>
-        <p style="font-size: 13px; color: #64748b; margin: 0 0 16px;">Game Edukasi Berlisensi Resmi LokaMain Digital</p>
-        <div style="background: #f8fafc; border: 1.5px solid #cbd5e1; border-radius: 12px; padding: 12px; text-align: left; margin-bottom: 16px; font-size: 12px; line-height: 1.5; color: #334155;">
-          <p style="margin: 0 0 4px; font-weight: 800; color: #0f172a;">🛡️ Lisensi Pembeli Resmi</p>
-          <p style="margin: 0;">Game ini hanya dapat dimainkan melalui <strong>Link Khusus Pembeli</strong> yang dikirimkan Admin ke nomor WhatsApp Anda.</p>
-        </div>
-        <div style="text-align: left; margin-bottom: 16px;">
-          <label style="display: block; font-size: 11.5px; font-weight: 800; color: #0f172a; margin-bottom: 6px;">Punya Token atau Kode Lisensi?</label>
-          <div style="display: flex; gap: 8px;">
-            <input id="lokamain-gate-input" type="text" placeholder="Tempel token atau kode lisensi..." style="flex: 1; padding: 8px 10px; border: 2px solid #cbd5e1; border-radius: 8px; font-size: 12.5px; font-family: monospace;">
-            <button id="lokamain-gate-btn" type="button" class="lokamain-btn lokamain-btn-green">🔓 Buka</button>
-          </div>
-          <div id="lokamain-gate-err" style="display: none; color: #dc2626; font-size: 12px; font-weight: 700; margin-top: 6px;">
-            ⚠️ Kode Lisensi / Token tidak valid atau salah!
-          </div>
-        </div>
-        <div style="border-top: 1px dashed #cbd5e1; padding-top: 14px;">
-          <a href="https://wa.me/${WA_NUMBER}?text=Halo%20Admin%20LokaMain,%20saya%20ingin%20memesan%20lisensi%20resmi%20game%20ini" target="_blank" class="lokamain-btn lokamain-btn-wa">
-            💬 Pesan Lisensi Resmi via WhatsApp
-          </a>
-        </div>
-        <p style="font-size: 11px; color: #94a3b8; margin: 12px 0 0;">LokaMain Digital © 2026 • Hak Cipta Dilindungi</p>
-      </div>
-    `;
+    gate.setAttribute('role', 'dialog');
+    gate.setAttribute('aria-modal', 'true');
+    gate.setAttribute('aria-labelledby', 'lokamain-gate-title');
+    gate.innerHTML =
+      '<div class="lokamain-card">' +
+      '<h2 id="lokamain-gate-title" style="margin:0 0 4px;font-size:21px;font-weight:800">Game ini berlisensi</h2>' +
+      '<p style="font-size:13px;color:#475569;margin:0 0 16px">Game Edukasi LokaMain Digital</p>' +
+      '<div style="background:#f8fafc;border:1.5px solid #cbd5e1;border-radius:12px;padding:12px;text-align:left;margin-bottom:16px;font-size:12.5px;line-height:1.5;color:#334155">' +
+      'Game ini hanya bisa dibuka lewat <strong>link khusus pembeli</strong> yang dikirim admin ke WhatsApp Anda. Buka link itu langsung, atau tempel di bawah.</div>' +
+      '<div style="text-align:left;margin-bottom:16px"><label for="lokamain-gate-input" style="display:block;font-size:12px;font-weight:800;margin-bottom:6px">Tempel link atau token dari admin</label>' +
+      '<div style="display:flex;gap:8px"><input id="lokamain-gate-input" type="text" autocomplete="off" placeholder="https://… atau token" style="flex:1;min-width:0;padding:8px 10px;border:2px solid #94a3b8;border-radius:8px;font:12.5px monospace">' +
+      '<button id="lokamain-gate-btn" type="button" class="lokamain-btn lokamain-btn-green">Buka</button></div>' +
+      '<div id="lokamain-gate-err" role="alert" style="display:none;color:#b91c1c;font-size:12.5px;font-weight:700;margin-top:6px"></div></div>' +
+      '<div style="border-top:1px dashed #cbd5e1;padding-top:14px"><a id="lokamain-wa-link" href="#" target="_blank" rel="noopener" class="lokamain-btn lokamain-btn-wa">Pesan lisensi via WhatsApp</a></div>' +
+      '<p style="font-size:11px;color:#64748b;margin:12px 0 0">LokaMain Digital © 2026</p></div>';
     document.body.appendChild(gate);
-
-    const kicked = document.createElement('div');
-    kicked.id = 'lokamain-kicked-modal';
-    kicked.style.display = 'none';
-    kicked.innerHTML = `
-      <div class="lokamain-card">
-        <div style="font-size: 44px; margin-bottom: 6px;">⚠️</div>
-        <h2 style="margin: 0 0 4px; font-size: 20px; font-weight: 800;">Akses Dialihkan ke Layar Lain</h2>
-        <p style="font-size: 13px; color: #64748b; margin: 0 0 14px;">Game dengan lisensi Anda baru saja dibuka di <strong id="lokamain-kicked-device" style="color: #ea580c;">perangkat lain</strong>.</p>
-        <div style="background: #fef2f2; border: 1.5px solid #f87171; border-radius: 10px; padding: 10px; text-align: left; font-size: 12px; margin-bottom: 14px; color: #991b1b;">
-          Demi keamanan lisensi resmi Anda, game tidak dapat dimainkan secara bersamaan di 2 layar sekaligus.
-        </div>
-        <button id="lokamain-reclaim-btn" type="button" class="lokamain-btn lokamain-btn-wa">🔄 Gunakan Kembali di Layar Ini</button>
-      </div>
-    `;
-    document.body.appendChild(kicked);
+    setWaLink();
   }
 
-  function updateBadge(name, key) {
-    const badge = document.getElementById('lokamain-license-badge');
-    const txt = document.getElementById('lokamain-badge-text');
-    if (!badge || !txt) return;
-    const display = name || key || 'Resmi';
-    txt.textContent = `Lisensi: ${display}`;
-    badge.classList.add('is-verified');
-    badge.title = `Lisensi Resmi Terverifikasi\nPembeli: ${name || '-'}\nID: ${key || '-'}\nStatus: Sesi Aktif`;
+  function setWaLink() {
+    var a = document.getElementById('lokamain-wa-link');
+    if (a) a.href = 'https://wa.me/' + waNumber + '?text=' + encodeURIComponent('Halo Admin LokaMain, saya ingin memesan lisensi resmi game ini');
   }
 
-  function claimActiveSession() {
-    if (!licenseKey) return;
-    const cleanTopic = 'lokamain_' + LOKAMAIN_SECURITY.computeHash(licenseKey.toUpperCase().trim());
-    const payload = JSON.stringify({
-      session: currentSessionId,
-      device: detectDeviceType(),
-      buyer: buyerName || 'Pembeli Resmi',
-      time: Date.now()
-    });
-
-    try {
-      sessionStorage.setItem('lokamain_active_key', licenseKey);
-      sessionStorage.setItem('lokamain_active_buyer', buyerName);
-    } catch (_) {}
-
-    fetch(`https://ntfy.sh/${cleanTopic}`, {
-      method: 'POST',
-      body: payload,
-      headers: { 'Title': 'ActiveClaim' }
-    }).catch(() => {});
+  function showError(msg) {
+    var err = document.getElementById('lokamain-gate-err');
+    if (err) { err.textContent = msg; err.style.display = 'block'; }
   }
 
-  function handleIncomingClaim(dataStr) {
-    try {
-      if (!dataStr) return;
-      const data = JSON.parse(dataStr);
-      let msg = null;
-      if (data.message) {
-        try {
-          msg = typeof data.message === 'string' ? JSON.parse(data.message) : data.message;
-        } catch (_) {
-          msg = { session: data.message };
-        }
-      }
-      if (!msg || !msg.session) return;
-      if (msg.session === currentSessionId) return;
-      if (msg.time && msg.time < sessionStartTime - 3000) return;
-
-      onKicked(msg.device || 'Perangkat Lain');
-    } catch (_) {}
+  function explain(e) {
+    var m = e && e.message;
+    if (m === 'NO_CRYPTO') return 'Browser ini belum mengizinkan verifikasi. Buka lewat alamat https:// (bukan http://) atau perbarui browser.';
+    if (m === 'NO_KEY') return 'Kunci verifikasi belum tersedia di web. Hubungi admin.';
+    return 'Link atau token tidak valid. Pastikan Anda menempel link lengkap dari admin.';
   }
 
-  function listenRemoteSessions() {
-    if (!licenseKey) return;
-    const cleanTopic = 'lokamain_' + LOKAMAIN_SECURITY.computeHash(licenseKey.toUpperCase().trim());
-    if (sseConnection) {
-      try { sseConnection.close(); } catch (_) {}
+  function grant(info, token) {
+    try { localStorage.setItem(STORE_KEY, token); } catch (_) {}
+    var gate = document.getElementById('lokamain-gate-modal');
+    if (gate) gate.remove();
+    var badge = document.getElementById('lokamain-license-badge');
+    var txt = document.getElementById('lokamain-badge-text');
+    if (txt) txt.textContent = 'Lisensi: ' + info.buyerName;
+    if (badge) {
+      badge.classList.add('is-verified');
+      badge.title = 'Lisensi resmi\nPembeli: ' + info.buyerName + '\nID: ' + info.licenseId;
     }
+  }
+
+  async function tryToken(raw, quiet) {
     try {
-      sseConnection = new EventSource(`https://ntfy.sh/${cleanTopic}/sse`);
-      sseConnection.onmessage = (event) => handleIncomingClaim(event.data);
-      sseConnection.addEventListener('message', (event) => handleIncomingClaim(event.data));
-    } catch (_) {}
-
-    if (pollingInterval) clearInterval(pollingInterval);
-    pollingInterval = setInterval(() => {
-      if (isSessionKicked || !licenseKey) return;
-      fetch(`https://ntfy.sh/${cleanTopic}/json?poll=1`)
-        .then(res => res.text())
-        .then(text => {
-          if (!text) return;
-          const lines = text.trim().split('\n');
-          for (const line of lines) {
-            if (line.trim()) handleIncomingClaim(line);
-          }
-        })
-        .catch(() => {});
-    }, 3000);
-  }
-
-  function onKicked(device) {
-    isSessionKicked = true;
-    const devEl = document.getElementById('lokamain-kicked-device');
-    const kickModal = document.getElementById('lokamain-kicked-modal');
-    if (devEl) devEl.textContent = device;
-    if (kickModal) kickModal.style.display = 'flex';
-  }
-
-  function resumeSession() {
-    isSessionKicked = false;
-    currentSessionId = 'SES_' + Math.random().toString(36).substring(2, 9) + '_' + Date.now();
-    sessionStartTime = Date.now();
-    const kickModal = document.getElementById('lokamain-kicked-modal');
-    if (kickModal) kickModal.style.display = 'none';
-    claimActiveSession();
-  }
-
-  function grantAccess(key, name) {
-    licenseKey = (key || '').toUpperCase().trim();
-    buyerName = name || 'Pembeli Resmi';
-
-    const gate = document.getElementById('lokamain-gate-modal');
-    if (gate) gate.style.display = 'none';
-
-    updateBadge(buyerName, licenseKey);
-    claimActiveSession();
-    listenRemoteSessions();
-  }
-
-  function startEvaluation() {
-    injectSecurityUI();
-
-    document.getElementById('lokamain-reclaim-btn')?.addEventListener('click', resumeSession);
-
-    const params = new URLSearchParams(window.location.search);
-    const rawToken = params.get('token') || params.get('auth');
-    const directLic = (params.get('lisensi') || params.get('license') || params.get('pin') || '').trim();
-
-    if (rawToken) {
-      const verified = LOKAMAIN_SECURITY.verifyAndDecodeToken(rawToken);
-      if (verified) {
-        try {
-          sessionStorage.setItem('lokamain_verified_token', rawToken);
-          window.history.replaceState({}, document.title, window.location.pathname);
-        } catch (_) {}
-        grantAccess(verified.licenseId, verified.buyerName);
-        return;
-      }
-    } else if (directLic) {
-      const dName = (params.get('nama') || 'Pembeli Resmi').trim();
-      try {
-        window.history.replaceState({}, document.title, window.location.pathname);
-      } catch (_) {}
-      grantAccess(directLic, dName);
-      return;
-    } else {
-      const cachedToken = sessionStorage.getItem('lokamain_verified_token');
-      if (cachedToken) {
-        const verified = LOKAMAIN_SECURITY.verifyAndDecodeToken(cachedToken);
-        if (verified) {
-          grantAccess(verified.licenseId, verified.buyerName);
-          return;
-        }
-      }
-      const cachedKey = sessionStorage.getItem('lokamain_active_key');
-      const cachedBuyer = sessionStorage.getItem('lokamain_active_buyer');
-      if (cachedKey) {
-        grantAccess(cachedKey, cachedBuyer);
-        return;
-      }
+      var token = extractToken(raw);
+      var info = await verifyToken(token);
+      grant(info, token);
+      return true;
+    } catch (e) {
+      if (!quiet) showError(explain(e));
+      return false;
     }
+  }
 
-    // Gerbang kunci tetap aktif
-    const input = document.getElementById('lokamain-gate-input');
-    const btn = document.getElementById('lokamain-gate-btn');
-    const err = document.getElementById('lokamain-gate-err');
+  async function start() {
+    injectUI();
+    fetch(url('../data/games.json'), { cache: 'no-store' })
+      .then(function (r) { return r.ok ? r.json() : null; })
+      .then(function (d) {
+        var n = d && d.settings && String(d.settings.whatsappNumber || '').replace(/\D/g, '');
+        if (n) { waNumber = n.replace(/^0/, '62'); setWaLink(); }
+      }).catch(function () {});
 
-    const tryUnlock = () => {
-      let val = (input?.value || '').trim();
-      if (!val) {
-        if (err) { err.textContent = '⚠️ Masukkan kode lisensi atau tempel link Anda!'; err.style.display = 'block'; }
-        return;
-      }
-      if (val.includes('token=')) {
-        const m = val.match(/token=([a-zA-Z0-9_-]+)/);
-        if (m && m[1]) val = m[1];
-      }
-      const verified = LOKAMAIN_SECURITY.verifyAndDecodeToken(val);
-      if (verified) {
-        try { sessionStorage.setItem('lokamain_verified_token', val); } catch (_) {}
-        grantAccess(verified.licenseId, verified.buyerName);
-        return;
-      }
-      if (val.length >= 3) {
-        grantAccess(val, 'Pembeli Resmi');
-        return;
-      }
-      if (err) {
-        err.textContent = '⚠️ Kode lisensi / token tidak valid!';
-        err.style.display = 'block';
-      }
+    var input = document.getElementById('lokamain-gate-input');
+    var btn = document.getElementById('lokamain-gate-btn');
+    var submit = function () {
+      var v = (input.value || '').trim();
+      if (!v) { showError('Tempel link atau token dari admin dulu.'); return; }
+      tryToken(v, false);
     };
+    btn.addEventListener('click', submit);
+    input.addEventListener('keydown', function (e) { if (e.key === 'Enter') submit(); });
 
-    btn?.addEventListener('click', tryUnlock);
-    input?.addEventListener('keydown', (e) => { if (e.key === 'Enter') tryUnlock(); });
+    // 1) token di link  2) token tersimpan dari kunjungan sebelumnya
+    var params = new URLSearchParams(location.search);
+    var fromUrl = params.get('token') || params.get('auth');
+    if (fromUrl) {
+      var ok = await tryToken(fromUrl, false);
+      if (ok) { try { history.replaceState({}, document.title, location.pathname); } catch (_) {} }
+      return;
+    }
+    var saved = null;
+    try { saved = localStorage.getItem(STORE_KEY); } catch (_) {}
+    if (saved) {
+      var good = await tryToken(saved, true);
+      if (!good) { try { localStorage.removeItem(STORE_KEY); } catch (_) {} }
+    }
   }
 
-  if (document.readyState === 'loading') {
-    document.addEventListener('DOMContentLoaded', startEvaluation);
-  } else {
-    startEvaluation();
-  }
+  if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', start);
+  else start();
 })();
-
