@@ -1,0 +1,220 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Pulau Harta Karun — Kuis Rebutan 1–4 Pemain</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Pirata+One&family=Plus+Jakarta+Sans:wght@500;600;700;800&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="quiz-core.css">
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+  <!-- Definisi grafis bersama (koin, peti, beo, peta, bom, kraken, kapal, palem) -->
+  <svg width="0" height="0" style="position:absolute" aria-hidden="true">
+    <defs>
+      <radialGradient id="gGold" cx=".35" cy=".3" r=".8">
+        <stop offset="0" stop-color="#fff7c2"/><stop offset=".45" stop-color="#fbbf24"/><stop offset="1" stop-color="#b45309"/>
+      </radialGradient>
+      <linearGradient id="gWood" x1="0" y1="0" x2="0" y2="1">
+        <stop offset="0" stop-color="#b8743a"/><stop offset="1" stop-color="#6b3a16"/>
+      </linearGradient>
+      <linearGradient id="gWood2" x1="0" y1="0" x2="0" y2="1">
+        <stop offset="0" stop-color="#d08a4a"/><stop offset="1" stop-color="#8a4d1f"/>
+      </linearGradient>
+      <radialGradient id="gSack" cx=".4" cy=".35" r=".8">
+        <stop offset="0" stop-color="#e8c58f"/><stop offset=".7" stop-color="#b98444"/><stop offset="1" stop-color="#7a4f1f"/>
+      </radialGradient>
+      <radialGradient id="gBomb" cx=".35" cy=".3" r=".8">
+        <stop offset="0" stop-color="#64748b"/><stop offset=".55" stop-color="#1e293b"/><stop offset="1" stop-color="#020617"/>
+      </radialGradient>
+      <radialGradient id="gKraken" cx=".4" cy=".3" r=".9">
+        <stop offset="0" stop-color="#c4b5fd"/><stop offset=".5" stop-color="#7c3aed"/><stop offset="1" stop-color="#3b0764"/>
+      </radialGradient>
+      <radialGradient id="gSea" cx=".5" cy=".45" r=".75">
+        <stop offset="0" stop-color="#38b6d8"/><stop offset=".55" stop-color="#1679a8"/><stop offset="1" stop-color="#0b456e"/>
+      </radialGradient>
+      <linearGradient id="gSand" x1="0" y1="0" x2="0" y2="1">
+        <stop offset="0" stop-color="#f3dda2"/><stop offset="1" stop-color="#ddbb72"/>
+      </linearGradient>
+
+      <symbol id="i-coin" viewBox="0 0 32 32">
+        <circle cx="16" cy="17" r="14.5" fill="#92400e"/>
+        <circle cx="16" cy="15.5" r="14" fill="url(#gGold)" stroke="#b45309" stroke-width="1"/>
+        <circle cx="16" cy="15.5" r="9.6" fill="none" stroke="#b45309" stroke-width="1.6" opacity=".7"/>
+        <path d="M16 9l1.9 4.1 4.4.4-3.3 3 1 4.4L16 18.6l-3.9 2.3 1-4.4-3.3-3 4.4-.4z" fill="#b45309" opacity=".8"/>
+        <path d="M7.5 11a9.5 9.5 0 0 1 6-5" stroke="#fff" stroke-width="1.8" fill="none" stroke-linecap="round" opacity=".75"/>
+      </symbol>
+      <symbol id="i-bag" viewBox="0 0 48 48">
+        <path d="M17 8 Q24 3 31 8 L28 15 H20 Z" fill="#a16207" stroke="#422006" stroke-width="1.5" stroke-linejoin="round"/>
+        <path d="M20 15 H28 Q43 22 41 35 Q39 45 24 45 Q9 45 7 35 Q5 22 20 15Z" fill="url(#gSack)" stroke="#422006" stroke-width="1.6"/>
+        <path d="M18.5 15 Q24 18.5 29.5 15" stroke="#422006" stroke-width="2.6" fill="none" stroke-linecap="round"/>
+        <circle cx="24" cy="31" r="7.5" fill="url(#gGold)" stroke="#92400e" stroke-width="1.3"/>
+        <path d="M24 26.5l1.3 2.8 3 .3-2.3 2 .7 3L24 33l-2.7 1.6.7-3-2.3-2 3-.3z" fill="#92400e" opacity=".8"/>
+        <circle cx="34" cy="12" r="4" fill="url(#gGold)" stroke="#92400e" stroke-width="1"/>
+        <circle cx="13" cy="11" r="3" fill="url(#gGold)" stroke="#92400e" stroke-width="1"/>
+      </symbol>
+      <symbol id="i-chest" viewBox="0 0 64 52">
+        <path d="M6 22 H58 V46 Q58 49 55 49 H9 Q6 49 6 46Z" fill="url(#gWood)" stroke="#3b1d0a" stroke-width="2"/>
+        <path d="M6 22 Q6 5 32 5 Q58 5 58 22Z" fill="url(#gWood2)" stroke="#3b1d0a" stroke-width="2"/>
+        <path d="M6 34 H58 M10 13 H54" stroke="#3b1d0a" stroke-width="1" opacity=".35"/>
+        <path d="M15 7.5 V49 M49 7.5 V49" stroke="#f59e0b" stroke-width="4.5"/>
+        <path d="M15 7.5 V49 M49 7.5 V49" stroke="#78350f" stroke-width="4.5" stroke-dasharray="1 7" opacity=".6"/>
+        <rect x="4" y="19" width="56" height="6" rx="2" fill="url(#gGold)" stroke="#78350f" stroke-width="1.2"/>
+        <rect x="26.5" y="21" width="11" height="13" rx="2.5" fill="url(#gGold)" stroke="#78350f" stroke-width="1.3"/>
+        <circle cx="32" cy="26.5" r="2" fill="#3b1d0a"/><path d="M32 27.5v3.5" stroke="#3b1d0a" stroke-width="1.8" stroke-linecap="round"/>
+      </symbol>
+      <symbol id="i-parrot" viewBox="0 0 48 48">
+        <path d="M20 37 L13 47 L18 47 L24 39Z" fill="#2563eb" stroke="#1e3a8a" stroke-width="1"/>
+        <ellipse cx="24" cy="27" rx="10.5" ry="13.5" fill="#ef4444" stroke="#7f1d1d" stroke-width="1.5"/>
+        <path d="M15.5 23 Q11 35 21 40 Q19.5 31 24 25Z" fill="#facc15" stroke="#854d0e" stroke-width="1.2"/>
+        <path d="M16 31 Q14.5 37 21 40" fill="none" stroke="#2563eb" stroke-width="3.2" stroke-linecap="round"/>
+        <circle cx="27" cy="13" r="8.2" fill="#ef4444" stroke="#7f1d1d" stroke-width="1.5"/>
+        <circle cx="29" cy="11.5" r="3.4" fill="#fff"/><circle cx="29.7" cy="11.6" r="1.7" fill="#111827"/>
+        <path d="M33 12.5 Q42 12 38.5 23 Q36.5 17.5 32.5 17.5Z" fill="#fcd34d" stroke="#78350f" stroke-width="1.2"/>
+        <path d="M10 44 H38" stroke="#78350f" stroke-width="3.2" stroke-linecap="round"/>
+      </symbol>
+      <symbol id="i-scroll" viewBox="0 0 56 48">
+        <path d="M10 8 H46 V40 H10Z" fill="#f5e6c4" stroke="#7c4a1e" stroke-width="2"/>
+        <path d="M14 14 Q20 11 23 17 Q19 22 14 20Z" fill="#84cc16" opacity=".75"/>
+        <path d="M15 33 Q21 19 29 27 T40 17" fill="none" stroke="#b91c1c" stroke-width="2" stroke-dasharray="3 3"/>
+        <path d="M36.5 12.5 l6 6 M42.5 12.5 l-6 6" stroke="#b91c1c" stroke-width="2.8" stroke-linecap="round"/>
+        <rect x="4" y="5" width="8" height="38" rx="4" fill="#c08a4a" stroke="#7c4a1e" stroke-width="2"/>
+        <rect x="44" y="5" width="8" height="38" rx="4" fill="#c08a4a" stroke="#7c4a1e" stroke-width="2"/>
+      </symbol>
+      <symbol id="i-bomb" viewBox="0 0 48 48">
+        <circle cx="22" cy="29" r="15" fill="url(#gBomb)" stroke="#020617" stroke-width="1.5"/>
+        <rect x="25" y="11" width="10" height="7" rx="1.5" transform="rotate(38 30 14.5)" fill="#475569" stroke="#020617" stroke-width="1.4"/>
+        <path d="M34 11 Q37 4 43 6" stroke="#a16207" stroke-width="2.2" fill="none" stroke-linecap="round"/>
+        <g class="spark"><path d="M43 6 l3.5-3 M43 6 l4.5 1 M43 6 l.5-4.5 M43 6 l-3-3" stroke="#facc15" stroke-width="2" stroke-linecap="round"/><circle cx="43" cy="6" r="2.4" fill="#fb923c"/></g>
+        <path d="M12.5 24 Q15 18.5 21 17" stroke="#fff" stroke-width="2.6" fill="none" stroke-linecap="round" opacity=".5"/>
+      </symbol>
+      <symbol id="i-kraken" viewBox="0 0 56 52">
+        <path d="M14 29 Q3 34 6 46 Q10 39 18 37Z" fill="#6d28d9" stroke="#3b0764" stroke-width="1.4"/>
+        <path d="M42 29 Q53 34 50 46 Q46 39 38 37Z" fill="#6d28d9" stroke="#3b0764" stroke-width="1.4"/>
+        <path d="M20 35 Q15 46 22 51 Q22 44 26 39Z" fill="#7c3aed" stroke="#3b0764" stroke-width="1.4"/>
+        <path d="M36 35 Q41 46 34 51 Q34 44 30 39Z" fill="#7c3aed" stroke="#3b0764" stroke-width="1.4"/>
+        <path d="M12 29 Q9 5 28 3 Q47 5 44 29 Q40 39 28 39 Q16 39 12 29Z" fill="url(#gKraken)" stroke="#3b0764" stroke-width="1.6"/>
+        <circle cx="21" cy="24" r="5.2" fill="#fef08a" stroke="#3b0764" stroke-width="1.2"/><ellipse cx="21" cy="24" rx="1.6" ry="3.7" fill="#111827"/>
+        <circle cx="35" cy="24" r="5.2" fill="#fef08a" stroke="#3b0764" stroke-width="1.2"/><ellipse cx="35" cy="24" rx="1.6" ry="3.7" fill="#111827"/>
+        <circle cx="23" cy="11" r="2" fill="#c4b5fd" opacity=".8"/><circle cx="32" cy="9" r="1.5" fill="#c4b5fd" opacity=".8"/><circle cx="37" cy="14" r="1.8" fill="#c4b5fd" opacity=".7"/>
+        <path d="M22 33 Q28 36 34 33" stroke="#3b0764" stroke-width="1.6" fill="none" stroke-linecap="round"/>
+      </symbol>
+      <symbol id="i-ship" viewBox="0 0 64 56">
+        <path d="M31 3 V41" stroke="#3b1d0a" stroke-width="2.4"/>
+        <path d="M33 7 Q51 14 50 27 Q42 25 33 27Z" fill="#f8f1e0" stroke="#3b1d0a" stroke-width="1.4"/>
+        <path d="M29 10 Q15 19 16 31 Q22 29 29 31Z" fill="#efe3c6" stroke="#3b1d0a" stroke-width="1.4"/>
+        <path d="M31 3 L41 5.5 L31 8Z" fill="#dc2626"/>
+        <path d="M5 38 H59 L51 50 Q32 54 13 50Z" fill="url(#gWood)" stroke="#3b1d0a" stroke-width="2" stroke-linejoin="round"/>
+        <path d="M9 43 H55" stroke="#f59e0b" stroke-width="1.6" opacity=".75"/>
+        <circle cx="22" cy="46.5" r="1.7" fill="#1c1917"/><circle cx="32" cy="47" r="1.7" fill="#1c1917"/><circle cx="42" cy="46.5" r="1.7" fill="#1c1917"/>
+      </symbol>
+      <symbol id="i-palm" viewBox="0 0 40 48">
+        <ellipse cx="20" cy="46" rx="9" ry="2" fill="#000" opacity=".15"/>
+        <path d="M21 46 Q23 30 19 16" stroke="#7c4a1e" stroke-width="3.4" fill="none" stroke-linecap="round"/>
+        <path d="M19 16 Q8 8 1 14 Q10 12 19 16Z" fill="#16a34a"/>
+        <path d="M19 16 Q30 6 39 13 Q28 11 19 16Z" fill="#15803d"/>
+        <path d="M19 16 Q14 4 21 0 Q20 8 19 16Z" fill="#22c55e"/>
+        <path d="M19 16 Q8 18 5 28 Q12 20 19 16Z" fill="#15803d"/>
+        <path d="M19 16 Q32 18 35 27 Q27 20 19 16Z" fill="#16a34a"/>
+        <circle cx="17.5" cy="18" r="2" fill="#78350f"/><circle cx="21" cy="18.5" r="2" fill="#78350f"/>
+      </symbol>
+      <symbol id="i-skull" viewBox="0 0 48 48">
+        <path d="M7 40 L41 9 M7 9 L41 40" stroke="#e7e5e4" stroke-width="5" stroke-linecap="round"/>
+        <path d="M7 40 L41 9 M7 9 L41 40" stroke="#1c1917" stroke-width="5" stroke-linecap="round" stroke-dasharray="0 34 1 99" opacity=".2"/>
+        <path d="M24 5 C13 5 9 13 10 20.5 C10.5 25.5 13 27.5 15 28.5 V33.5 Q15 35.5 17 35.5 H31 Q33 35.5 33 33.5 V28.5 C35 27.5 37.5 25.5 38 20.5 C39 13 35 5 24 5Z" fill="#f5f5f4" stroke="#1c1917" stroke-width="1.6"/>
+        <circle cx="18.5" cy="19.5" r="4.2" fill="#1c1917"/><circle cx="29.5" cy="19.5" r="4.2" fill="#1c1917"/>
+        <path d="M24 23.5 l-2.3 4.2 h4.6z" fill="#1c1917"/>
+        <path d="M20 30.5 v5 M24 30.5 v5 M28 30.5 v5" stroke="#1c1917" stroke-width="1.4"/>
+      </symbol>
+      <symbol id="i-compass" viewBox="0 0 60 60">
+        <circle cx="30" cy="30" r="27" fill="#f5e6c4" stroke="#7c4a1e" stroke-width="2"/>
+        <circle cx="30" cy="30" r="21" fill="none" stroke="#7c4a1e" stroke-width="1" stroke-dasharray="2 3"/>
+        <path d="M30 5 L35 30 L30 55 L25 30Z" fill="#7c4a1e"/>
+        <path d="M30 5 L35 30 L25 30Z" fill="#b91c1c"/>
+        <path d="M5 30 L30 25 L55 30 L30 35Z" fill="#a0703f"/>
+        <circle cx="30" cy="30" r="3" fill="#f5e6c4" stroke="#7c4a1e" stroke-width="1.5"/>
+      </symbol>
+      <symbol id="i-crown" viewBox="0 0 32 24">
+        <path d="M3 20 L1 6 L9 12 L16 2 L23 12 L31 6 L29 20Z" fill="url(#gGold)" stroke="#92400e" stroke-width="1.4" stroke-linejoin="round"/>
+        <rect x="3" y="19" width="26" height="4" rx="1.5" fill="#f59e0b" stroke="#92400e" stroke-width="1.2"/>
+      </symbol>
+    </defs>
+  </svg>
+
+  <div class="ocean" aria-hidden="true"></div>
+
+  <header class="topbar">
+    <div class="brand">
+      <svg class="brand-mark"><use href="#i-ship" width="100%" height="100%"/></svg>
+      <div>
+        <h1>Pulau Harta Karun</h1>
+        <p>Kuis rebutan bajak laut</p>
+      </div>
+    </div>
+    <div class="round-info">
+      <div><small>RONDE</small><b><span id="roundNo">0</span><em id="roundMax"></em></b></div>
+      <div class="sep"></div>
+      <div><small>PETAK TERSISA</small><b id="tilesLeft">0</b></div>
+    </div>
+    <nav class="tools">
+      <button class="icon-btn" id="btnSound" title="Suara"></button>
+      <button class="icon-btn" data-qc="fullscreen" title="Layar penuh"><svg viewBox="0 0 24 24"><path d="M4 9V4h5M15 4h5v5M20 15v5h-5M9 20H4v-5"/></svg></button>
+      <button class="icon-btn" id="btnRestart" title="Ulang / ubah pemain"><svg viewBox="0 0 24 24"><path d="M4 12a8 8 0 1 0 2.4-5.7M4 4v5h5"/></svg></button>
+      <button class="icon-btn wide" data-qc="teacher" title="Mode Guru"><svg viewBox="0 0 24 24"><path d="M12 15a3 3 0 1 0 0-6 3 3 0 0 0 0 6z"/><path d="M19.4 15a1.7 1.7 0 0 0 .3 1.8l.1.1a2 2 0 1 1-2.8 2.8l-.1-.1a1.7 1.7 0 0 0-1.8-.3 1.7 1.7 0 0 0-1 1.5V21a2 2 0 1 1-4 0v-.1a1.7 1.7 0 0 0-1.1-1.5 1.7 1.7 0 0 0-1.8.3l-.1.1a2 2 0 1 1-2.8-2.8l.1-.1a1.7 1.7 0 0 0 .3-1.8 1.7 1.7 0 0 0-1.5-1H3a2 2 0 1 1 0-4h.1a1.7 1.7 0 0 0 1.5-1.1 1.7 1.7 0 0 0-.3-1.8l-.1-.1a2 2 0 1 1 2.8-2.8l.1.1a1.7 1.7 0 0 0 1.8.3H9a1.7 1.7 0 0 0 1-1.5V3a2 2 0 1 1 4 0v.1a1.7 1.7 0 0 0 1 1.5 1.7 1.7 0 0 0 1.8-.3l.1-.1a2 2 0 1 1 2.8 2.8l-.1.1a1.7 1.7 0 0 0-.3 1.8V9a1.7 1.7 0 0 0 1.5 1H21a2 2 0 1 1 0 4h-.1a1.7 1.7 0 0 0-1.5 1z"/></svg><span>Mode Guru</span></button>
+    </nav>
+  </header>
+
+  <main class="game">
+    <section class="map-area">
+      <div class="map" id="map">
+        <svg class="island" viewBox="0 0 100 100" preserveAspectRatio="none" aria-hidden="true">
+          <path class="shallow" d="M3 14 C3 5 12 2 24 3 C38 1 52 4 66 2 C80 1 97 3 97 15 C99 30 96 44 98 58 C99 72 98 90 88 96 C72 99 58 96 44 98 C30 99 12 99 5 92 C1 80 3 66 2 52 C1 38 4 26 3 14Z"/>
+          <path class="sand" d="M6 16 C6 8 14 6 25 6.5 C38 5 52 7.5 66 5.5 C79 5 94 6.5 94 17 C95.5 31 93 44 95 58 C96 71 95 87 86 92.5 C71 95.5 58 92.5 44 94.5 C30 95.5 14 95.5 8 89 C4.5 78 6.5 66 5.5 52 C4.5 39 7 27 6 16Z"/>
+          <path class="grass" d="M10 20 C10 12 18 10 28 10.5 C40 9 53 11.5 66 9.5 C78 9 90 11 90 20 C91 33 89 45 91 58 C92 70 91 84 83 88.5 C70 91 58 88.5 44 90.5 C31 91.5 17 91.5 12 85.5 C9 75 10.5 64 9.5 52 C8.5 40 11 30 10 20Z"/>
+        </svg>
+        <svg class="deco palm p1"><use href="#i-palm" width="100%" height="100%"/></svg>
+        <svg class="deco palm p2"><use href="#i-palm" width="100%" height="100%"/></svg>
+        <svg class="deco palm p3"><use href="#i-palm" width="100%" height="100%"/></svg>
+        <svg class="deco compass"><use href="#i-compass" width="100%" height="100%"/></svg>
+        <svg class="deco sailship"><use href="#i-ship" width="100%" height="100%"/></svg>
+        <div class="grid" id="grid"></div>
+        <div class="pick-banner" id="pickBanner"></div>
+      </div>
+      <div class="legend" id="legend"></div>
+    </section>
+
+    <section class="side">
+      <div class="scores" id="scores"></div>
+      <div class="qcard" id="qcard">
+        <div class="q-top">
+          <span class="q-cat" id="qCat">Siap?</span>
+          <span class="q-status" id="qStatus"></span>
+          <div class="q-timer" id="qTimer">
+            <svg viewBox="0 0 44 44"><circle cx="22" cy="22" r="19" class="t-bg"/><circle cx="22" cy="22" r="19" class="t-fg" id="tRing"/></svg>
+            <b id="tNum">–</b>
+          </div>
+        </div>
+        <div class="q-body" id="qBody">
+          <div class="q-text" id="qText">Tekan <b>MULAI</b> — semua kapten menjawab bersamaan!</div>
+          <div class="q-opts" id="qOpts"></div>
+        </div>
+        <div class="q-foot" id="qFoot">
+          <div class="q-exp" id="qExp"></div>
+          <button class="next-btn" id="btnNext">MULAI <small>Spasi</small></button>
+        </div>
+        <div class="countdown" id="countdown"></div>
+      </div>
+    </section>
+
+    <section class="pads" id="pads"></section>
+  </main>
+
+  <script src="https://cdn.jsdelivr.net/npm/xlsx@0.18.5/dist/xlsx.full.min.js" defer></script>
+  <script src="questions-default.js"></script>
+  <script src="quiz-core.js"></script>
+  <script src="game.js"></script>
+  <script src="../lokamain-license.js"></script>
+</body>
+</html>
