@@ -89,41 +89,49 @@ const DEFAULT_STORE = {
   orders: []
 };
 
-function loadStore() {
-  const diskData = window.LOKAMAIN_LIVE_DATA || null;
+function readLocal() {
   try {
     const raw = localStorage.getItem(STORAGE_KEY);
-    if (!raw && !diskData) return structuredClone(DEFAULT_STORE);
-    const localParsed = raw ? JSON.parse(raw) : null;
-
-    // Pilih data terbaru antara file sinkronisasi (diskData) dan localStorage
-    const diskTime = Number(diskData?.updatedAt || 0);
-    const localTime = Number(localParsed?.updatedAt || 0);
-    const diskCleaned = diskData && Array.isArray(diskData.games) && Array.isArray(localParsed?.games) && diskData.games.length < localParsed.games.length;
-    const source = (diskTime >= localTime || diskCleaned) && diskData ? diskData : (localParsed || diskData || DEFAULT_STORE);
-
-    return {
-      updatedAt: Math.max(diskTime, localTime, 1),
-      settings: { ...DEFAULT_STORE.settings, ...(source.settings || {}) },
-      games: Array.isArray(source.games) && source.games.length ? source.games : structuredClone(DEFAULT_STORE.games),
-      orders: Array.isArray(source.orders) ? source.orders : structuredClone(DEFAULT_STORE.orders)
-    };
+    return raw ? JSON.parse(raw) : null;
   } catch {
-    if (diskData) {
-      return {
-        updatedAt: diskData.updatedAt || Date.now(),
-        settings: { ...DEFAULT_STORE.settings, ...(diskData.settings || {}) },
-        games: Array.isArray(diskData.games) ? diskData.games : structuredClone(DEFAULT_STORE.games),
-        orders: structuredClone(DEFAULT_STORE.orders)
-      };
-    }
-    return structuredClone(DEFAULT_STORE);
+    return null;
   }
+}
+
+function normalizeStore(source, updatedAt) {
+  return {
+    updatedAt,
+    settings: { ...DEFAULT_STORE.settings, ...((source && source.settings) || {}) },
+    // Daftar game dari data nyata dihormati apa adanya (termasuk kosong) agar produk
+    // yang sudah dihapus admin tidak "hidup kembali" dari data bawaan.
+    games: Array.isArray(source && source.games) ? source.games : [],
+    orders: Array.isArray(source && source.orders) ? source.orders : []
+  };
+}
+
+// Memilih data terbaru antara file sinkronisasi (disk) dan localStorage (browser admin).
+function loadStore() {
+  const diskData = window.LOKAMAIN_LIVE_DATA || null;
+  const localParsed = readLocal();
+
+  if (!diskData && !localParsed) {
+    // Belum ada data sama sekali (instalasi baru): pakai data awal.
+    return { ...structuredClone(DEFAULT_STORE), updatedAt: 0, isDefault: true };
+  }
+
+  const diskTime = Number((diskData && diskData.updatedAt) || 0);
+  const localTime = Number((localParsed && localParsed.updatedAt) || 0);
+  const source = diskData && (!localParsed || diskTime >= localTime) ? diskData : localParsed;
+  return normalizeStore(source, Math.max(diskTime, localTime, 1));
 }
 
 function saveStore(store) {
   store.updatedAt = Date.now();
-  localStorage.setItem(STORAGE_KEY, JSON.stringify(store));
+  try {
+    localStorage.setItem(STORAGE_KEY, JSON.stringify(store));
+  } catch (_) {
+    // Penyimpanan browser penuh / dinonaktifkan: data tetap tersimpan lewat server sinkron.
+  }
   window.LOKAMAIN_LIVE_DATA = store;
   window.dispatchEvent(new CustomEvent('lokamain:updated', { detail: store }));
 }
@@ -158,14 +166,21 @@ function resolveFullGameUrl(gameUrl) {
   }
 }
 
+function fillTemplate(tpl, values) {
+  return String(tpl).replace(/\{(\w+)\}/g, (match, key) => (
+    Object.prototype.hasOwnProperty.call(values, key) ? String(values[key]) : match
+  ));
+}
+
 function buildBuyerMessage(game, settings) {
   const tpl = settings?.buyerTemplate || DEFAULT_STORE.settings.buyerTemplate;
-  return tpl
-    .replace(/\{sellerName\}/g, settings?.sellerName || 'Admin')
-    .replace(/\{storeName\}/g, settings?.storeName || 'LokaMain Digital')
-    .replace(/\{title\}/g, game.title)
-    .replace(/\{code\}/g, game.code || game.id)
-    .replace(/\{price\}/g, formatIdr(game.price));
+  return fillTemplate(tpl, {
+    sellerName: settings?.sellerName || 'Admin',
+    storeName: settings?.storeName || 'LokaMain Digital',
+    title: game.title,
+    code: game.code || game.id,
+    price: formatIdr(game.price)
+  });
 }
 
 function buildBuyerWhatsAppUrl(game, settings) {
@@ -176,14 +191,14 @@ function buildBuyerWhatsAppUrl(game, settings) {
 
 function buildSellerReplyText(game, buyerName, settings) {
   const tpl = settings?.sellerTemplate || DEFAULT_STORE.settings.sellerTemplate;
-  const fullLink = resolveFullGameUrl(game.gameUrl);
-  return tpl
-    .replace(/\{buyerName\}/g, (buyerName || 'Pembeli').trim() || 'Pembeli')
-    .replace(/\{storeName\}/g, settings?.storeName || 'LokaMain Digital')
-    .replace(/\{title\}/g, game.title)
-    .replace(/\{code\}/g, game.code || game.id)
-    .replace(/\{price\}/g, formatIdr(game.price))
-    .replace(/\{gameUrl\}/g, fullLink);
+  return fillTemplate(tpl, {
+    buyerName: (buyerName || 'Pembeli').trim() || 'Pembeli',
+    storeName: settings?.storeName || 'LokaMain Digital',
+    title: game.title,
+    code: game.code || game.id,
+    price: formatIdr(game.price),
+    gameUrl: resolveFullGameUrl(game.gameUrl)
+  });
 }
 
 function buildSellerWhatsAppUrl(game, buyerPhone, buyerName, settings) {

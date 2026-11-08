@@ -2,127 +2,205 @@
 <html lang="id">
 <head>
   <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
-  <meta http-equiv="Pragma" content="no-cache">
-  <meta http-equiv="Expires" content="0">
-  <title>LokaMain Digital - Game Pembelajaran Digital Interaktif</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>LokaMain Digital – Game Edukasi Interaktif untuk Kelas</title>
+  <meta name="description" content="Game edukasi interaktif untuk guru dan orang tua. Main langsung di Smart TV, HP, atau laptop tanpa instal. Bayar via QRIS, link game dikirim lewat WhatsApp.">
+  <meta name="theme-color" content="#2f5fe8">
+  <link rel="canonical" href="https://lokamaindigital.my.id/">
+  <link rel="icon" type="image/png" href="favicon.png">
+  <link rel="apple-touch-icon" href="apple-touch-icon.png">
+
+  <meta property="og:type" content="website">
+  <meta property="og:locale" content="id_ID">
+  <meta property="og:site_name" content="LokaMain Digital">
+  <meta property="og:title" content="LokaMain Digital – Game Edukasi Interaktif untuk Kelas">
+  <meta property="og:description" content="Materi pelajaran jadi permainan seru. Main di Smart TV, HP, atau laptop tanpa instal. Bayar via QRIS.">
+  <meta property="og:url" content="https://lokamaindigital.my.id/">
+  <meta property="og:image" content="https://lokamaindigital.my.id/og-image.jpg">
+  <meta property="og:image:width" content="1200">
+  <meta property="og:image:height" content="630">
+  <meta name="twitter:card" content="summary_large_image">
+
+  <link rel="preload" href="assets/fonts/poppins-Bold.woff2" as="font" type="font/woff2" crossorigin>
   <link rel="stylesheet" href="css/page.css">
+
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@graph": [
+      {
+        "@type": "Organization",
+        "@id": "https://lokamaindigital.my.id/#org",
+        "name": "LokaMain Digital",
+        "url": "https://lokamaindigital.my.id/",
+        "logo": "https://lokamaindigital.my.id/favicon.png"
+      },
+      {
+        "@type": "WebSite",
+        "@id": "https://lokamaindigital.my.id/#website",
+        "url": "https://lokamaindigital.my.id/",
+        "name": "LokaMain Digital",
+        "inLanguage": "id-ID",
+        "publisher": { "@id": "https://lokamaindigital.my.id/#org" }
+      }
+    ]
+  }
+  </script>
 </head>
 <body id="top">
 
-  <!-- Header Website Publik -->
-  <header class="blog-header">
-    <div class="container header-inner">
-      <div class="header-brand-wrap">
-        <a href="#top" class="header-banner-box" aria-label="LokaMain Digital Beranda">
-          <img id="site-logo-img" class="site-banner-img" src="assets/branding/banner-lokamain.png" alt="LokaMain Digital" style="display: block;">
-          <h1 class="site-title" id="display-store-name" style="display: none;">LokaMain Digital</h1>
-        </a>
-        <p class="site-subtitle" id="display-site-subtitle" style="display: none;"></p>
-      </div>
+  <!-- Ikon (inline agar tetap jalan saat dibuka tanpa server) -->
+  <svg xmlns="http://www.w3.org/2000/svg" style="display:none" aria-hidden="true" focusable="false">
+    <symbol id="i-menu" viewBox="0 0 24 24"><path d="M4 12h16M4 6h16M4 18h16"/></symbol>
+    <symbol id="i-close" viewBox="0 0 24 24"><path d="M18 6 6 18M6 6l12 12"/></symbol>
+    <symbol id="i-check" viewBox="0 0 24 24"><path d="M20 6 9 17l-5-5"/></symbol>
+    <symbol id="i-clock" viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><path d="M12 6v6l4 2"/></symbol>
+    <symbol id="i-monitor" viewBox="0 0 24 24"><rect x="2" y="3" width="20" height="14" rx="2"/><path d="M8 21h8M12 17v4"/></symbol>
+    <symbol id="i-phone" viewBox="0 0 24 24"><rect x="5" y="2" width="14" height="20" rx="2"/><path d="M12 18h.01"/></symbol>
+    <symbol id="i-play" viewBox="0 0 24 24"><path d="M6 3l14 9-14 9z"/></symbol>
+    <symbol id="i-zap" viewBox="0 0 24 24"><path d="M13 2 3 14h9l-1 8 10-12h-9l1-8z"/></symbol>
+    <symbol id="i-shield" viewBox="0 0 24 24"><path d="M20 13c0 5-3.5 7.5-7.66 8.95a1 1 0 0 1-.67-.01C7.5 20.5 4 18 4 13V6a1 1 0 0 1 1-1c2 0 4.5-1.2 6.24-2.72a1.17 1.17 0 0 1 1.52 0C14.51 3.81 17 5 19 5a1 1 0 0 1 1 1z"/><path d="m9 12 2 2 4-4"/></symbol>
+    <symbol id="i-cap" viewBox="0 0 24 24"><path d="M21.42 10.92a1 1 0 0 0-.02-1.84L12.83 5.18a2 2 0 0 0-1.66 0L2.6 9.08a1 1 0 0 0 0 1.83l8.57 3.91a2 2 0 0 0 1.66 0z"/><path d="M22 10v6"/><path d="M6 12.5V16a6 3 0 0 0 12 0v-3.5"/></symbol>
+    <symbol id="i-qr" viewBox="0 0 24 24"><rect width="5" height="5" x="3" y="3" rx="1"/><rect width="5" height="5" x="16" y="3" rx="1"/><rect width="5" height="5" x="3" y="16" rx="1"/><path d="M21 16h-3a2 2 0 0 0-2 2v3M21 21v.01M12 7v3a2 2 0 0 1-2 2H7M3 12h.01M12 3h.01M12 16v.01M16 12h1M21 12v.01M12 21v-1"/></symbol>
+    <symbol id="i-chat" viewBox="0 0 24 24"><path d="M7.9 20A9 9 0 1 0 4 16.1L2 22Z"/></symbol>
+    <symbol id="i-download" viewBox="0 0 24 24"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4M7 10l5 5 5-5M12 15V3"/></symbol>
+    <symbol id="i-move" viewBox="0 0 24 24"><path d="M22 12h-2.48a2 2 0 0 0-1.93 1.46l-2.35 8.36a.25.25 0 0 1-.48 0L9.24 2.18a.25.25 0 0 0-.48 0l-2.35 8.36A2 2 0 0 1 4.49 12H2"/></symbol>
+  </svg>
 
-      <!-- Navigasi & Menu Garis 3 (Hamburger) -->
-      <nav class="header-nav" aria-label="Menu Utama">
-        <div class="hamburger-wrap">
-          <button type="button" class="btn-hamburger" id="hamburger-toggle" aria-label="Buka Menu" aria-expanded="false">
-            <span class="bar"></span>
-            <span class="bar"></span>
-            <span class="bar"></span>
-          </button>
-          <div class="hamburger-dropdown" id="hamburger-menu">
-            <a href="#top" class="dropdown-item">
-              <span class="item-icon">🏠</span>
-              <span>Home</span>
-            </a>
-            <a href="#cara-order" class="dropdown-item">
-              <span class="item-icon">📋</span>
-              <span>Cara Order</span>
-            </a>
-            <a href="#tentang" class="dropdown-item">
-              <span class="item-icon">ℹ️</span>
-              <span>Tentang</span>
-            </a>
-          </div>
-        </div>
+  <a class="skip-link" href="#katalog">Lewati ke katalog</a>
+
+  <header class="site-header">
+    <div class="container header-inner">
+      <a href="#top" class="brand" aria-label="LokaMain Digital, ke beranda">
+        <img id="site-logo-img" src="assets/branding/banner-lokamain.png" width="260" height="66" alt="LokaMain Digital">
+        <span class="brand-text" id="display-store-name" hidden>LokaMain Digital</span>
+      </a>
+
+      <button type="button" class="nav-toggle" id="hamburger-toggle" aria-expanded="false" aria-controls="hamburger-menu" aria-label="Buka menu">
+        <svg class="icon i-menu" aria-hidden="true"><use href="#i-menu"/></svg>
+        <svg class="icon i-close" aria-hidden="true"><use href="#i-close"/></svg>
+      </button>
+
+      <nav class="main-nav" id="hamburger-menu" aria-label="Menu utama">
+        <a href="#katalog" class="nav-link">Katalog</a>
+        <a href="#cara-order" class="nav-link">Cara Order</a>
+        <a href="#tentang" class="nav-link">Tentang</a>
+        <a href="#" class="btn btn-wa btn-sm" id="nav-wa" target="_blank" rel="noopener">
+          <svg class="icon" aria-hidden="true"><use href="#i-chat"/></svg>
+          Tanya via WhatsApp
+        </a>
       </nav>
     </div>
   </header>
 
-  <!-- Katalog Blok Game Publik -->
-  <main class="container">
-    <section id="game-grid" class="game-grid"></section>
+  <main id="main">
+    <!-- Hero -->
+    <section class="hero" aria-labelledby="hero-title">
+      <div class="container hero-inner">
+        <div class="hero-copy" data-enter>
+          <p class="hero-badge"><span class="dot" aria-hidden="true"></span><span id="hero-badge-text">Game pembelajaran digital</span></p>
+          <h1 id="hero-title">Game edukasi interaktif yang langsung dimainkan di kelas</h1>
+          <p class="hero-sub" id="display-site-subtitle">Materi pelajaran dikemas jadi permainan seru untuk Smart TV, HP, dan laptop. Cukup buka link di browser, tanpa instal aplikasi.</p>
+          <div class="hero-actions">
+            <a href="#katalog" class="btn btn-primary">Lihat Game</a>
+            <a href="#" class="btn" id="hero-wa" target="_blank" rel="noopener">
+              <svg class="icon" aria-hidden="true"><use href="#i-chat"/></svg>
+              Tanya via WhatsApp
+            </a>
+          </div>
+          <ul class="hero-facts">
+            <li><svg class="icon" aria-hidden="true"><use href="#i-zap"/></svg>Tanpa instalasi</li>
+            <li><svg class="icon" aria-hidden="true"><use href="#i-monitor"/></svg>Smart TV, HP, laptop</li>
+            <li><svg class="icon" aria-hidden="true"><use href="#i-qr"/></svg>Bayar QRIS</li>
+          </ul>
+        </div>
 
-    <!-- SECTION CARA ORDER DI BAWAH PRODUK -->
-    <section id="cara-order" class="info-section">
-      <div class="section-head">
-        <span class="section-badge">PANDUAN PEMBELIAN</span>
-        <h2 class="section-title">Cara Order Game Edukasi</h2>
-        <p class="section-sub">Langkah mudah membeli dan langsung memainkan game pembelajaran digital kami.</p>
+        <div class="hero-visual" id="hero-visual" data-enter hidden></div>
       </div>
+    </section>
 
-      <div class="steps-grid">
-        <div class="step-card">
-          <div class="step-badge">1</div>
-          <h3 class="step-heading">Pilih Game Edukasi</h3>
-          <p class="step-text">Telusuri katalog produk di atas. Pilih game yang sesuai usia dan kebutuhan belajar siswa atau anak Anda.</p>
+    <!-- Katalog -->
+    <section id="katalog" class="section" aria-labelledby="katalog-title">
+      <div class="container">
+        <div class="section-head">
+          <div class="catalog-meta">
+            <h2 id="katalog-title">Pilih game untuk kelas Anda</h2>
+          </div>
+          <p>Tiap game mencantumkan jenjang kelas, durasi, dan perangkat yang dibutuhkan. Klik <strong>Pesan</strong> untuk melihat cara bayar.</p>
         </div>
 
-        <div class="step-card">
-          <div class="step-badge">2</div>
-          <h3 class="step-heading">Klik Pesan Sekarang</h3>
-          <p class="step-text">Tekan tombol hijau pada game pilihan Anda untuk memunculkan jendela kode pembayaran QRIS dan rincian harga.</p>
-        </div>
-
-        <div class="step-card">
-          <div class="step-badge">3</div>
-          <h3 class="step-heading">Scan QRIS &amp; Bayar</h3>
-          <p class="step-text">Scan kode QRIS menggunakan e-wallet (DANA, GoPay, OVO, ShopeePay) atau m-Banking apa saja sesuai nominal.</p>
-        </div>
-
-        <div class="step-card">
-          <div class="step-badge">4</div>
-          <h3 class="step-heading">Terima Akses via WhatsApp</h3>
-          <p class="step-text">Kirim screenshot bukti bayar via tombol WhatsApp. Admin langsung mengirimkan link game siap main tanpa instalasi!</p>
+        <div id="game-grid" class="game-grid" aria-live="polite" aria-busy="true">
+          <div class="skeleton" aria-hidden="true"></div>
+          <div class="skeleton" aria-hidden="true"></div>
+          <div class="skeleton" aria-hidden="true"></div>
+          <noscript><p class="empty-state">Aktifkan JavaScript di browser untuk melihat katalog game.</p></noscript>
         </div>
       </div>
     </section>
 
-    <!-- SECTION TENTANG DI BAWAH PRODUK -->
-    <section id="tentang" class="info-section">
-      <div class="section-head">
-        <span class="section-badge">TENTANG KAMI</span>
-        <h2 class="section-title">Tentang LokaMain Digital</h2>
-        <p class="section-sub">Media pembelajaran interaktif generasi baru untuk suasana belajar yang menyenangkan dan efektif.</p>
-      </div>
-
-      <div class="about-card">
-        <p class="about-lead">
-          <strong>LokaMain Digital</strong> menghadirkan game edukasi web interaktif yang dirancang khusus untuk mempermudah guru, orang tua, dan siswa dalam memahami materi pelajaran secara visual dan menyenangkan.
-        </p>
-
-        <div class="about-features">
-          <div class="feat-item">
-            <span class="feat-check">✓</span>
-            <div>
-              <strong>Langsung Main Tanpa Install</strong>
-              <p>Cukup klik link di browser HP Android/iPhone, Tablet, Laptop, komputer sekolah, atau Interactive Flat Panel (IFP).</p>
-            </div>
+    <!-- Cara order -->
+    <div class="steps-wrap">
+      <section id="cara-order" class="section" aria-labelledby="cara-title">
+        <div class="container">
+          <div class="section-head">
+            <h2 id="cara-title">Empat langkah sampai game siap dimainkan</h2>
+            <p>Dari memilih sampai bermain, semuanya lewat HP Anda.</p>
           </div>
 
+          <ol class="steps-grid">
+            <li class="step-card">
+              <div class="step-badge" aria-hidden="true">1</div>
+              <h3 class="step-heading">Pilih game</h3>
+              <p class="step-text">Lihat katalog di atas dan pilih game yang cocok dengan kelas dan materi Anda.</p>
+            </li>
+            <li class="step-card">
+              <div class="step-badge" aria-hidden="true">2</div>
+              <h3 class="step-heading">Klik Pesan</h3>
+              <p class="step-text">Jendela pembayaran muncul lengkap dengan harga dan kode QRIS.</p>
+            </li>
+            <li class="step-card">
+              <div class="step-badge" aria-hidden="true">3</div>
+              <h3 class="step-heading">Scan QRIS dan bayar</h3>
+              <p class="step-text">Bayar lewat e-wallet atau m-banking apa saja yang mendukung QRIS.</p>
+            </li>
+            <li class="step-card">
+              <div class="step-badge" aria-hidden="true">4</div>
+              <h3 class="step-heading">Terima link lewat WhatsApp</h3>
+              <p class="step-text">Kirim bukti bayar. Setelah dicek, admin mengirim link game yang bisa langsung dibuka.</p>
+            </li>
+          </ol>
+        </div>
+      </section>
+    </div>
+
+    <!-- Tentang -->
+    <section id="tentang" class="section" aria-labelledby="tentang-title">
+      <div class="container about-grid">
+        <div class="section-head" style="margin-bottom:0">
+          <h2 id="tentang-title">Dibuat untuk guru dan orang tua</h2>
+          <p class="about-lead"><strong>LokaMain Digital</strong> membuat game edukasi berbasis web. Materi pelajaran dikemas jadi permainan interaktif, dan beberapa game memakai kamera supaya siswa belajar sambil bergerak.</p>
+        </div>
+
+        <div class="feat-list">
           <div class="feat-item">
-            <span class="feat-check">✓</span>
+            <div class="feat-icon" aria-hidden="true"><svg class="icon"><use href="#i-zap"/></svg></div>
             <div>
-              <strong>Sesuai Kurikulum &amp; Seru</strong>
-              <p>Menggabungkan tantangan game yang asyik dengan materi matematika, sains, bahasa, dan logika untuk anak TK hingga SD.</p>
+              <h3>Langsung main, tanpa instal</h3>
+              <p>Buka link di browser HP, tablet, laptop, Smart TV, atau layar interaktif sekolah.</p>
             </div>
           </div>
-
           <div class="feat-item">
-            <span class="feat-check">✓</span>
+            <div class="feat-icon" aria-hidden="true"><svg class="icon"><use href="#i-move"/></svg></div>
             <div>
-              <strong>Mudah &amp; Terpercaya</strong>
-              <p>Pembayaran praktis dengan QRIS nasional dari e-wallet/bank apa saja dan pengiriman akses langsung via WhatsApp resmi.</p>
+              <h3>Belajar sambil bergerak</h3>
+              <p>Game kinestetik membaca gerakan lewat kamera, jadi siswa ikut aktif di depan kelas.</p>
+            </div>
+          </div>
+          <div class="feat-item">
+            <div class="feat-icon" aria-hidden="true"><svg class="icon"><use href="#i-shield"/></svg></div>
+            <div>
+              <h3>Bayar mudah, akses jelas</h3>
+              <p>Pembayaran lewat QRIS nasional. Link game dikirim ke WhatsApp Anda setelah pembayaran dicek.</p>
             </div>
           </div>
         </div>
@@ -130,89 +208,89 @@
     </section>
   </main>
 
-  <footer class="blog-footer">
-    <div class="container footer-stack">
-      <p class="footer-title" id="display-footer-text">Hak Cipta © 2026 LokaMain Digital. Pembelajaran Game Edukasi Interaktif.</p>
-      <p class="footer-sub" id="display-footer-note">Semua game dapat dimainkan langsung di HP, Tablet, dan Komputer tanpa instalasi.</p>
-      <div class="footer-badge-wrap">
-        <span id="footer-wa-info" class="footer-wa-pill">Pemesanan otomatis terhubung ke WhatsApp Penjual</span>
+  <footer class="site-footer">
+    <div class="container footer-grid">
+      <div>
+        <p class="footer-title" id="display-footer-text">Hak Cipta © 2026 LokaMain Digital. Pembelajaran Game Edukasi Interaktif.</p>
+        <p class="footer-sub" id="display-footer-note">Semua game dapat dimainkan langsung di HP, Tablet, dan Komputer tanpa instalasi.</p>
       </div>
+      <a href="#" class="footer-wa" id="footer-wa" target="_blank" rel="noopener">
+        <svg class="icon" aria-hidden="true"><use href="#i-chat"/></svg>
+        <span id="footer-wa-info">Pesan &amp; bantuan via WhatsApp</span>
+      </a>
     </div>
   </footer>
 
-  <!-- Jendela Pesan: Bayar QRIS -> Kirim Bukti ke WhatsApp -->
+  <a href="#" class="float-wa" id="float-wa" target="_blank" rel="noopener" aria-label="Tanya via WhatsApp">
+    <svg class="icon" aria-hidden="true"><use href="#i-chat"/></svg>
+    Tanya via WhatsApp
+  </a>
+
+  <!-- Jendela pesan: bayar QRIS lalu kirim bukti ke WhatsApp -->
   <dialog id="order-dialog" class="order-dialog" aria-labelledby="order-title">
     <div class="order-body">
-      <button type="button" class="order-close" id="order-close" aria-label="Tutup">×</button>
+      <button type="button" class="order-close" id="order-close" aria-label="Tutup jendela pesan">
+        <svg class="icon" aria-hidden="true"><use href="#i-close"/></svg>
+      </button>
 
       <p class="order-label">Pesanan Anda</p>
       <h2 class="order-title" id="order-title">-</h2>
       <p class="order-price" id="order-price">Rp 0</p>
 
-      <!-- Jika QRIS sudah diatur penjual -->
       <div id="order-qris-section">
         <div class="order-step">
-          <span class="step-num">1</span>
+          <span class="step-num" aria-hidden="true">1</span>
           <div>
-            <strong>Pilih Metode Pembayaran:</strong>
-            <p class="step-note" id="order-method-hint">Pilih aplikasi yang Anda gunakan untuk membayar.</p>
+            <strong>Pilih cara bayar</strong>
+            <p class="step-note" id="order-method-hint">Pilih aplikasi yang Anda pakai untuk membayar.</p>
           </div>
         </div>
 
-        <!-- 2 Pilihan Metode QRIS: DANA (Biasa) vs Bank & E-Wallet Lain (Otomatis) -->
-        <div class="qris-methods-selector" id="qris-methods-selector">
-          <button type="button" class="qris-method-btn" id="method-dana-btn" aria-label="Bayar via Aplikasi DANA">
-            <span class="method-icon">💙</span>
+        <div class="qris-methods-selector" id="qris-methods-selector" role="group" aria-label="Metode pembayaran">
+          <button type="button" class="qris-method-btn" id="method-dana-btn" aria-label="Bayar lewat aplikasi DANA">
             <span class="method-title">Aplikasi DANA</span>
-            <span class="method-sub">QRIS Biasa &bull; Ketik Manual</span>
+            <span class="method-sub">QRIS biasa, ketik nominal manual</span>
           </button>
-          <button type="button" class="qris-method-btn" id="method-other-btn" aria-label="Bayar via Bank atau E-Wallet Lain">
-            <span class="method-icon">⚡</span>
-            <span class="method-title">Bank / Lainnya</span>
-            <span class="method-sub">BCA, GoPay, dll &bull; Otomatis</span>
+          <button type="button" class="qris-method-btn" id="method-other-btn" aria-label="Bayar lewat bank atau e-wallet lain">
+            <span class="method-title">Bank / e-wallet lain</span>
+            <span class="method-sub">BCA, GoPay, dll. Nominal otomatis</span>
           </button>
         </div>
 
-        <!-- Wadah Gambar QRIS -->
         <div class="qris-card-wrap">
-          <img id="order-qris-img" class="qris-img" src="" alt="Kode QRIS pembayaran">
-
-          <!-- Badge info saat mode Bank / Lainnya (Nominal Otomatis) -->
-          <div id="order-qris-badge" class="qris-auto-badge" style="display: none;"></div>
-
-          <!-- Box info nominal & tombol salin saat mode DANA (Ketik Manual) -->
-          <div id="order-qris-manual-box" class="qris-manual-box" style="display: none;">
+          <img id="order-qris-img" class="qris-img" src="" width="250" height="250" alt="Kode QRIS pembayaran">
+          <div id="order-qris-badge" class="qris-auto-badge"></div>
+          <div id="order-qris-manual-box" class="qris-manual-box">
             <span class="manual-guide-txt">Ketik nominal ini di aplikasi DANA:</span>
             <div class="qris-price-pill">
               <span id="order-manual-price">Rp 0</span>
-              <button type="button" id="order-copy-price-btn" class="btn-copy-chip" title="Salin Nominal">📋 Salin</button>
+              <button type="button" id="order-copy-price-btn" class="btn-copy-chip" aria-label="Salin nominal">Salin</button>
             </div>
           </div>
-
           <p class="qris-name" id="order-qris-name"></p>
         </div>
 
         <a id="order-qris-download" class="btn-save-qris" href="#" download="QRIS-Pembayaran.jpg">
-          Simpan Gambar QRIS
+          <svg class="icon" aria-hidden="true"><use href="#i-download"/></svg>
+          Simpan gambar QRIS
         </a>
-        <p class="step-note center">Bayar dari HP yang sama? Simpan gambarnya, lalu di aplikasi pilih <em>Scan → ambil dari Galeri</em>.</p>
+        <p class="step-note center">Bayar dari HP yang sama? Simpan gambarnya, lalu di aplikasi pilih <em>Scan, lalu ambil dari Galeri</em>.</p>
 
         <div class="order-step">
-          <span class="step-num">2</span>
+          <span class="step-num" aria-hidden="true">2</span>
           <div>
             <strong>Kirim bukti bayar lewat WhatsApp</strong>
-            <p class="step-note">Klik tombol hijau, lalu lampirkan screenshot bukti pembayaran di chat. Link game dikirim setelah pembayaran dicek.</p>
+            <p class="step-note">Klik tombol hijau, lalu lampirkan tangkapan layar bukti pembayaran di chat. Link game dikirim setelah pembayaran dicek.</p>
           </div>
         </div>
       </div>
 
-      <!-- Jika QRIS belum diatur penjual -->
       <p id="order-no-qris" class="step-note" hidden>
         Klik tombol di bawah untuk memesan. Info pembayaran akan dikirim penjual lewat WhatsApp.
       </p>
 
       <a id="order-wa-btn" class="btn-wa" href="#" target="_blank" rel="noopener">
-        Sudah Bayar, Kirim Bukti via WhatsApp
+        Sudah bayar, kirim bukti via WhatsApp
       </a>
     </div>
   </dialog>
