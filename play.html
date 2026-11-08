@@ -415,7 +415,7 @@
       if (isVideo) {
         parent.innerHTML = `<video id="play-image" src="${game.image}"${posterAttr} autoplay loop muted playsinline controls style="width: 100%; height: auto; display: block;"></video>`;
       } else {
-        parent.innerHTML = `<img id="play-image" src="${game.image}" width="800" height="500" alt="Layar permainan">`;
+        parent.innerHTML = `<img id="play-image" src="${game.coverImage || game.image}" width="800" height="500" alt="Layar permainan">`;
       }
     }
     document.getElementById('play-order-wa').href = buildBuyerWhatsAppUrl(game, store.settings);

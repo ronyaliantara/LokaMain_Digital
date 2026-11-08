@@ -276,6 +276,8 @@
               <span class="game-media-badge">🎬 Cuplikan</span>
             </div>
           `;
+        } else if (hasCover) {
+          mediaHtml = `<img src="${safeCover}" alt="${safeTitle}" class="game-thumb" loading="lazy">`;
         } else if (isVideo) {
           mediaHtml = `<video src="${safeImage}" autoplay loop muted playsinline class="game-thumb" style="object-fit: cover;"></video>`;
         } else {
