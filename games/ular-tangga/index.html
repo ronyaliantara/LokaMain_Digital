@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Ular Tangga Kinestetik - Edukasi Berbasis Gerak Tubuh</title>
+  <title>Ular Tangga Kinestetik - Edukasi IPS SMP (50 Kotak • 4 Pemain)</title>
 
   <!-- Tailwind CSS CDN -->
   <script src="https://cdn.tailwindcss.com"></script>
@@ -33,142 +33,216 @@
   <!-- Custom Styling -->
   <link rel="stylesheet" href="style.css">
 
-  <!-- MediaPipe Pose & Camera Utils CDN -->
+  <!-- MediaPipe Pose & Camera Utils CDN (Lite Version) -->
   <script src="https://cdn.jsdelivr.net/npm/@mediapipe/camera_utils@0.4/camera_utils.js" crossorigin="anonymous"></script>
   <script src="https://cdn.jsdelivr.net/npm/@mediapipe/pose@0.5/pose.js" crossorigin="anonymous"></script>
 </head>
 
-<body class="bg-gradient-to-br from-slate-900 via-indigo-950 to-slate-900 text-slate-100 min-h-screen flex flex-col">
+<body class="bg-gradient-to-br from-slate-950 via-indigo-950 to-slate-900 text-slate-100 min-h-screen flex flex-col select-none">
 
   <!-- ======================================================================
        Header Bar
        ====================================================================== -->
-  <header class="w-full bg-slate-900/80 backdrop-blur-md border-b border-white/10 px-4 py-3 sticky top-0 z-30 flex items-center justify-between shadow-lg">
-    <div class="flex items-center gap-3">
-      <div class="w-10 h-10 rounded-xl bg-gradient-to-tr from-amber-400 to-rose-500 flex items-center justify-center text-xl shadow-md shadow-rose-500/20">
-        🐍
+  <header class="w-full bg-slate-900/90 backdrop-blur-md border-b border-white/10 px-3 sm:px-4 py-2 sticky top-0 z-30 flex flex-wrap items-center justify-between gap-2 shadow-lg">
+    <div class="flex items-center gap-2.5">
+      <div class="w-8 h-8 sm:w-9 sm:h-9 rounded-xl bg-gradient-to-tr from-amber-400 via-rose-500 to-indigo-600 flex items-center justify-center text-lg sm:text-xl shadow-md shadow-rose-500/25">
+        🎲
       </div>
       <div>
-        <h1 class="text-lg md:text-xl font-bold font-fun tracking-wide text-white flex items-center gap-2">
-          Ular Tangga Kinestetik
-          <span class="text-xs font-semibold px-2 py-0.5 rounded-full bg-emerald-500/20 text-emerald-300 border border-emerald-400/30">Bahasa Arab: As-Sa'ah (الساعة)</span>
+        <h1 class="text-sm sm:text-base md:text-lg font-bold font-fun tracking-wide text-white flex items-center gap-1.5">
+          Ular Tangga Kinestetik <span class="text-xs font-sans px-2 py-0.5 rounded-full bg-emerald-500/20 text-emerald-300 border border-emerald-400/30">50 Kotak</span>
         </h1>
-        <p class="text-xs text-slate-400 hidden sm:block">Edukasi Gerak Tubuh • Materi Waktu & Jam SMP Kelas VIII</p>
+        <p class="text-[10px] sm:text-[11px] text-slate-400 hidden sm:block">Edukasi IPS SMP • Dual Sensor Kanan & Kiri • 4 Pemain</p>
       </div>
     </div>
 
-    <!-- Quick Controls -->
-    <div class="flex items-center gap-2">
-      <!-- License Badge -->
-      <div id="roomBadge" class="px-2.5 py-1.5 rounded-lg bg-indigo-500/20 border border-indigo-400/30 text-indigo-300 text-xs font-semibold flex items-center gap-1.5 shadow-sm cursor-pointer hover:bg-indigo-500/30 transition-all" title="Informasi Lisensi Resmi Pembeli">
-        <span class="w-2 h-2 rounded-full bg-emerald-400 animate-pulse"></span>
-        <span id="roomBadgeText">Lisensi: Resmi</span>
+    <!-- Quick Controls & Player Selector -->
+    <div class="flex flex-wrap items-center gap-1.5 sm:gap-2">
+      <!-- Player Count Selector -->
+      <div class="flex items-center gap-1 px-2 py-1 rounded-lg bg-slate-800 border border-white/10 text-xs">
+        <span class="text-slate-400 font-semibold text-[11px]">👥 Pemain:</span>
+        <select id="playerCountSelect" class="bg-slate-900 text-amber-300 font-bold font-fun text-xs rounded px-1.5 py-0.5 border border-white/10 cursor-pointer focus:outline-none">
+          <option value="4" selected>4 Pemain</option>
+          <option value="3">3 Pemain</option>
+          <option value="2">2 Pemain</option>
+        </select>
       </div>
 
-      <button id="fullscreenToggleBtn" class="px-2.5 sm:px-3 py-1.5 rounded-lg bg-slate-800 hover:bg-slate-700 text-slate-200 text-xs font-semibold border border-white/10 flex items-center gap-1.5 transition-all shadow-sm cursor-pointer" title="Mode Layar Penuh (Tekan F)">
-        ⛶ <span class="hidden sm:inline">Layar Penuh</span>
+      <!-- Badge Materi -->
+      <div class="px-2 py-1 rounded-lg bg-indigo-500/20 border border-indigo-400/30 text-indigo-300 text-xs font-semibold hidden md:flex items-center gap-1.5 shadow-sm">
+        <span class="w-2 h-2 rounded-full bg-emerald-400 animate-pulse"></span>
+        <span>Materi: IPS Terpadu SMP</span>
+      </div>
+
+      <!-- Kamera AI / Manual Toggle -->
+      <button id="cameraToggleBtn" class="px-2.5 py-1 rounded-lg bg-emerald-800/80 hover:bg-emerald-700 text-white text-xs font-semibold border border-emerald-400/30 flex items-center gap-1.5 cursor-pointer transition-all shadow-sm" title="Matikan/Nyalakan Kamera AI (Hemat Daya)">
+        📹 <span class="hidden sm:inline">Kamera Aktif</span>
       </button>
 
-      <button id="soundToggleBtn" class="px-2.5 sm:px-3 py-1.5 rounded-lg bg-slate-800 hover:bg-slate-700 text-slate-200 text-xs font-semibold border border-white/10 flex items-center gap-1 transition-all cursor-pointer">
+      <!-- Layar Penuh -->
+      <button id="fullscreenToggleBtn" class="px-2.5 py-1 rounded-lg bg-slate-800 hover:bg-slate-700 text-slate-200 text-xs font-semibold border border-white/10 flex items-center gap-1 cursor-pointer transition-all" title="Mode Layar Penuh">
+        ⛶ <span class="hidden lg:inline">Layar Penuh</span>
+      </button>
+
+      <!-- Suara -->
+      <button id="soundToggleBtn" class="px-2.5 py-1 rounded-lg bg-slate-800 hover:bg-slate-700 text-slate-200 text-xs font-semibold border border-white/10 flex items-center gap-1 cursor-pointer transition-all">
         🔊 <span class="hidden sm:inline">Suara</span>
       </button>
 
-      <button id="resetGameBtn" class="px-2.5 sm:px-3 py-1.5 rounded-lg bg-slate-800 hover:bg-slate-700 text-slate-200 text-xs font-semibold border border-white/10 flex items-center gap-1 transition-all cursor-pointer">
-        🔄 <span class="hidden sm:inline">Ulangi</span>
+      <!-- Ulangi -->
+      <button id="resetGameBtn" class="px-2.5 py-1 rounded-lg bg-slate-800 hover:bg-slate-700 text-slate-200 text-xs font-semibold border border-white/10 flex items-center gap-1 cursor-pointer transition-all" title="Ulangi dari Petak 1">
+        🔄 <span class="hidden sm:inline">Reset</span>
       </button>
 
-      <button id="teacherModeBtn" class="px-3 sm:px-3.5 py-1.5 rounded-lg bg-gradient-to-r from-purple-600 to-indigo-600 hover:from-purple-500 hover:to-indigo-500 text-white text-xs font-bold shadow-md shadow-indigo-500/25 flex items-center gap-1.5 transition-all cursor-pointer">
+      <!-- Mode Guru -->
+      <button id="teacherModeBtn" class="px-2.5 sm:px-3 py-1 rounded-lg bg-gradient-to-r from-purple-600 to-indigo-600 hover:from-purple-500 hover:to-indigo-500 text-white text-xs font-bold shadow-md shadow-indigo-500/25 flex items-center gap-1.5 transition-all cursor-pointer">
         ⚙️ Mode Guru
       </button>
     </div>
   </header>
 
   <!-- ======================================================================
-       Dual-Player Split Screen: Layar 1 (P1 Kiri) | Papan Tengah | Layar 2 (P2 Kanan)
-       Sesuai permintaan: Papan Ular Tangga diperkecil di tengah-tengah
+       Main Layout (3 Kolom: Layar Sensor Kiri | Papan 50 Kotak | Layar Sensor Kanan)
        ====================================================================== -->
-  <main class="flex-1 max-w-[1920px] w-full mx-auto p-2 sm:p-2.5 grid grid-cols-1 lg:grid-cols-10 gap-2 sm:gap-2.5 items-stretch lg:h-[calc(100vh-3.85rem)] lg:max-h-[calc(100vh-3.85rem)] overflow-y-auto lg:overflow-hidden">
+  <main class="flex-1 max-w-[1920px] w-full mx-auto p-2 sm:p-2.5 grid grid-cols-1 lg:grid-cols-12 gap-2 sm:gap-2.5 items-stretch overflow-y-auto lg:overflow-hidden lg:h-[calc(100vh-3.85rem)] lg:max-h-[calc(100vh-3.85rem)]">
 
     <!-- ==================================================================
-         KOLOM KIRI: LAYAR 1 - PEMAIN 1 (BIRU)
+         KOLOM KIRI (lg:col-span-3): LAYAR SENSOR KIRI (P1 Biru & P3 Hijau)
          ================================================================== -->
-    <section id="p1PlayerSection" class="lg:col-span-3 flex flex-col justify-between gap-1.5 h-full rounded-2xl bg-slate-800/60 p-2 sm:p-2.5 border-2 border-blue-500 shadow-xl transition-all overflow-hidden relative min-h-[300px] lg:min-h-0">
+    <section id="leftSensorSection" class="lg:col-span-3 flex flex-col justify-between gap-1.5 h-full rounded-2xl bg-slate-900/80 p-2 sm:p-2.5 border-2 border-blue-500 shadow-xl transition-all overflow-hidden relative min-h-[300px] lg:min-h-0 glow-pulse-blue">
       
-      <!-- P1 Header Status -->
-      <div class="flex items-center justify-between p-2 rounded-xl bg-blue-950/70 border border-blue-500/50 shadow shrink-0">
+      <!-- Stage Header Kiri -->
+      <div class="flex items-center justify-between p-2 rounded-xl bg-slate-950/80 border border-white/10 shrink-0">
         <div class="flex items-center gap-2">
-          <div class="w-7 h-7 rounded-full bg-blue-600 text-white font-fun font-bold text-xs flex items-center justify-center shadow-md">1</div>
-          <div>
-            <h3 class="text-xs sm:text-sm font-bold text-blue-300 font-fun">PEMAIN 1 (BIRU)</h3>
-            <p class="text-[10px] text-slate-300">Akurasi: <strong id="p1ScoreBadge" class="text-emerald-400">100%</strong></p>
-          </div>
+          <span id="leftPlayerIndicatorDot" class="w-2.5 h-2.5 rounded-full bg-blue-400 animate-ping"></span>
+          <h3 id="leftCamStageHeader" class="text-xs sm:text-sm font-bold text-blue-300 font-fun">Pemain 1 (Biru)</h3>
         </div>
-        <div class="text-right">
-          <span id="p1TileBadge" class="px-2 py-0.5 rounded-lg bg-blue-600 text-white font-fun font-bold text-xs shadow">Petak 1</span>
-          <p id="p1TurnStatus" class="text-[9px] font-bold text-blue-300 mt-0.5">🔥 GILIRAN ANDA</p>
+        <span id="leftTurnBadge" class="text-[10px] font-bold px-2 py-0.5 rounded-full bg-blue-600/30 text-blue-300 border border-blue-400/30">
+          🔥 GILIRAN ANDA
+        </span>
+      </div>
+
+      <!-- Viewport Kamera Sensor Kiri -->
+      <div id="leftCameraViewportCard" class="relative flex-1 w-full rounded-2xl overflow-hidden bg-slate-950 border border-white/10 shadow-2xl flex items-center justify-center min-h-[190px]">
+        
+        <!-- Video Webcam (Mirrored) -->
+        <video id="webcamVideoLeft" class="w-full h-full object-cover" autoplay playsinline muted></video>
+        
+        <!-- Canvas Skeleton Overlay -->
+        <canvas id="poseCanvasLeft" class="absolute inset-0 w-full h-full pointer-events-none"></canvas>
+
+        <!-- Kotak Sasaran A (Kiri) -->
+        <div id="leftTargetBoxA" class="quiz-target-box absolute left-[3%] top-[20%] w-[34%] h-[60%] rounded-2xl border-2 border-dashed border-blue-400 bg-blue-500/20 backdrop-blur-sm pointer-events-none flex flex-col items-center justify-between p-2 shadow-lg transition-all hidden">
+          <span class="px-2 py-0.5 rounded-full bg-blue-600 text-white font-fun font-bold text-[10px] shadow">KOTAK A</span>
+          <span class="text-2xl animate-pulse">👈</span>
+          <p id="leftTargetOptionAText" class="text-[10px] font-bold text-center text-blue-100 leading-tight line-clamp-2 px-1"></p>
+          <span class="text-[9px] font-bold text-blue-200 uppercase">Tangan Kiri</span>
+        </div>
+
+        <!-- Kotak Sasaran B (Kanan) -->
+        <div id="leftTargetBoxB" class="quiz-target-box absolute right-[3%] top-[20%] w-[34%] h-[60%] rounded-2xl border-2 border-dashed border-purple-400 bg-purple-500/20 backdrop-blur-sm pointer-events-none flex flex-col items-center justify-between p-2 shadow-lg transition-all hidden">
+          <span class="px-2 py-0.5 rounded-full bg-purple-600 text-white font-fun font-bold text-[10px] shadow">KOTAK B</span>
+          <span class="text-2xl animate-pulse">👉</span>
+          <p id="leftTargetOptionBText" class="text-[10px] font-bold text-center text-purple-100 leading-tight line-clamp-2 px-1"></p>
+          <span class="text-[9px] font-bold text-purple-200 uppercase">Tangan Kanan</span>
+        </div>
+
+        <!-- Standby Overlay (Saat Giliran Pemain Kanan: P2 atau P4) -->
+        <div id="leftStandbyOverlay" class="absolute inset-0 bg-slate-950/80 backdrop-blur-[2px] flex flex-col items-center justify-center p-3 text-center transition-all hidden z-10">
+          <div class="w-12 h-12 rounded-2xl bg-slate-800 text-slate-400 flex items-center justify-center text-2xl mb-2 animate-pulse shadow-inner">⏳</div>
+          <p class="text-xs sm:text-sm font-bold text-slate-200 font-fun">Giliran Sisi Kanan</p>
+          <p id="leftStandbySubText" class="text-[11px] text-slate-400 mt-0.5">Pemain sisi kanan sedang melangkah</p>
+        </div>
+
+      </div>
+
+      <!-- Mini Cards Status Pemain Sisi Kiri (P1 & P3) -->
+      <div class="grid grid-cols-2 gap-1.5 shrink-0">
+        <!-- Card P1 -->
+        <div id="playerCardP1" class="p-1.5 sm:p-2 rounded-xl bg-slate-950/80 border border-blue-500/50 flex items-center justify-between">
+          <div class="flex items-center gap-1.5 min-w-0">
+            <div class="w-5 h-5 rounded-full bg-blue-600 text-white font-fun font-bold text-[10px] flex items-center justify-center shrink-0">1</div>
+            <div class="truncate">
+              <h4 class="text-[10px] font-bold text-blue-300 font-fun truncate">Pemain 1</h4>
+              <p class="text-[9px] text-slate-400"><strong id="p1ScoreBadge" class="text-emerald-400">100%</strong></p>
+            </div>
+          </div>
+          <span id="p1TileBadge" class="px-1.5 py-0.5 rounded bg-blue-600 text-white font-fun font-bold text-[10px] shrink-0">P1</span>
+        </div>
+
+        <!-- Card P3 -->
+        <div id="playerCardP3" class="p-1.5 sm:p-2 rounded-xl bg-slate-950/80 border border-white/10 flex items-center justify-between">
+          <div class="flex items-center gap-1.5 min-w-0">
+            <div class="w-5 h-5 rounded-full bg-emerald-600 text-white font-fun font-bold text-[10px] flex items-center justify-center shrink-0">3</div>
+            <div class="truncate">
+              <h4 class="text-[10px] font-bold text-emerald-400 font-fun truncate">Pemain 3</h4>
+              <p class="text-[9px] text-slate-400"><strong id="p3ScoreBadge" class="text-emerald-400">100%</strong></p>
+            </div>
+          </div>
+          <span id="p3TileBadge" class="px-1.5 py-0.5 rounded bg-emerald-600 text-white font-fun font-bold text-[10px] shrink-0">P1</span>
         </div>
       </div>
 
-      <!-- P1 Instruksi Gerakan -->
-      <div id="p1InstructionBanner" class="px-2.5 py-1.5 rounded-xl font-bold text-center text-[11px] sm:text-xs bg-blue-600 text-white shadow glow-pulse-blue transition-all shrink-0">
-        🙌 Angkat Kedua Tangan untuk Melempar Dadu!
-      </div>
-
-      <!-- P1 Screen / Viewport Kamera & Canvas Overlay -->
-      <div id="p1ScreenCard" class="relative flex-1 w-full rounded-2xl overflow-hidden bg-slate-950 border-2 border-blue-500 shadow-2xl flex items-center justify-center min-h-[180px] transition-all">
-        <!-- Video Webcam P1 (Mirrored) -->
-        <video id="webcamVideoP1" class="w-full h-full object-cover" autoplay playsinline muted></video>
-        <!-- Canvas Skeleton P1 -->
-        <canvas id="poseCanvasP1" class="absolute inset-0 w-full h-full pointer-events-none"></canvas>
-
-        <!-- Kotak Sasaran A (Kiri) P1 -->
-        <div id="p1TargetBoxA" class="quiz-target-box absolute left-1 sm:left-2 top-1/2 -translate-y-1/2 w-16 sm:w-20 h-24 sm:h-28 rounded-2xl border-2 border-dashed border-blue-400 bg-blue-500/20 backdrop-blur-sm pointer-events-none flex flex-col items-center justify-between p-1 shadow-lg transition-all hidden">
-          <span class="px-1.5 py-0.5 rounded-full bg-blue-600 text-white font-fun font-bold text-[9px] shadow">KOTAK A</span>
-          <span class="text-lg animate-pulse">👈</span>
-          <span class="text-[7px] sm:text-[8px] font-bold text-blue-200 uppercase">Tangan Kiri</span>
-        </div>
-
-        <!-- Kotak Sasaran B (Kanan) P1 -->
-        <div id="p1TargetBoxB" class="quiz-target-box absolute right-1 sm:right-2 top-1/2 -translate-y-1/2 w-16 sm:w-20 h-24 sm:h-28 rounded-2xl border-2 border-dashed border-purple-400 bg-purple-500/20 backdrop-blur-sm pointer-events-none flex flex-col items-center justify-between p-1 shadow-lg transition-all hidden">
-          <span class="px-1.5 py-0.5 rounded-full bg-purple-600 text-white font-fun font-bold text-[9px] shadow">KOTAK B</span>
-          <span class="text-lg animate-pulse">👉</span>
-          <span class="text-[7px] sm:text-[8px] font-bold text-purple-200 uppercase">Tangan Kanan</span>
-        </div>
-
-        <!-- P1 Standby Overlay (Saat Giliran Pemain 2) -->
-        <div id="p1StandbyOverlay" class="absolute inset-0 bg-slate-950/75 backdrop-blur-[2px] flex flex-col items-center justify-center p-3 text-center transition-all hidden">
-          <div class="w-10 h-10 rounded-full bg-slate-800 text-slate-400 flex items-center justify-center text-lg mb-1 animate-pulse">⏳</div>
-          <p class="text-xs font-bold text-slate-300">Menunggu Giliran Pemain 2...</p>
-          <p class="text-[10px] text-slate-400">Pemain 1 bersiap di posisi</p>
-        </div>
-
-        <!-- Pop-up: Tantangan Ular P1 -->
-        <div id="p1SnakeAlert" class="absolute inset-x-2 bottom-2 p-2 rounded-xl bg-slate-900/95 border-2 border-rose-500 text-center shadow-2xl hidden">
-          <div class="text-rose-400 font-fun font-bold text-xs mb-0.5">⚠️ AWAS ULAR! JONGKOK SEKARANG!</div>
-          <div class="w-full bg-slate-800 rounded-full h-2 overflow-hidden border border-rose-500/30 mb-0.5">
-            <div id="p1SnakeTimerBar" class="bg-gradient-to-r from-amber-400 to-rose-600 h-full w-full transition-all"></div>
-          </div>
-          <p id="p1SnakeTimerText" class="text-[10px] font-bold text-rose-300">3.0s</p>
-        </div>
-
-        <!-- Pop-up: Tantangan Tangga P1 -->
-        <div id="p1LadderAlert" class="absolute inset-x-2 bottom-2 p-2 rounded-xl bg-slate-900/95 border-2 border-amber-500 text-center shadow-2xl hidden">
-          <div class="text-amber-300 font-fun font-bold text-xs mb-0.5">🧗 PANJAT TANGGA (4X)!</div>
-          <div class="w-full bg-slate-800 rounded-full h-2 overflow-hidden border border-amber-500/30 mb-0.5">
-            <div id="p1LadderProgressBar" class="bg-gradient-to-r from-amber-400 to-emerald-500 h-full w-0 transition-all"></div>
-          </div>
-          <p id="p1LadderCounterText" class="text-xs font-fun font-bold text-amber-300">0 / 4</p>
-        </div>
-      </div>
     </section>
 
     <!-- ==================================================================
-         KOLOM TENGAH: PAPAN ULAR TANGGA (DIPERKECIL) & DADU 3D
+         KOLOM TENGAH (lg:col-span-6): PAPAN 50 KOTAK & DADU 3D
          ================================================================== -->
-    <section class="lg:col-span-4 flex flex-col justify-between gap-1.5 h-full rounded-2xl bg-slate-800/60 backdrop-blur-md p-2 sm:p-2.5 border border-white/10 shadow-xl overflow-hidden relative min-h-[420px] lg:min-h-0">
+    <section class="lg:col-span-6 flex flex-col justify-between gap-1.5 h-full rounded-2xl bg-slate-900/80 backdrop-blur-md p-2 sm:p-2.5 border border-white/10 shadow-xl overflow-hidden relative min-h-[420px] lg:min-h-0">
       
-      <!-- Center Header: Indikator Giliran Aktif & Putaran -->
-      <div class="flex items-center justify-between px-2.5 py-1.5 rounded-xl bg-slate-900/80 border border-white/10 shrink-0">
+      <!-- Center Top: Indikator 4 Pemain Strip (sesuai instruksi: "INDIKATOR PLAYER TARUH DI ATAS SAMPING ULAR TANGGA KINESTIK") -->
+      <div class="grid grid-cols-2 sm:grid-cols-4 gap-1.5 shrink-0">
+        <!-- P1 Top Card -->
+        <div id="p1TopCard" class="p-1.5 rounded-xl bg-slate-950/80 border-2 border-blue-500 flex items-center justify-between transition-all">
+          <div class="flex items-center gap-1.5 min-w-0">
+            <div class="w-5 h-5 rounded-full bg-blue-600 text-white font-fun font-bold text-[10px] flex items-center justify-center shrink-0">1</div>
+            <div class="truncate">
+              <p class="text-[11px] font-bold text-blue-300 font-fun truncate">P1 (Biru)</p>
+              <p class="text-[9px] text-slate-400">Petak <strong id="p1TopTile" class="text-white">1</strong>/50</p>
+            </div>
+          </div>
+          <span id="p1TopBadge" class="text-[9px] font-bold px-1.5 py-0.5 rounded bg-blue-600/40 text-blue-200">GILIRAN</span>
+        </div>
+
+        <!-- P2 Top Card -->
+        <div id="p2TopCard" class="p-1.5 rounded-xl bg-slate-950/80 border border-white/10 flex items-center justify-between transition-all">
+          <div class="flex items-center gap-1.5 min-w-0">
+            <div class="w-5 h-5 rounded-full bg-red-600 text-white font-fun font-bold text-[10px] flex items-center justify-center shrink-0">2</div>
+            <div class="truncate">
+              <p class="text-[11px] font-bold text-red-400 font-fun truncate">P2 (Merah)</p>
+              <p class="text-[9px] text-slate-400">Petak <strong id="p2TopTile" class="text-white">1</strong>/50</p>
+            </div>
+          </div>
+          <span id="p2TopBadge" class="text-[9px] font-bold px-1.5 py-0.5 rounded bg-slate-800 text-slate-400">TUNGGU</span>
+        </div>
+
+        <!-- P3 Top Card -->
+        <div id="p3TopCard" class="p-1.5 rounded-xl bg-slate-950/80 border border-white/10 flex items-center justify-between transition-all">
+          <div class="flex items-center gap-1.5 min-w-0">
+            <div class="w-5 h-5 rounded-full bg-emerald-600 text-white font-fun font-bold text-[10px] flex items-center justify-center shrink-0">3</div>
+            <div class="truncate">
+              <p class="text-[11px] font-bold text-emerald-400 font-fun truncate">P3 (Hijau)</p>
+              <p class="text-[9px] text-slate-400">Petak <strong id="p3TopTile" class="text-white">1</strong>/50</p>
+            </div>
+          </div>
+          <span id="p3TopBadge" class="text-[9px] font-bold px-1.5 py-0.5 rounded bg-slate-800 text-slate-400">TUNGGU</span>
+        </div>
+
+        <!-- P4 Top Card -->
+        <div id="p4TopCard" class="p-1.5 rounded-xl bg-slate-950/80 border border-white/10 flex items-center justify-between transition-all">
+          <div class="flex items-center gap-1.5 min-w-0">
+            <div class="w-5 h-5 rounded-full bg-purple-600 text-white font-fun font-bold text-[10px] flex items-center justify-center shrink-0">4</div>
+            <div class="truncate">
+              <p class="text-[11px] font-bold text-purple-400 font-fun truncate">P4 (Ungu)</p>
+              <p class="text-[9px] text-slate-400">Petak <strong id="p4TopTile" class="text-white">1</strong>/50</p>
+            </div>
+          </div>
+          <span id="p4TopBadge" class="text-[9px] font-bold px-1.5 py-0.5 rounded bg-slate-800 text-slate-400">TUNGGU</span>
+        </div>
+      </div>
+
+      <!-- Banner Panduan Langkah Aktif & Putaran -->
+      <div class="flex items-center justify-between px-2.5 py-1.5 rounded-xl bg-slate-950/80 border border-white/10 shrink-0 gap-2">
         <div id="activePlayerBanner" class="flex items-center gap-2">
           <span id="activePlayerIcon" class="w-5 h-5 rounded-full bg-blue-600 text-white font-fun font-bold text-xs flex items-center justify-center">1</span>
           <span id="activePlayerText" class="text-xs sm:text-sm font-fun font-bold text-blue-400">Giliran: Pemain 1 (Biru)</span>
@@ -183,16 +257,36 @@
         </div>
       </div>
 
-      <!-- Canvas Container: Papan Ular Tangga 5x5 Diperkecil di Tengah -->
-      <div id="boardCanvasContainer" class="flex-1 w-full min-h-0 flex items-center justify-center bg-slate-900/70 rounded-xl p-1 border border-white/5 overflow-hidden relative">
-        <canvas id="gameCanvas" class="rounded-xl drop-shadow-md"></canvas>
+      <!-- Instruction Action Alert -->
+      <div id="gameInstructionBanner" class="px-2.5 py-1.5 rounded-xl font-bold text-center text-xs sm:text-sm bg-blue-950/90 text-blue-200 border border-blue-500/50 shadow transition-all shrink-0">
+        🙌 Pemain 1: Angkat Kedua Tangan / Klik Dadu untuk Melangkah!
       </div>
 
-      <!-- Dadu Virtual 3D & Ringkasan Jalur Tangga/Ular -->
-      <div class="flex items-center justify-between px-2.5 py-1.5 rounded-xl bg-slate-900/80 border border-white/10 shrink-0">
+      <!-- Canvas Container: Papan 50 Kotak (10 Kolom x 5 Baris) Diperkecil Pas Tampilan -->
+      <div id="boardCanvasContainer" class="flex-1 w-full min-h-0 flex items-center justify-center bg-slate-950/70 rounded-2xl p-1.5 border border-white/5 overflow-hidden relative">
+        <canvas id="gameCanvas" class="rounded-xl drop-shadow-md"></canvas>
+
+        <!-- Overlay: Tantangan Memanjat Tangga -->
+        <div id="ladderAlertOverlay" class="absolute inset-x-4 bottom-3 p-3 rounded-2xl bg-slate-900/95 border-2 border-amber-500 text-center shadow-2xl hidden z-30">
+          <div class="text-amber-300 font-fun font-bold text-sm mb-1">🪜 PANJAT TANGGA (4X)!</div>
+          <p class="text-[11px] text-slate-300 mb-1.5">Angkat tangan kiri dan kanan bergantian di depan kamera!</p>
+          <div class="w-full bg-slate-800 rounded-full h-3 overflow-hidden border border-amber-500/30 mb-1.5">
+            <div id="ladderProgressBar" class="bg-gradient-to-r from-amber-400 to-emerald-500 h-full w-0 transition-all"></div>
+          </div>
+          <div class="flex items-center justify-between mt-1">
+            <p id="ladderCounterText" class="text-xs font-fun font-bold text-amber-300">0 / 4</p>
+            <button id="btnManualClimbStep" class="px-3 py-1 bg-amber-600 hover:bg-amber-500 text-white rounded-lg text-xs font-bold cursor-pointer transition-all">
+              Panjat (+1)
+            </button>
+          </div>
+        </div>
+      </div>
+
+      <!-- Kontrol Bawah: Dadu 3D Virtual & Toolbar Simulasi Cepat -->
+      <div class="flex items-center justify-between px-2.5 py-1.5 rounded-xl bg-slate-950/80 border border-white/10 shrink-0 gap-2">
         <!-- 3D Dice Component -->
         <div class="flex items-center gap-2.5">
-          <div id="diceCubeContainer" class="dice-scene cursor-pointer select-none" title="Klik untuk melempar dadu">
+          <div id="diceCubeContainer" class="dice-scene cursor-pointer select-none" title="Klik untuk melempar dadu (atau Tekan Spasi)">
             <div id="diceCube" class="dice-cube show-1">
               <div class="dice-face front face-1">
                 <span class="dot"></span>
@@ -231,169 +325,273 @@
           </div>
           <div>
             <p class="text-[11px] font-bold text-slate-200">Dadu 3D Virtual</p>
-            <p class="text-[9px] text-slate-400">Angkat kedua tangan / klik</p>
+            <p class="text-[9px] text-slate-400">Angkat kedua tangan / klik / spasi</p>
           </div>
         </div>
 
-        <!-- Jalur Tangga & Ular Ringkas -->
-        <div class="text-[10px] text-right font-medium leading-tight">
-          <div class="text-amber-300">🪜 Tangga: 3➔11 | 9➔18 | 14➔22</div>
-          <div class="text-rose-400 mt-0.5">🐍 Ular: 12➔4 | 19➔8 | 24➔16</div>
-        </div>
-      </div>
-
-      <!-- Pop-up Kartu Soal Kuis (Muncul di Arena Tengah) -->
-      <div id="quizCardOverlay" class="absolute inset-x-2 bottom-2 p-3 rounded-2xl bg-slate-900/95 border-2 border-indigo-500 shadow-2xl flex flex-col gap-1.5 z-20 hidden">
-        <div class="flex items-center justify-between">
-          <span id="quizCategoryBadge" class="text-[10px] sm:text-xs font-bold px-2 py-0.5 rounded-full bg-emerald-500/20 text-emerald-300 border border-emerald-400/30">
-            Bahasa Arab: As-Sa'ah
-          </span>
-          <span class="text-[10px] text-slate-300">Arahkan tangan ke Kotak A/B (1,5 dtk)</span>
-        </div>
-
-        <p id="quizQuestionText" class="text-xs sm:text-sm font-bold text-white leading-snug">
-          Pertanyaan kuis sedang dimuat...
-        </p>
-
-        <!-- Opsi Pilihan A & B (Teks Hitam Pekat di atas Kartu Putih Bersih) -->
-        <div class="grid grid-cols-2 gap-2 mt-0.5">
-          <!-- Opsi A (Kiri) -->
-          <div id="optionCardA" class="option-card p-2 rounded-xl bg-white border-2 border-slate-300 shadow relative overflow-hidden flex flex-col justify-between cursor-pointer">
-            <div class="flex items-center gap-1.5 mb-1">
-              <span class="w-5 h-5 rounded bg-blue-600 text-white font-fun font-bold text-xs flex items-center justify-center shadow-sm">A</span>
-              <span class="text-[10px] text-slate-700 font-bold">(Kotak Kiri)</span>
-            </div>
-            <p id="quizOptionAText" class="text-xs sm:text-sm font-extrabold text-black leading-tight"></p>
-            <!-- Dwell Progress Bar -->
-            <div class="w-full bg-slate-200 h-1.5 rounded-full mt-1.5 overflow-hidden border border-slate-300">
-              <div id="dwellBarA" class="bg-emerald-500 h-full w-0 transition-all"></div>
-            </div>
-          </div>
-
-          <!-- Opsi B (Kanan) -->
-          <div id="optionCardB" class="option-card p-2 rounded-xl bg-white border-2 border-slate-300 shadow relative overflow-hidden flex flex-col justify-between cursor-pointer">
-            <div class="flex items-center gap-1.5 mb-1">
-              <span class="w-5 h-5 rounded bg-purple-600 text-white font-fun font-bold text-xs flex items-center justify-center shadow-sm">B</span>
-              <span class="text-[10px] text-slate-700 font-bold">(Kotak Kanan)</span>
-            </div>
-            <p id="quizOptionBText" class="text-xs sm:text-sm font-extrabold text-black leading-tight"></p>
-            <!-- Dwell Progress Bar -->
-            <div class="w-full bg-slate-200 h-1.5 rounded-full mt-1.5 overflow-hidden border border-slate-300">
-              <div id="dwellBarB" class="bg-emerald-500 h-full w-0 transition-all"></div>
-            </div>
-          </div>
-        </div>
-
-        <!-- Penjelasan Edukatif saat Salah -->
-        <div id="quizExplanationBox" class="p-2 rounded-xl bg-amber-100 border-2 border-amber-400 text-black text-xs hidden">
-          <p class="font-extrabold text-amber-950 text-[11px] mb-0.5">💡 Penjelasan:</p>
-          <p id="quizExplanationText" class="text-black font-bold text-xs leading-snug"></p>
-        </div>
-      </div>
-
-      <!-- Tombol Uji Gerak Cepat (Simulation Toolbar) -->
-      <div class="px-2 py-1 rounded-xl bg-slate-900/60 border border-white/5 text-[10px] shrink-0">
-        <div class="flex items-center justify-between gap-1">
-          <span class="text-slate-400 font-bold text-[9px] shrink-0">🎮 Uji:</span>
-          <button id="simArmsUpBtn" class="py-0.5 px-2 bg-blue-600/80 hover:bg-blue-600 text-white rounded text-[9px] font-bold transition-all cursor-pointer">
-            🙌 Dadu
+        <!-- Tombol Uji Cepat (Simulation Toolbar) -->
+        <div class="flex items-center gap-1">
+          <button id="simArmsUpBtn" class="py-1 px-2 bg-blue-600/80 hover:bg-blue-600 text-white rounded text-[10px] font-bold transition-all cursor-pointer">
+            🎲 Lempar
           </button>
-          <button id="simChoiceABtn" class="py-0.5 px-2 bg-sky-600/80 hover:bg-sky-600 text-white rounded text-[9px] font-bold transition-all cursor-pointer">
+          <button id="simChoiceABtn" class="py-1 px-2 bg-sky-600/80 hover:bg-sky-600 text-white rounded text-[10px] font-bold transition-all cursor-pointer">
             👈 A
           </button>
-          <button id="simChoiceBBtn" class="py-0.5 px-2 bg-purple-600/80 hover:bg-purple-600 text-white rounded text-[9px] font-bold transition-all cursor-pointer">
+          <button id="simChoiceBBtn" class="py-1 px-2 bg-purple-600/80 hover:bg-purple-600 text-white rounded text-[10px] font-bold transition-all cursor-pointer">
             👉 B
           </button>
-          <button id="simSquatBtn" class="py-0.5 px-2 bg-rose-600/80 hover:bg-rose-600 text-white rounded text-[9px] font-bold transition-all cursor-pointer">
+          <button id="simSquatBtn" class="py-1 px-2 bg-rose-600/80 hover:bg-rose-600 text-white rounded text-[10px] font-bold transition-all cursor-pointer">
             🧘 Jongkok
           </button>
-          <button id="simClimbBtn" class="py-0.5 px-2 bg-amber-600/80 hover:bg-amber-600 text-white rounded text-[9px] font-bold transition-all cursor-pointer">
-            🧗 Panjat
+          <button id="simClimbBtn" class="py-1 px-2 bg-amber-600/80 hover:bg-amber-600 text-white rounded text-[10px] font-bold transition-all cursor-pointer">
+            🪜 Panjat
           </button>
+        </div>
+      </div>
+
+      <!-- Pop-up Kartu Soal Kuis (Muncul JELAS di Tengah Layar dengan Backdrop Elegan) -->
+      <div id="quizCardOverlay" class="absolute inset-0 bg-slate-950/85 backdrop-blur-md flex items-center justify-center p-3 sm:p-5 z-40 hidden transition-all">
+        <div class="bg-gradient-to-b from-slate-900 to-indigo-950/95 border-2 border-indigo-400/80 rounded-3xl p-4 sm:p-6 max-w-xl w-full shadow-2xl flex flex-col gap-3 relative animate-in fade-in zoom-in-95 duration-200">
+          
+          <!-- Header Soal: Kategori & Info Dwell -->
+          <div class="flex items-center justify-between pb-2 border-b border-white/10">
+            <div class="flex items-center gap-2">
+              <span class="w-2.5 h-2.5 rounded-full bg-emerald-400 animate-pulse"></span>
+              <span id="quizCategoryBadge" class="text-xs sm:text-sm font-bold font-fun px-2.5 py-1 rounded-full bg-indigo-500/20 text-indigo-300 border border-indigo-400/30 shadow-sm">
+                📚 IPS SMP: Geografi Indonesia
+              </span>
+            </div>
+            <span class="text-[11px] font-semibold text-amber-300 bg-amber-500/10 px-2 py-0.5 rounded-lg border border-amber-400/20">
+              ⏱️ Tahan 1.3 detik / Klik
+            </span>
+          </div>
+
+          <!-- Teks Pertanyaan: BESAR, JELAS, MUDAH DIBACA DARI JAUH -->
+          <div class="p-3 sm:p-4 rounded-2xl bg-slate-950/70 border border-white/10 shadow-inner">
+            <p id="quizQuestionText" class="text-sm sm:text-base md:text-lg font-extrabold text-white leading-relaxed text-center">
+              Pertanyaan kuis sedang dimuat...
+            </p>
+          </div>
+
+          <!-- Instruksi Sensor Tangan -->
+          <p class="text-center text-xs text-slate-300 font-medium">
+            👈 Arahkan tangan ke <strong class="text-blue-400 font-bold">Kotak A (Kiri)</strong> atau 👉 <strong class="text-purple-400 font-bold">Kotak B (Kanan)</strong>
+          </p>
+
+          <!-- Opsi Pilihan A & B: Kartu Besar, Kontras Tinggi & Dwell Bar -->
+          <div class="grid grid-cols-1 sm:grid-cols-2 gap-3 mt-1">
+            
+            <!-- Opsi A (Kiri) -->
+            <div id="optionCardA" class="option-card p-3 sm:p-4 rounded-2xl bg-white border-2 border-blue-400 shadow-xl relative overflow-hidden flex flex-col justify-between cursor-pointer hover:border-blue-600 transition-all">
+              <div class="flex items-center justify-between mb-1.5">
+                <span class="px-2.5 py-1 rounded-xl bg-blue-600 text-white font-fun font-bold text-xs sm:text-sm shadow">
+                  PILIHAN A
+                </span>
+                <span class="text-xs text-blue-800 font-bold flex items-center gap-1">
+                  <span>👈</span> Kotak Kiri
+                </span>
+              </div>
+              <p id="quizOptionAText" class="text-sm sm:text-base font-extrabold text-slate-950 leading-snug my-1"></p>
+              <div class="w-full bg-slate-200 h-2.5 rounded-full mt-2 overflow-hidden border border-slate-300">
+                <div id="dwellBarA" class="bg-gradient-to-r from-blue-500 to-emerald-500 h-full w-0 transition-all"></div>
+              </div>
+            </div>
+
+            <!-- Opsi B (Kanan) -->
+            <div id="optionCardB" class="option-card p-3 sm:p-4 rounded-2xl bg-white border-2 border-purple-400 shadow-xl relative overflow-hidden flex flex-col justify-between cursor-pointer hover:border-purple-600 transition-all">
+              <div class="flex items-center justify-between mb-1.5">
+                <span class="px-2.5 py-1 rounded-xl bg-purple-600 text-white font-fun font-bold text-xs sm:text-sm shadow">
+                  PILIHAN B
+                </span>
+                <span class="text-xs text-purple-800 font-bold flex items-center gap-1">
+                  <span>👉</span> Kotak Kanan
+                </span>
+              </div>
+              <p id="quizOptionBText" class="text-sm sm:text-base font-extrabold text-slate-950 leading-snug my-1"></p>
+              <div class="w-full bg-slate-200 h-2.5 rounded-full mt-2 overflow-hidden border border-slate-300">
+                <div id="dwellBarB" class="bg-gradient-to-r from-purple-500 to-emerald-500 h-full w-0 transition-all"></div>
+              </div>
+            </div>
+
+          </div>
+
+          <!-- Penjelasan Edukatif saat Salah -->
+          <div id="quizExplanationBox" class="p-3 rounded-2xl bg-amber-950/90 border-2 border-amber-400 text-white text-xs sm:text-sm shadow-lg hidden">
+            <p class="font-extrabold text-amber-300 text-xs sm:text-sm mb-1 flex items-center gap-1.5">
+              <span>💡</span> Penjelasan Materi IPS:
+            </p>
+            <p id="quizExplanationText" class="text-amber-100 font-bold text-xs sm:text-sm leading-relaxed"></p>
+          </div>
+
         </div>
       </div>
 
     </section>
 
     <!-- ==================================================================
-         KOLOM KANAN: LAYAR 2 - PEMAIN 2 (ORANYE)
+         KOLOM KANAN (lg:col-span-3): LAYAR SENSOR KANAN (P2 Merah & P4 Ungu)
          ================================================================== -->
-    <section id="p2PlayerSection" class="lg:col-span-3 flex flex-col justify-between gap-1.5 h-full rounded-2xl bg-slate-800/60 p-2 sm:p-2.5 border-2 border-slate-700 opacity-70 shadow-xl transition-all overflow-hidden relative min-h-[300px] lg:min-h-0">
+    <section id="rightSensorSection" class="lg:col-span-3 flex flex-col justify-between gap-1.5 h-full rounded-2xl bg-slate-900/80 p-2 sm:p-2.5 border border-white/10 shadow-xl transition-all overflow-hidden relative min-h-[300px] lg:min-h-0">
       
-      <!-- P2 Header Status -->
-      <div class="flex items-center justify-between p-2 rounded-xl bg-slate-900/70 border border-slate-700 shadow shrink-0">
+      <!-- Stage Header Kanan -->
+      <div class="flex items-center justify-between p-2 rounded-xl bg-slate-950/80 border border-white/10 shrink-0">
         <div class="flex items-center gap-2">
-          <div class="w-7 h-7 rounded-full bg-orange-600 text-white font-fun font-bold text-xs flex items-center justify-center shadow-md">2</div>
-          <div>
-            <h3 class="text-xs sm:text-sm font-bold text-orange-400 font-fun">PEMAIN 2 (ORANYE)</h3>
-            <p class="text-[10px] text-slate-300">Akurasi: <strong id="p2ScoreBadge" class="text-emerald-400">100%</strong></p>
-          </div>
+          <span id="rightPlayerIndicatorDot" class="w-2.5 h-2.5 rounded-full bg-red-400"></span>
+          <h3 id="rightCamStageHeader" class="text-xs sm:text-sm font-bold text-red-400 font-fun">Pemain 2 (Merah)</h3>
         </div>
-        <div class="text-right">
-          <span id="p2TileBadge" class="px-2 py-0.5 rounded-lg bg-orange-600 text-white font-fun font-bold text-xs shadow">Petak 1</span>
-          <p id="p2TurnStatus" class="text-[9px] font-bold text-slate-400 mt-0.5">⏳ MENUNGGU P1</p>
+        <span id="rightTurnBadge" class="text-[10px] font-bold px-2 py-0.5 rounded-full bg-slate-800 text-slate-400 border border-white/10">
+          ⏳ MENUNGGU
+        </span>
+      </div>
+
+      <!-- Viewport Kamera Sensor Kanan -->
+      <div id="rightCameraViewportCard" class="relative flex-1 w-full rounded-2xl overflow-hidden bg-slate-950 border border-white/10 shadow-2xl flex items-center justify-center min-h-[190px]">
+        
+        <!-- Video Webcam (Mirrored) -->
+        <video id="webcamVideoRight" class="w-full h-full object-cover" autoplay playsinline muted></video>
+        
+        <!-- Canvas Skeleton Overlay -->
+        <canvas id="poseCanvasRight" class="absolute inset-0 w-full h-full pointer-events-none"></canvas>
+
+        <!-- Kotak Sasaran A (Kiri) -->
+        <div id="rightTargetBoxA" class="quiz-target-box absolute left-[3%] top-[20%] w-[34%] h-[60%] rounded-2xl border-2 border-dashed border-blue-400 bg-blue-500/20 backdrop-blur-sm pointer-events-none flex flex-col items-center justify-between p-2 shadow-lg transition-all hidden">
+          <span class="px-2 py-0.5 rounded-full bg-blue-600 text-white font-fun font-bold text-[10px] shadow">KOTAK A</span>
+          <span class="text-2xl animate-pulse">👈</span>
+          <p id="rightTargetOptionAText" class="text-[10px] font-bold text-center text-blue-100 leading-tight line-clamp-2 px-1"></p>
+          <span class="text-[9px] font-bold text-blue-200 uppercase">Tangan Kiri</span>
+        </div>
+
+        <!-- Kotak Sasaran B (Kanan) -->
+        <div id="rightTargetBoxB" class="quiz-target-box absolute right-[3%] top-[20%] w-[34%] h-[60%] rounded-2xl border-2 border-dashed border-purple-400 bg-purple-500/20 backdrop-blur-sm pointer-events-none flex flex-col items-center justify-between p-2 shadow-lg transition-all hidden">
+          <span class="px-2 py-0.5 rounded-full bg-purple-600 text-white font-fun font-bold text-[10px] shadow">KOTAK B</span>
+          <span class="text-2xl animate-pulse">👉</span>
+          <p id="rightTargetOptionBText" class="text-[10px] font-bold text-center text-purple-100 leading-tight line-clamp-2 px-1"></p>
+          <span class="text-[9px] font-bold text-purple-200 uppercase">Tangan Kanan</span>
+        </div>
+
+        <!-- Standby Overlay (Saat Giliran Pemain Kiri: P1 atau P3) -->
+        <div id="rightStandbyOverlay" class="absolute inset-0 bg-slate-950/80 backdrop-blur-[2px] flex flex-col items-center justify-center p-3 text-center transition-all z-10">
+          <div class="w-12 h-12 rounded-2xl bg-slate-800 text-slate-400 flex items-center justify-center text-2xl mb-2 animate-pulse shadow-inner">⏳</div>
+          <p class="text-xs sm:text-sm font-bold text-slate-200 font-fun">Giliran Sisi Kiri</p>
+          <p id="rightStandbySubText" class="text-[11px] text-slate-400 mt-0.5">Pemain sisi kiri sedang melangkah</p>
+        </div>
+
+      </div>
+
+      <!-- Mini Cards Status Pemain Sisi Kanan (P2 & P4) -->
+      <div class="grid grid-cols-2 gap-1.5 shrink-0">
+        <!-- Card P2 -->
+        <div id="playerCardP2" class="p-1.5 sm:p-2 rounded-xl bg-slate-950/80 border border-white/10 flex items-center justify-between">
+          <div class="flex items-center gap-1.5 min-w-0">
+            <div class="w-5 h-5 rounded-full bg-red-600 text-white font-fun font-bold text-[10px] flex items-center justify-center shrink-0">2</div>
+            <div class="truncate">
+              <h4 class="text-[10px] font-bold text-red-400 font-fun truncate">Pemain 2</h4>
+              <p class="text-[9px] text-slate-400"><strong id="p2ScoreBadge" class="text-emerald-400">100%</strong></p>
+            </div>
+          </div>
+          <span id="p2TileBadge" class="px-1.5 py-0.5 rounded bg-red-600 text-white font-fun font-bold text-[10px] shrink-0">P1</span>
+        </div>
+
+        <!-- Card P4 -->
+        <div id="playerCardP4" class="p-1.5 sm:p-2 rounded-xl bg-slate-950/80 border border-white/10 flex items-center justify-between">
+          <div class="flex items-center gap-1.5 min-w-0">
+            <div class="w-5 h-5 rounded-full bg-purple-600 text-white font-fun font-bold text-[10px] flex items-center justify-center shrink-0">4</div>
+            <div class="truncate">
+              <h4 class="text-[10px] font-bold text-purple-400 font-fun truncate">Pemain 4</h4>
+              <p class="text-[9px] text-slate-400"><strong id="p4ScoreBadge" class="text-emerald-400">100%</strong></p>
+            </div>
+          </div>
+          <span id="p4TileBadge" class="px-1.5 py-0.5 rounded bg-purple-600 text-white font-fun font-bold text-[10px] shrink-0">P1</span>
         </div>
       </div>
 
-      <!-- P2 Instruksi Gerakan -->
-      <div id="p2InstructionBanner" class="px-2.5 py-1.5 rounded-xl font-bold text-center text-[11px] sm:text-xs bg-slate-800 text-slate-300 shadow transition-all shrink-0">
-        ⏳ Bersiap untuk Giliran Pemain 2
-      </div>
-
-      <!-- P2 Screen / Viewport Kamera & Canvas Overlay -->
-      <div id="p2ScreenCard" class="relative flex-1 w-full rounded-2xl overflow-hidden bg-slate-950 border-2 border-slate-700 shadow-2xl flex items-center justify-center min-h-[180px] transition-all">
-        <!-- Video Webcam P2 (Mirrored) -->
-        <video id="webcamVideoP2" class="w-full h-full object-cover" autoplay playsinline muted></video>
-        <!-- Canvas Skeleton P2 -->
-        <canvas id="poseCanvasP2" class="absolute inset-0 w-full h-full pointer-events-none"></canvas>
-
-        <!-- Kotak Sasaran A (Kiri) P2 -->
-        <div id="p2TargetBoxA" class="quiz-target-box absolute left-1 sm:left-2 top-1/2 -translate-y-1/2 w-16 sm:w-20 h-24 sm:h-28 rounded-2xl border-2 border-dashed border-blue-400 bg-blue-500/20 backdrop-blur-sm pointer-events-none flex flex-col items-center justify-between p-1 shadow-lg transition-all hidden">
-          <span class="px-1.5 py-0.5 rounded-full bg-blue-600 text-white font-fun font-bold text-[9px] shadow">KOTAK A</span>
-          <span class="text-lg animate-pulse">👈</span>
-          <span class="text-[7px] sm:text-[8px] font-bold text-blue-200 uppercase">Tangan Kiri</span>
-        </div>
-
-        <!-- Kotak Sasaran B (Kanan) P2 -->
-        <div id="p2TargetBoxB" class="quiz-target-box absolute right-1 sm:right-2 top-1/2 -translate-y-1/2 w-16 sm:w-20 h-24 sm:h-28 rounded-2xl border-2 border-dashed border-purple-400 bg-purple-500/20 backdrop-blur-sm pointer-events-none flex flex-col items-center justify-between p-1 shadow-lg transition-all hidden">
-          <span class="px-1.5 py-0.5 rounded-full bg-purple-600 text-white font-fun font-bold text-[9px] shadow">KOTAK B</span>
-          <span class="text-lg animate-pulse">👉</span>
-          <span class="text-[7px] sm:text-[8px] font-bold text-purple-200 uppercase">Tangan Kanan</span>
-        </div>
-
-        <!-- P2 Standby Overlay (Saat Giliran Pemain 1) -->
-        <div id="p2StandbyOverlay" class="absolute inset-0 bg-slate-950/75 backdrop-blur-[2px] flex flex-col items-center justify-center p-3 text-center transition-all">
-          <div class="w-10 h-10 rounded-full bg-slate-800 text-slate-400 flex items-center justify-center text-lg mb-1 animate-pulse">⏳</div>
-          <p class="text-xs font-bold text-slate-300">Menunggu Giliran Pemain 1...</p>
-          <p class="text-[10px] text-slate-400">Pemain 2 bersiap di posisi</p>
-        </div>
-
-        <!-- Pop-up: Tantangan Ular P2 -->
-        <div id="p2SnakeAlert" class="absolute inset-x-2 bottom-2 p-2 rounded-xl bg-slate-900/95 border-2 border-rose-500 text-center shadow-2xl hidden">
-          <div class="text-rose-400 font-fun font-bold text-xs mb-0.5">⚠️ AWAS ULAR! JONGKOK SEKARANG!</div>
-          <div class="w-full bg-slate-800 rounded-full h-2 overflow-hidden border border-rose-500/30 mb-0.5">
-            <div id="p2SnakeTimerBar" class="bg-gradient-to-r from-amber-400 to-rose-600 h-full w-full transition-all"></div>
-          </div>
-          <p id="p2SnakeTimerText" class="text-[10px] font-bold text-rose-300">3.0s</p>
-        </div>
-
-        <!-- Pop-up: Tantangan Tangga P2 -->
-        <div id="p2LadderAlert" class="absolute inset-x-2 bottom-2 p-2 rounded-xl bg-slate-900/95 border-2 border-amber-500 text-center shadow-2xl hidden">
-          <div class="text-amber-300 font-fun font-bold text-xs mb-0.5">🧗 PANJAT TANGGA (4X)!</div>
-          <div class="w-full bg-slate-800 rounded-full h-2 overflow-hidden border border-amber-500/30 mb-0.5">
-            <div id="p2LadderProgressBar" class="bg-gradient-to-r from-amber-400 to-emerald-500 h-full w-0 transition-all"></div>
-          </div>
-          <p id="p2LadderCounterText" class="text-xs font-fun font-bold text-amber-300">0 / 4</p>
-        </div>
-      </div>
     </section>
 
   </main>
 
   <!-- ======================================================================
+       MODAL: HUKUMAN ULAR (Jongkok 3x + Hukuman Seru & Edukatif IPS)
+       ====================================================================== -->
+  <div id="snakePunishmentModal" class="fixed inset-0 z-50 bg-black/85 backdrop-blur-md flex items-center justify-center p-3 sm:p-4 hidden">
+    <div class="bg-slate-900 border-2 border-rose-500 rounded-3xl p-5 sm:p-6 max-w-md w-full shadow-2xl text-center flex flex-col gap-3 glow-pulse-red">
+      
+      <!-- Icon & Title -->
+      <div class="w-14 h-14 rounded-2xl bg-rose-600/30 text-rose-400 flex items-center justify-center text-3xl mx-auto shadow-lg border border-rose-500/40 animate-bounce">
+        🐍
+      </div>
+
+      <div>
+        <h3 id="punishPlayerTitle" class="text-lg sm:text-xl font-bold font-fun text-rose-400 mb-1">
+          🐍 HUKUMAN GIGITAN ULAR!
+        </h3>
+        <p id="punishDescText" class="text-xs text-slate-300 leading-snug">
+          Aduh! Kamu meluncur turun ke bawah! Selesaikan hukuman jongkok dan tantangan seru ini untuk melanjutkan permainan.
+        </p>
+      </div>
+
+      <!-- Bagian 1: Wajib Jongkok (Squat Challenge) -->
+      <div class="p-3 rounded-2xl bg-slate-950/90 border border-rose-500/40 text-left">
+        <div class="flex items-center justify-between mb-1.5">
+          <span class="text-xs font-bold text-amber-300 flex items-center gap-1.5">
+            <span>🧘</span> Tantangan Fisik: Wajib Jongkok (3x)
+          </span>
+          <span id="squatCounterBadge" class="px-2 py-0.5 rounded-full bg-rose-500/30 text-rose-300 border border-rose-400/40 font-fun font-bold text-xs">
+            0 / 3 Jongkok
+          </span>
+        </div>
+        <p class="text-[11px] text-slate-400 leading-tight">
+          Lakukan gerakan jongkok lalu berdiri kembali di depan kamera (atau gunakan tombol bantuan jika tanpa kamera).
+        </p>
+        <button id="btnManualSquatStep" class="w-full mt-2 py-1.5 rounded-xl bg-slate-800 hover:bg-slate-700 text-amber-300 font-bold text-xs border border-amber-400/30 flex items-center justify-center gap-1.5 transition-all cursor-pointer">
+          🏃‍♂️ Saya Sudah Jongkok (+1)
+        </button>
+      </div>
+
+      <!-- Bagian 2: Hukuman Seru & Edukatif IPS -->
+      <div class="p-3 rounded-2xl bg-gradient-to-br from-indigo-950/90 to-purple-950/90 border border-purple-500/40 text-left">
+        <p class="text-[10px] font-bold uppercase tracking-wider text-purple-300 mb-0.5">Tantangan Hukuman Seru:</p>
+        <h4 id="punishFunTitle" class="text-sm font-bold text-white font-fun mb-1">
+          Desisan Sang Ular 🐍
+        </h4>
+        <p id="punishFunInstruction" class="text-xs text-slate-200 leading-relaxed font-medium">
+          Lakukan jongkok 3 kali sambil menirukan desisan ular: "Sssss... ampun raja ular!"
+        </p>
+      </div>
+
+      <!-- Tombol Selesai Hukuman -->
+      <button id="btnFinishSquatPunishment" class="w-full py-2.5 rounded-xl bg-gradient-to-r from-emerald-600 to-teal-600 hover:from-emerald-500 hover:to-teal-500 text-white font-fun font-bold text-sm shadow-lg shadow-emerald-600/30 transition-all cursor-pointer">
+        ✅ Hukuman Selesai! Lanjut Giliran
+      </button>
+
+    </div>
+  </div>
+
+  <!-- ======================================================================
+       MODAL: Kemenangan (Finish Petak 50) Mode 4 Pemain
+       ====================================================================== -->
+  <div id="victoryModal" class="fixed inset-0 z-50 bg-black/85 backdrop-blur-md flex items-center justify-center p-4 hidden">
+    <div class="bg-gradient-to-b from-indigo-900 to-slate-900 border border-amber-400/40 rounded-3xl p-6 sm:p-8 max-w-lg w-full shadow-2xl text-center">
+      <div class="text-6xl mb-2 animate-bounce">🏆</div>
+      <h2 id="victoryWinnerTitle" class="text-2xl font-bold font-fun text-amber-300 mb-1">HORE, PEMAIN 1 JUARA!</h2>
+      <p id="victorySubtitle" class="text-xs text-slate-300 mb-4">Berhasil mencapai Puncak Petak 50 dengan penguasaan materi IPS SMP yang luar biasa!</p>
+
+      <!-- Rekap Skor 4 Pemain -->
+      <div id="victoryPlayerSummaryGrid" class="grid grid-cols-2 gap-2 sm:gap-2.5 mb-4 text-left">
+        <!-- Di-generate dinamis oleh game engine -->
+      </div>
+
+      <p class="text-xs text-slate-400 mb-4">Total Putaran Permainan: <strong id="victoryTurns" class="text-sky-300">0</strong></p>
+
+      <button id="playAgainBtn" class="w-full py-3 rounded-2xl bg-gradient-to-r from-emerald-500 to-teal-500 hover:from-emerald-400 hover:to-teal-400 text-white font-fun font-bold text-sm md:text-base shadow-lg shadow-emerald-500/30 transition-all cursor-pointer">
+        🎮 Main Lagi Dari Awal (Petak 1)
+      </button>
+    </div>
+  </div>
+
+  <!-- ======================================================================
        MODAL: PIN Akses Mode Guru (Default: 1234)
        ====================================================================== -->
-  <div id="teacherPinModal" class="fixed inset-0 z-50 bg-black/70 backdrop-blur-sm flex items-center justify-center p-4 hidden">
+  <div id="teacherPinModal" class="fixed inset-0 z-50 bg-black/75 backdrop-blur-sm flex items-center justify-center p-4 hidden">
     <div class="bg-slate-900 border border-white/20 rounded-2xl p-6 max-w-sm w-full shadow-2xl text-center">
       <div class="w-12 h-12 rounded-xl bg-indigo-600/30 text-indigo-400 flex items-center justify-center text-2xl mx-auto mb-3">
         🔒
@@ -406,75 +604,83 @@
       <p id="teacherPinError" class="text-xs text-rose-400 font-semibold mb-3 hidden">❌ PIN Salah! Silakan coba lagi.</p>
 
       <div class="flex gap-2">
-        <button id="teacherPinCancelBtn" class="flex-1 py-2 rounded-xl bg-slate-800 hover:bg-slate-700 text-slate-300 text-xs font-semibold">Batal</button>
-        <button id="teacherPinSubmitBtn" class="flex-1 py-2 rounded-xl bg-indigo-600 hover:bg-indigo-500 text-white text-xs font-bold shadow-lg shadow-indigo-600/30">Buka</button>
+        <button id="teacherPinCancelBtn" class="flex-1 py-2 rounded-xl bg-slate-800 hover:bg-slate-700 text-slate-300 text-xs font-semibold cursor-pointer">Batal</button>
+        <button id="teacherPinSubmitBtn" class="flex-1 py-2 rounded-xl bg-indigo-600 hover:bg-indigo-500 text-white text-xs font-bold shadow-lg shadow-indigo-600/30 cursor-pointer">Buka</button>
       </div>
     </div>
   </div>
 
   <!-- ======================================================================
-       MODAL: Dashboard CRUD Mode Guru
+       MODAL: Dashboard CRUD Mode Guru (TANPA LINK PEMBELI)
        ====================================================================== -->
   <div id="teacherDashboardModal" class="fixed inset-0 z-50 bg-black/80 backdrop-blur-md flex items-center justify-center p-3 md:p-6 hidden">
-    <div class="bg-slate-900 border border-white/20 rounded-2xl w-full max-w-5xl max-h-[90vh] flex flex-col shadow-2xl overflow-hidden">
+    <div class="bg-slate-900 border border-white/20 rounded-2xl w-full max-w-5xl max-h-[92vh] flex flex-col shadow-2xl overflow-hidden">
       
       <!-- Modal Header -->
       <div class="p-4 bg-slate-800/80 border-b border-white/10 flex items-center justify-between">
         <div>
           <h2 class="text-base md:text-lg font-bold font-fun text-white flex items-center gap-2">
-            ⚙️ Dashboard Mode Guru (Manajemen Bank Soal)
+            ⚙️ Dashboard Mode Guru (Manajemen Bank Soal IPS SMP)
           </h2>
-          <p id="teacherTotalQuestions" class="text-xs text-slate-400">Memuat soal...</p>
+          <p id="teacherTotalQuestions" class="text-xs text-slate-400">Total Soal: Memuat 50 Soal...</p>
         </div>
-        <button id="closeTeacherDashboardBtn" class="p-2 rounded-lg bg-slate-800 hover:bg-slate-700 text-slate-300 text-xs font-bold">
+        <button id="closeTeacherDashboardBtn" class="p-2 rounded-lg bg-slate-800 hover:bg-slate-700 text-slate-300 text-xs font-bold cursor-pointer">
           ✕ Tutup
         </button>
       </div>
 
       <!-- Action Toolbar -->
-      <div class="p-4 bg-slate-900/90 border-b border-white/10 flex flex-wrap items-center justify-between gap-2">
+      <div class="p-3.5 bg-slate-900/90 border-b border-white/10 flex flex-wrap items-center justify-between gap-2">
         <div class="flex items-center gap-2">
           <button id="addQuestionBtn" class="px-3 py-2 rounded-xl bg-emerald-600 hover:bg-emerald-500 text-white text-xs font-bold shadow-md shadow-emerald-600/20 flex items-center gap-1.5 cursor-pointer">
             ➕ Tambah Soal Baru
           </button>
-          
-          <button id="openShareRoomBtn" class="px-3 py-2 rounded-xl bg-gradient-to-r from-indigo-500/20 to-purple-500/20 hover:from-indigo-500/40 hover:to-purple-500/40 text-indigo-300 hover:text-white text-xs font-bold border border-indigo-500/40 flex items-center gap-1.5 transition-all cursor-pointer">
-            🔗 Buat Link Pembeli Baru
+          <button id="resetDefaultQuestionsBtn" class="px-3 py-2 rounded-xl bg-rose-800/80 hover:bg-rose-700 text-rose-200 text-xs font-semibold border border-rose-500/40 flex items-center gap-1 cursor-pointer" title="Kembalikan ke 50 Soal IPS SMP Bawaan">
+            🔄 Reset 50 Soal IPS
           </button>
         </div>
 
         <div class="flex items-center gap-2">
-          <button id="exportQuestionsBtn" class="px-3 py-2 rounded-xl bg-slate-800 hover:bg-slate-700 text-slate-200 text-xs font-semibold border border-white/10 flex items-center gap-1">
-            📤 Ekspor JSON
-          </button>
-          
-          <input type="file" id="importQuestionsInput" accept=".json" class="hidden">
-          <button id="importQuestionsBtn" class="px-3 py-2 rounded-xl bg-slate-800 hover:bg-slate-700 text-slate-200 text-xs font-semibold border border-white/10 flex items-center gap-1">
-            📥 Impor JSON
+          <button id="downloadTemplateBtn" class="px-3 py-2 rounded-xl bg-slate-800 hover:bg-slate-700 text-slate-200 text-xs font-semibold border border-white/10 flex items-center gap-1 cursor-pointer">
+            📄 Template Excel
           </button>
 
-          <button id="resetDefaultQuestionsBtn" class="px-3 py-2 rounded-xl bg-rose-600/20 hover:bg-rose-600/30 text-rose-300 text-xs font-semibold border border-rose-500/30">
-            🔄 Reset ke Default
+          <button id="exportQuestionsBtn" class="px-3 py-2 rounded-xl bg-slate-800 hover:bg-slate-700 text-slate-200 text-xs font-semibold border border-white/10 flex items-center gap-1 cursor-pointer">
+            📤 Ekspor Excel
+          </button>
+
+          <select id="importModeSelect" class="px-2 py-2 rounded-xl bg-slate-800 text-slate-200 text-xs font-semibold border border-white/10 cursor-pointer">
+            <option value="replace">Impor: Ganti semua</option>
+            <option value="append">Impor: Tambahkan</option>
+          </select>
+          <input type="file" id="importQuestionsInput" accept=".xlsx,.xls,.csv,.json" class="hidden">
+          <button id="importQuestionsBtn" class="px-3 py-2 rounded-xl bg-emerald-700 hover:bg-emerald-600 text-white text-xs font-semibold border border-white/10 flex items-center gap-1 cursor-pointer">
+            📥 Impor Excel
           </button>
         </div>
       </div>
 
-      <!-- Table Container -->
-      <div class="flex-1 overflow-auto p-4 bg-white text-slate-800">
+      <!-- Pencarian Soal -->
+      <div class="p-3 bg-slate-950/60 border-b border-white/5">
+        <input id="teacherSearchInput" type="text" placeholder="🔍 Cari soal atau kategori IPS..." class="w-full px-3 py-2 rounded-xl bg-slate-800 border border-slate-700 text-white text-xs focus:outline-none focus:border-indigo-500">
+      </div>
+
+      <!-- Tabel Soal -->
+      <div class="flex-1 overflow-y-auto p-3">
         <table class="w-full text-left border-collapse">
           <thead>
-            <tr class="border-b-2 border-slate-200 text-xs uppercase text-slate-500 bg-slate-100">
-              <th class="p-3">No</th>
-              <th class="p-3">Kategori</th>
-              <th class="p-3">Pertanyaan</th>
-              <th class="p-3">Pilihan (A / B)</th>
-              <th class="p-3">Kunci</th>
-              <th class="p-3">Penjelasan</th>
-              <th class="p-3">Aksi</th>
+            <tr class="border-b border-white/10 text-[11px] font-bold text-slate-400 uppercase">
+              <th class="p-2 w-10 text-center">No</th>
+              <th class="p-2 w-28">Kategori</th>
+              <th class="p-2">Pertanyaan Soal</th>
+              <th class="p-2 w-28">Pilihan A</th>
+              <th class="p-2 w-28">Pilihan B</th>
+              <th class="p-2 w-12 text-center">Kunci</th>
+              <th class="p-2 w-24 text-center">Aksi</th>
             </tr>
           </thead>
-          <tbody id="questionsTableBody" class="divide-y divide-slate-100">
-            <!-- Diisi dinamis oleh app.js -->
+          <tbody id="teacherQuestionsTableBody" class="divide-y divide-white/5">
+            <!-- Diisi dinamis oleh game engine -->
           </tbody>
         </table>
       </div>
@@ -483,655 +689,74 @@
   </div>
 
   <!-- ======================================================================
-       MODAL: Form Tambah / Edit Soal (Fitur Samakan Keterangan Otomatis)
+       MODAL: Form Tambah / Edit Soal
        ====================================================================== -->
-  <div id="questionEditorModal" class="fixed inset-0 z-50 bg-black/80 backdrop-blur-sm flex items-center justify-center p-3 sm:p-4 hidden">
-    <div class="bg-slate-900 border border-white/20 rounded-2xl p-4 sm:p-6 max-w-lg w-full max-h-[92vh] overflow-y-auto shadow-2xl text-left custom-scrollbar">
-      
-      <div class="flex items-center justify-between mb-3 border-b border-white/10 pb-2">
-        <h3 id="questionEditorTitle" class="text-base font-bold font-fun text-white flex items-center gap-2">
-          ➕ Tambah Soal Baru
-        </h3>
-        <span class="text-[11px] text-indigo-300 font-semibold bg-indigo-500/20 px-2.5 py-0.5 rounded-full border border-indigo-400/30">
-          Mode Guru
-        </span>
+  <div id="questionEditModal" class="fixed inset-0 z-50 bg-black/85 backdrop-blur-md flex items-center justify-center p-3 sm:p-4 hidden">
+    <div class="bg-slate-900 border border-white/20 rounded-2xl p-5 sm:p-6 max-w-lg w-full max-h-[92vh] overflow-y-auto shadow-2xl">
+      <div class="flex items-center justify-between pb-3 border-b border-white/10 mb-4">
+        <h3 id="questionEditTitle" class="text-base font-bold font-fun text-white">✏️ Formulir Soal IPS SMP</h3>
+        <span class="text-[11px] text-indigo-300 font-semibold bg-indigo-500/20 px-2.5 py-0.5 rounded-full border border-indigo-400/30">Mode Guru</span>
       </div>
-      
+
       <form id="questionForm" class="flex flex-col gap-3">
         <input type="hidden" id="qEditId">
 
-        <!-- Kategori Pelajaran & Tombol Pilihan Cepat -->
         <div>
-          <div class="flex items-center justify-between mb-1">
-            <label class="block text-xs font-semibold text-slate-300">Kategori Pelajaran</label>
-            <span class="text-[10px] text-slate-400">Klik tombol cepat di bawah</span>
-          </div>
-          <input type="text" id="qEditCategory" required placeholder="Contoh: IPA / Sains, Matematika, B. Indonesia, dll." class="w-full px-3 py-2 rounded-xl bg-slate-800 border border-slate-700 text-white text-xs sm:text-sm focus:outline-none focus:border-indigo-500">
-          
-          <!-- Category Quick Pills (Materi Bahasa Arab SMP: As-Sa'ah) -->
-          <div class="flex flex-wrap gap-1.5 mt-1.5">
-            <button type="button" class="cat-pill text-[11px] px-2.5 py-0.5 rounded-full bg-slate-800 hover:bg-emerald-600 text-slate-300 hover:text-white border border-slate-700 transition-all cursor-pointer" data-cat="Bilangan Jam (الساعة)">⏰ Bilangan Jam</button>
-            <button type="button" class="cat-pill text-[11px] px-2.5 py-0.5 rounded-full bg-slate-800 hover:bg-emerald-600 text-slate-300 hover:text-white border border-slate-700 transition-all cursor-pointer" data-cat="Menit & Pecahan Waktu">⏳ Menit & Pecahan</button>
-            <button type="button" class="cat-pill text-[11px] px-2.5 py-0.5 rounded-full bg-slate-800 hover:bg-emerald-600 text-slate-300 hover:text-white border border-slate-700 transition-all cursor-pointer" data-cat="Membaca Waktu">🕒 Membaca Waktu</button>
-            <button type="button" class="cat-pill text-[11px] px-2.5 py-0.5 rounded-full bg-slate-800 hover:bg-emerald-600 text-slate-300 hover:text-white border border-slate-700 transition-all cursor-pointer" data-cat="Keterangan Waktu">☀️ Keterangan Waktu</button>
-            <button type="button" class="cat-pill text-[11px] px-2.5 py-0.5 rounded-full bg-slate-800 hover:bg-emerald-600 text-slate-300 hover:text-white border border-slate-700 transition-all cursor-pointer" data-cat="Percakapan Jam">🗣️ Percakapan Jam</button>
-            <button type="button" class="cat-pill text-[11px] px-2.5 py-0.5 rounded-full bg-slate-800 hover:bg-emerald-600 text-slate-300 hover:text-white border border-slate-700 transition-all cursor-pointer" data-cat="Percakapan & Aktivitas">📚 Aktivitas Harian</button>
-          </div>
+          <label class="block text-xs font-semibold text-slate-300 mb-1">Pertanyaan Soal IPS</label>
+          <textarea id="qEditQuestion" rows="2" required placeholder="Tuliskan pertanyaan soal IPS di sini..." class="w-full px-3 py-2 rounded-xl bg-slate-800 border border-slate-700 text-white text-xs sm:text-sm focus:outline-none focus:border-indigo-500"></textarea>
         </div>
 
-        <!-- Pertanyaan Kuis -->
-        <div>
-          <label class="block text-xs font-semibold text-slate-300 mb-1">Pertanyaan Kuis</label>
-          <textarea id="qEditQuestion" rows="2" required placeholder="Tuliskan pertanyaan kuis di sini..." class="w-full px-3 py-2 rounded-xl bg-slate-800 border border-slate-700 text-white text-xs sm:text-sm focus:outline-none focus:border-indigo-500"></textarea>
-        </div>
-
-        <!-- Opsi A dan B -->
-        <div class="grid grid-cols-2 gap-2 sm:gap-3">
+        <div class="grid grid-cols-2 gap-2.5">
           <div>
             <label class="block text-xs font-semibold text-blue-400 mb-1 flex items-center gap-1">
               <span class="w-4 h-4 rounded bg-blue-600 text-white text-[10px] flex items-center justify-center font-bold">A</span>
               Pilihan A (Kiri)
             </label>
-            <input type="text" id="qEditOptionA" required placeholder="Teks Jawaban A" class="w-full px-3 py-2 rounded-xl bg-slate-800 border border-blue-500/40 text-white text-xs sm:text-sm focus:outline-none focus:border-blue-500">
+            <input type="text" id="qEditOptionA" required placeholder="Teks Pilihan A" class="w-full px-3 py-2 rounded-xl bg-slate-800 border border-blue-500/40 text-white text-xs focus:outline-none focus:border-blue-500">
           </div>
           <div>
             <label class="block text-xs font-semibold text-purple-400 mb-1 flex items-center gap-1">
               <span class="w-4 h-4 rounded bg-purple-600 text-white text-[10px] flex items-center justify-center font-bold">B</span>
               Pilihan B (Kanan)
             </label>
-            <input type="text" id="qEditOptionB" required placeholder="Teks Jawaban B" class="w-full px-3 py-2 rounded-xl bg-slate-800 border border-purple-500/40 text-white text-xs sm:text-sm focus:outline-none focus:border-purple-500">
+            <input type="text" id="qEditOptionB" required placeholder="Teks Pilihan B" class="w-full px-3 py-2 rounded-xl bg-slate-800 border border-purple-500/40 text-white text-xs focus:outline-none focus:border-purple-500">
           </div>
         </div>
 
-        <!-- Kunci Jawaban yang Benar -->
+        <!-- Kunci Jawaban -->
         <div class="p-2.5 rounded-xl bg-slate-800/80 border border-slate-700">
           <label class="block text-xs font-semibold text-slate-300 mb-1">Kunci Jawaban yang Benar</label>
           <div class="flex items-center gap-6 mt-1">
-            <label class="flex items-center gap-2 cursor-pointer text-xs sm:text-sm">
+            <label class="flex items-center gap-2 cursor-pointer text-xs">
               <input type="radio" name="qCorrect" id="qEditCorrectA" value="A" checked class="text-indigo-600 focus:ring-indigo-500 cursor-pointer">
               <span class="font-bold text-blue-400">Pilihan A (Kiri)</span>
             </label>
-            <label class="flex items-center gap-2 cursor-pointer text-xs sm:text-sm">
+            <label class="flex items-center gap-2 cursor-pointer text-xs">
               <input type="radio" name="qCorrect" id="qEditCorrectB" value="B" class="text-indigo-600 focus:ring-indigo-500 cursor-pointer">
               <span class="font-bold text-purple-400">Pilihan B (Kanan)</span>
             </label>
           </div>
         </div>
 
-        <!-- Keterangan Edukatif saat Salah (Disamakan Otomatis) -->
-        <div class="p-3 rounded-xl bg-slate-800/80 border border-amber-500/30 flex flex-col gap-2">
-          <div class="flex items-center justify-between">
-            <label class="block text-xs font-bold text-amber-300 flex items-center gap-1.5">
-              <span>💡</span> Keterangan Edukatif (Jika Salah)
-            </label>
-            <button type="button" id="autoFillExplanationBtn" class="text-[10px] sm:text-[11px] font-bold text-emerald-300 hover:text-white bg-emerald-600/30 hover:bg-emerald-600 px-2 py-0.5 rounded-lg border border-emerald-500/40 transition-all cursor-pointer">
-              ✨ Pakai Teks Standar
-            </button>
-          </div>
-
-          <!-- Pilihan Samakan Keterangan Otomatis -->
-          <label class="flex items-start gap-2 cursor-pointer bg-slate-900/70 p-2 rounded-xl border border-white/5 select-none hover:border-amber-400/40 transition-all">
-            <input type="checkbox" id="qAutoExplanationCheckbox" checked class="mt-0.5 text-indigo-600 rounded focus:ring-indigo-500 cursor-pointer">
-            <div class="text-[11px] leading-snug">
-              <span class="font-bold text-white">Samakan Keterangan Otomatis (Guru Tidak Perlu Repot Mengetik)</span>
-              <p id="autoExplanationPreview" class="text-amber-200/90 text-[10px] mt-0.5 italic">
-                Pratinjau: "Jawaban yang tepat adalah Pilihan A (...). Tetap semangat dan pelajari lagi ya!"
-              </p>
-            </div>
-          </label>
-
-          <textarea id="qEditExplanation" rows="2" placeholder="Otomatis diisi teks standar jika dikosongkan..." class="w-full px-3 py-2 rounded-xl bg-slate-900 border border-slate-700 text-white text-xs sm:text-sm focus:outline-none focus:border-indigo-500"></textarea>
-          <p class="text-[10px] text-slate-400">
-            ℹ️ <em>Format keterangan diseragamkan otomatis agar guru tidak perlu susah-susah mengarang alasan setiap soal.</em>
-          </p>
+        <!-- Keterangan Edukatif -->
+        <div>
+          <label class="block text-xs font-semibold text-amber-300 mb-1">Penjelasan Edukatif (Jika Siswa Salah)</label>
+          <textarea id="qEditExplanation" rows="2" placeholder="Tuliskan ulasan materi jawaban yang benar..." class="w-full px-3 py-2 rounded-xl bg-slate-800 border border-slate-700 text-white text-xs focus:outline-none focus:border-indigo-500"></textarea>
         </div>
 
-        <div class="flex justify-end gap-2 mt-1 pt-2 border-t border-slate-800">
-          <button type="button" id="cancelEditQuestionBtn" class="px-4 py-2 rounded-xl bg-slate-800 hover:bg-slate-700 text-slate-300 text-xs font-semibold cursor-pointer transition-all">Batal</button>
-          <button type="submit" class="px-5 py-2 rounded-xl bg-gradient-to-r from-indigo-600 to-purple-600 hover:from-indigo-500 hover:to-purple-500 text-white text-xs font-bold shadow-md shadow-indigo-600/30 cursor-pointer transition-all">Simpan Soal</button>
+        <div class="flex justify-end gap-2 mt-2 pt-2 border-t border-slate-800">
+          <button type="button" id="cancelEditQuestionBtn" class="px-4 py-2 rounded-xl bg-slate-800 hover:bg-slate-700 text-slate-300 text-xs font-semibold cursor-pointer">Batal</button>
+          <button type="submit" class="px-5 py-2 rounded-xl bg-gradient-to-r from-indigo-600 to-purple-600 hover:from-indigo-500 hover:to-purple-500 text-white text-xs font-bold shadow-md shadow-indigo-600/30 cursor-pointer">Simpan Soal</button>
         </div>
       </form>
     </div>
   </div>
 
-  <!-- ======================================================================
-       MODAL: Kemenangan (Finish Petak 25) Mode 2 Pemain
-       ====================================================================== -->
-  <div id="victoryModal" class="fixed inset-0 z-50 bg-black/80 backdrop-blur-md flex items-center justify-center p-4 hidden">
-    <div class="bg-gradient-to-b from-indigo-900 to-slate-900 border border-amber-400/40 rounded-3xl p-6 md:p-8 max-w-md w-full shadow-2xl text-center">
-      <div class="text-6xl mb-2 animate-bounce-slow">🏆</div>
-      <h2 id="victoryWinnerTitle" class="text-2xl font-bold font-fun text-amber-300 mb-1">HORE, PEMAIN 1 MENANG!</h2>
-      <p id="victorySubtitle" class="text-xs text-slate-300 mb-4">Berhasil mencapai Puncak Petak 25 lebih dulu dengan gerakan kinestetik hebat!</p>
+  <!-- SheetJS: Impor & Ekspor file Excel (.xlsx) -->
+  <script src="https://cdn.jsdelivr.net/npm/xlsx@0.18.5/dist/xlsx.full.min.js"></script>
 
-      <div class="grid grid-cols-2 gap-3 p-3 rounded-2xl bg-slate-800/80 border border-white/10 mb-5 text-left text-xs">
-        <!-- P1 Summary -->
-        <div class="p-2.5 rounded-xl bg-blue-950/60 border border-blue-500/40">
-          <p class="font-bold text-blue-400 mb-1">🔵 Pemain 1</p>
-          <p class="text-slate-300">Petak Akhir: <span id="vicP1Tile" class="font-bold text-white">25</span></p>
-          <p class="text-slate-300">Akurasi: <span id="vicP1Score" class="font-bold text-emerald-400">100%</span></p>
-        </div>
-        <!-- P2 Summary -->
-        <div class="p-2.5 rounded-xl bg-orange-950/60 border border-orange-500/40">
-          <p class="font-bold text-orange-400 mb-1">🟠 Pemain 2</p>
-          <p class="text-slate-300">Petak Akhir: <span id="vicP2Tile" class="font-bold text-white">1</span></p>
-          <p class="text-slate-300">Akurasi: <span id="vicP2Score" class="font-bold text-emerald-400">100%</span></p>
-        </div>
-      </div>
-
-      <p class="text-xs text-slate-400 mb-3">Total Putaran Permainan: <strong id="victoryTurns" class="text-sky-300">0</strong></p>
-
-      <button id="playAgainBtn" class="w-full py-3 rounded-2xl bg-gradient-to-r from-emerald-500 to-teal-500 hover:from-emerald-400 hover:to-teal-400 text-white font-fun font-bold text-sm md:text-base shadow-lg shadow-emerald-500/30 transition-all">
-        🎮 Main Lagi Dari Awal
-      </button>
-    </div>
-  </div>
-
-  <!-- ======================================================================
-       MODAL: Buat Link Khusus Pembeli (Ruang / Kelas Terhubung)
-       Setiap pembeli mendapat link dengan nama sekolah/kelasnya sendiri.
-       ====================================================================== -->
-  <div id="shareRoomModal" class="fixed inset-0 z-50 bg-black/85 backdrop-blur-md flex items-center justify-center p-3 sm:p-4 hidden">
-    <div class="bg-slate-900 border border-white/20 rounded-3xl p-5 sm:p-6 max-w-lg w-full max-h-[92vh] overflow-y-auto shadow-2xl text-left custom-scrollbar">
-      
-      <!-- Modal Header -->
-      <div class="flex items-center justify-between pb-3 border-b border-white/10 mb-4">
-        <div>
-          <h2 class="text-base sm:text-lg font-bold font-fun text-white flex items-center gap-2">
-            🔗 Buat Link Khusus Pembeli
-          </h2>
-          <p class="text-xs text-slate-400">Setiap pembeli mendapat link dengan identitas sekolahnya sendiri</p>
-        </div>
-        <button id="closeShareRoomBtn" class="p-2 rounded-xl bg-slate-800 hover:bg-slate-700 text-slate-300 text-xs font-bold cursor-pointer">
-          ✕ Tutup
-        </button>
-      </div>
-
-      <!-- Form Buat Link -->
-      <div class="flex flex-col gap-3">
-        <div>
-          <label class="block text-xs font-semibold text-slate-300 mb-1">Nama Pembeli / Sekolah / Guru:</label>
-          <input id="shareBuyerInput" type="text" placeholder="Contoh: SMPN 1 Malang / Bu Anisa" class="w-full px-3.5 py-2.5 rounded-xl bg-slate-800 border border-slate-700 text-white text-xs sm:text-sm focus:outline-none focus:border-indigo-500">
-        </div>
-
-        <button id="btnGenerateShareLink" class="w-full py-2.5 rounded-xl bg-gradient-to-r from-indigo-600 to-purple-600 hover:from-indigo-500 hover:to-purple-500 text-white font-fun font-bold text-xs sm:text-sm shadow-md shadow-indigo-600/20 flex items-center justify-center gap-2 cursor-pointer transition-all">
-          ✨ Buat Link Pembeli Sekarang
-        </button>
-
-        <!-- Hasil Link Siap Kirim -->
-        <div id="shareResultBox" class="mt-1 p-3.5 rounded-2xl bg-slate-950 border border-slate-700 hidden">
-          <label class="block text-[10px] font-bold uppercase text-slate-400 mb-1">Tautan Web Resmi Pembeli:</label>
-          <div class="flex items-center gap-2 mb-3">
-            <input id="shareUrlOutput" type="text" readonly class="flex-1 px-3 py-2 rounded-lg bg-slate-900 border border-indigo-500/50 text-indigo-300 font-mono text-xs select-all">
-            <button id="btnCopyShareUrl" class="px-3 py-2 rounded-lg bg-indigo-600 hover:bg-indigo-500 text-white text-xs font-bold cursor-pointer shrink-0">
-              Salin Link
-            </button>
-          </div>
-
-          <label class="block text-[10px] font-bold uppercase text-slate-400 mb-1">Format Pesan WhatsApp (Siap Kirim ke Pembeli):</label>
-          <textarea id="shareWaTextOutput" rows="7" readonly class="w-full p-2.5 rounded-lg bg-slate-900 border border-slate-700 text-slate-200 text-xs font-mono leading-relaxed select-all"></textarea>
-          
-          <button id="btnCopyShareWa" class="w-full mt-2 py-2.5 rounded-xl bg-emerald-600 hover:bg-emerald-500 text-white text-xs font-bold shadow-md shadow-emerald-600/20 flex items-center justify-center gap-1.5 cursor-pointer">
-            📋 Salin Format Pesan WhatsApp
-          </button>
-        </div>
-
-        <!-- Info Keamanan Bagi Penjual -->
-        <div class="mt-2 p-3 rounded-2xl bg-slate-800/60 border border-slate-700 text-[11px] text-slate-300 leading-relaxed">
-          💡 <strong>Mengapa pembeli tidak akan menyebarkan link ini?</strong><br>
-          Semua bank soal dan identitas di link ini terikat dengan sekolah pembeli tersebut. Jika pembeli menyebarkan link ini ke sekolah lain, soal ujian mereka akan saling terhubung dan bisa diubah oleh orang lain. Pembeli akan menjaga link ini untuk sekolahnya sendiri.
-        </div>
-      </div>
-
-    </div>
-  </div>
-
-  <!-- ======================================================================
-       MODAL KUNCI SESI TUNGGAL / ANTI-DOBEL (SINGLE ACTIVE SESSION)
-       Muncul otomatis jika link game dibuka di perangkat/layar lain.
-       ====================================================================== -->
-  <div id="sessionKickModal" class="fixed inset-0 z-[99999] bg-slate-950/95 backdrop-blur-md flex items-center justify-center p-4 hidden">
-    <div class="bg-gradient-to-b from-slate-900 via-indigo-950 to-slate-900 border-2 border-amber-500/70 rounded-3xl p-6 sm:p-8 max-w-md w-full shadow-2xl text-center text-white relative">
-      <div class="w-16 h-16 mx-auto mb-3 rounded-2xl bg-amber-500/20 border border-amber-400/50 flex items-center justify-center text-3xl shadow-lg animate-pulse">
-        📺
-      </div>
-      <h2 class="text-xl sm:text-2xl font-bold font-fun text-white mb-2">Akses Dialihkan ke Layar Lain</h2>
-      <p class="text-xs sm:text-sm text-slate-300 mb-4 leading-relaxed">
-        Game dengan lisensi Anda baru saja dibuka di <strong id="kickedByDeviceName" class="text-amber-400">perangkat lain</strong>.
-      </p>
-
-      <div class="p-3.5 rounded-2xl bg-slate-950/80 border border-white/10 text-xs text-slate-300 text-left mb-5 space-y-2">
-        <p class="flex items-center gap-1.5 font-bold text-amber-300">
-          <span>🔒</span> Perlindungan Lisensi Sesi Tunggal
-        </p>
-        <p class="text-[11px] text-slate-400 leading-normal">
-          Anda bebas memainkan game ini di HP, Laptop, atau Smart TV mana pun. Namun demi keamanan lisensi resmi Anda, game tidak dapat dimainkan secara bersamaan di 2 layar sekaligus.
-        </p>
-      </div>
-
-      <button id="btnReclaimSession" type="button" class="w-full py-3 rounded-2xl bg-gradient-to-r from-emerald-600 to-teal-600 hover:from-emerald-500 hover:to-teal-500 text-white font-fun font-bold text-sm sm:text-base shadow-lg shadow-emerald-600/30 transition-all cursor-pointer flex items-center justify-center gap-2">
-        <span>🔄</span> Gunakan Kembali di Layar Ini
-      </button>
-
-      <p class="text-[10px] text-slate-400 mt-3">
-        Klik tombol di atas untuk memindahkan kendali kembali ke layar ini.
-      </p>
-    </div>
-  </div>
-
-  <!-- ======================================================================
-       GERBANG KEAMANAN LISENSI RESMI (GATE LOCK MODAL)
-       TERKUNCI SECARA DEFAULT (TIDAK ADA hidden).
-       HANYA TERBUKA JIKA MEMILIKI TOKEN LISENSI RESMI YANG TERVERIFIKASI!
-       ====================================================================== -->
-  <div id="gateLockModal" class="fixed inset-0 z-[99990] bg-slate-950/98 backdrop-blur-xl flex items-center justify-center p-4">
-    <div class="bg-gradient-to-b from-slate-900 via-indigo-950 to-slate-900 border-2 border-rose-500/40 rounded-3xl p-6 sm:p-8 max-w-sm sm:max-w-md w-full shadow-2xl text-center text-white relative">
-      <div class="w-16 h-16 mx-auto mb-3 rounded-2xl bg-rose-500/20 border border-rose-500/50 flex items-center justify-center text-3xl shadow-lg shadow-rose-950/50">
-        🔒
-      </div>
-      <h2 class="text-2xl font-black font-fun text-white tracking-wide mb-1">Akses Game Terkunci</h2>
-      <p class="text-xs text-rose-300 font-semibold mb-4">Game Edukasi Berlisensi Resmi LokaMain Digital</p>
-
-      <div class="p-3.5 rounded-2xl bg-slate-950/80 border border-white/10 text-xs text-slate-300 text-left mb-4 space-y-2">
-        <p class="flex items-center gap-1.5 font-bold text-amber-300">
-          <span>🛡️</span> Perlindungan Lisensi Pembeli Resmi
-        </p>
-        <p class="text-[11px] text-slate-300 leading-relaxed">
-          Game ini tidak dapat diakses melalui link publik langsung. Silakan buka game menggunakan <strong>Link Khusus Pembeli</strong> yang dikirimkan Admin ke nomor WhatsApp Anda.
-        </p>
-      </div>
-
-      <div class="space-y-2.5 text-left mb-4">
-        <label class="block text-[11px] font-bold text-slate-200">Punya Token atau Kode Lisensi Resmi?</label>
-        <div class="flex gap-2">
-          <input id="inputGateLicenseCode" type="text" placeholder="Contoh: LM-8821 atau tempel link" class="w-full px-3.5 py-2.5 rounded-xl bg-slate-900 border border-slate-700 text-white text-xs font-mono focus:outline-none focus:border-amber-400 placeholder:text-slate-500">
-          <button id="btnGateUnlock" type="button" class="px-4 py-2.5 rounded-xl bg-gradient-to-r from-amber-500 to-amber-600 hover:from-amber-400 hover:to-amber-500 text-slate-950 font-fun font-black text-xs shadow-lg shadow-amber-500/30 whitespace-nowrap cursor-pointer transition-all">
-            🔓 Buka
-          </button>
-        </div>
-        <div id="gateErrorText" class="text-xs text-rose-400 font-bold hidden">
-          ⚠️ Kode Lisensi / Token tidak valid atau salah!
-        </div>
-      </div>
-
-      <div class="pt-2 border-t border-white/10">
-        <a href="https://wa.me/6287881258019?text=Halo%20Admin%20LokaMain,%20saya%20ingin%20memesan%20lisensi%20resmi%20Game%20Ular%20Tangga" target="_blank" class="w-full py-2.5 rounded-xl bg-gradient-to-r from-emerald-600 to-teal-600 hover:from-emerald-500 hover:to-teal-500 text-white font-fun font-bold text-xs flex items-center justify-center gap-2 shadow-lg shadow-emerald-600/30 transition-all cursor-pointer">
-          <span>💬</span> Pesan Lisensi Resmi via WhatsApp
-        </a>
-      </div>
-
-      <p class="text-[10px] text-slate-500 mt-3">
-        LokaMain Digital © 2026 • Hak Cipta Dilindungi
-      </p>
-    </div>
-  </div>
-
-  <!-- Scripts -->
+  <!-- Script Game Engine & Pose Engine -->
   <script src="pose.js"></script>
   <script src="app.js"></script>
-
-  <!-- ======================================================================
-       SCRIPT ENGINE LISENSI SESI TUNGGAL & REMOTE SMART TV
-       ====================================================================== -->
-  <script>
-    (function initSingleActiveSessionEngine() {
-      // 1. Deteksi Tipe Perangkat
-      function detectDeviceType() {
-        const ua = navigator.userAgent.toLowerCase();
-        if (/smart-tv|smarttv|googletv|appletv|hbbtv|pov_tv|netcast|viera|webos|tizen|android tv/i.test(ua)) {
-          return 'Smart TV';
-        }
-        if (/mobile|android|iphone|ipod/i.test(ua)) return 'Smartphone';
-        if (/ipad|tablet/i.test(ua)) return 'Tablet';
-        if (window.innerWidth >= 1200 && screen.height >= 1080 && !('ontouchstart' in window) && navigator.maxTouchPoints === 0) {
-          return 'Smart TV / Layar Lebar';
-        }
-        return 'Komputer / Laptop';
-      }
-
-      // 2. Engine Keamanan Kriptografi Token & Tanda Tangan Digital
-      const LOKAMAIN_SECURITY = {
-        SECRET: 'LOKAMAIN_SECURE_AUTH_KEY_2026_V1',
-
-        fromBase64Url(b64) {
-          try {
-            let str = b64.replace(/-/g, '+').replace(/_/g, '/');
-            while (str.length % 4) str += '=';
-            return decodeURIComponent(Array.prototype.map.call(atob(str), c => '%' + ('00' + c.charCodeAt(0).toString(16)).slice(-2)).join(''));
-          } catch (e) {
-            let str = b64.replace(/-/g, '+').replace(/_/g, '/');
-            while (str.length % 4) str += '=';
-            return atob(str);
-          }
-        },
-
-        xorCipher(text, key) {
-          let res = '';
-          for (let i = 0; i < text.length; i++) {
-            res += String.fromCharCode(text.charCodeAt(i) ^ key.charCodeAt(i % key.length));
-          }
-          return res;
-        },
-
-        computeHash(text) {
-          let h1 = 5381, h2 = 2166136261;
-          for (let i = 0; i < text.length; i++) {
-            const code = text.charCodeAt(i);
-            h1 = ((h1 << 5) + h1) ^ code;
-            h2 = (h2 ^ code) * 16777619;
-          }
-          return Math.abs(h1).toString(36) + Math.abs(h2).toString(36);
-        },
-
-        verifyAndDecodeToken(token) {
-          try {
-            if (!token || typeof token !== 'string') return null;
-            const decrypted = this.xorCipher(this.fromBase64Url(token.trim()), this.SECRET);
-            const parsed = JSON.parse(decrypted);
-            if (!parsed || !parsed.l || !parsed.s) return null;
-            const expectedSig = this.computeHash(`${parsed.l}|${parsed.n || ''}|${this.SECRET}`);
-            if (parsed.s !== expectedSig) return null;
-            return { licenseId: parsed.l, buyerName: parsed.n || 'Pembeli Resmi', timestamp: parsed.t };
-          } catch (e) {
-            return null;
-          }
-        }
-      };
-
-      // Hapus kunci sisa di localStorage agar URL polos di perangkat apa pun WAJIB terkunci
-      try {
-        localStorage.removeItem('lokamain_license_key');
-        localStorage.removeItem('lokamain_buyer_name');
-      } catch(e) {}
-
-      const gateModal = document.getElementById('gateLockModal');
-      const gateErrorText = document.getElementById('gateErrorText');
-      const kickModal = document.getElementById('sessionKickModal');
-      const kickDeviceEl = document.getElementById('kickedByDeviceName');
-      const roomBadgeText = document.getElementById('roomBadgeText');
-
-      let licenseKey = '';
-      let buyerName = '';
-      let currentSessionId = 'SES_' + Math.random().toString(36).substring(2, 9) + '_' + Date.now();
-      let sessionStartTime = Date.now();
-      let isSessionKicked = false;
-      let sseConnection = null;
-      let pollingInterval = null;
-
-      function updateLicenseWatermark(name, key) {
-        if (!roomBadgeText) return;
-        const display = name || key || 'Resmi';
-        roomBadgeText.textContent = `Lisensi: ${display}`;
-        const badge = document.getElementById('roomBadge');
-        if (badge) {
-          badge.title = `Lisensi Resmi Terverifikasi\nPembeli: ${name || '-'}\nID: ${key || '-'}\nStatus: Sesi Aktif`;
-        }
-      }
-
-      function claimActiveSession() {
-        if (!licenseKey) return;
-        const cleanTopic = 'lokamain_' + LOKAMAIN_SECURITY.computeHash(licenseKey.toUpperCase().trim());
-        const payload = JSON.stringify({
-          session: currentSessionId,
-          device: detectDeviceType(),
-          buyer: buyerName || 'Pembeli Resmi',
-          time: Date.now()
-        });
-
-        // Simpan sesi aktif ke sessionStorage (berlaku hanya untuk tab ini)
-        try {
-          sessionStorage.setItem('lokamain_active_key', licenseKey);
-          sessionStorage.setItem('lokamain_active_buyer', buyerName);
-        } catch(e) {}
-
-        fetch(`https://ntfy.sh/${cleanTopic}`, {
-          method: 'POST',
-          body: payload,
-          headers: { 'Title': 'ActiveClaim' }
-        }).catch(() => {});
-      }
-
-      function handleIncomingClaim(dataStr) {
-        try {
-          if (!dataStr) return;
-          const data = JSON.parse(dataStr);
-          let msg = null;
-          if (data.message) {
-            try {
-              msg = typeof data.message === 'string' ? JSON.parse(data.message) : data.message;
-            } catch(e) {
-              msg = { session: data.message };
-            }
-          }
-          if (!msg || !msg.session) return;
-          // Abaikan jika ini sinyal milik sesi layar kita sendiri
-          if (msg.session === currentSessionId) return;
-          // Abaikan sinyal usang sebelum sesi ini dimulai
-          if (msg.time && msg.time < sessionStartTime - 3000) return;
-
-          // Perangkat lain mengklaim lisensi yang sama -> KICK OUT PERANGKAT INI!
-          onSessionKickedOut(msg.device || 'Perangkat Lain');
-        } catch(e) {}
-      }
-
-      function listenRemoteSessions() {
-        if (!licenseKey) return;
-        const cleanTopic = 'lokamain_' + LOKAMAIN_SECURITY.computeHash(licenseKey.toUpperCase().trim());
-
-        if (sseConnection) {
-          try { sseConnection.close(); } catch(e) {}
-        }
-
-        // 1. Koneksi Real-time Server-Sent Events (SSE)
-        try {
-          sseConnection = new EventSource(`https://ntfy.sh/${cleanTopic}/sse`);
-          sseConnection.onmessage = (event) => handleIncomingClaim(event.data);
-          sseConnection.addEventListener('message', (event) => handleIncomingClaim(event.data));
-        } catch(e) {}
-
-        // 2. Fallback Polling setiap 3 detik (untuk browser / TV yang memblokir SSE)
-        if (pollingInterval) clearInterval(pollingInterval);
-        pollingInterval = setInterval(() => {
-          if (isSessionKicked || !licenseKey) return;
-          fetch(`https://ntfy.sh/${cleanTopic}/json?poll=1`)
-            .then(res => res.text())
-            .then(text => {
-              if (!text) return;
-              const lines = text.trim().split('\n');
-              for (const line of lines) {
-                if (line.trim()) handleIncomingClaim(line);
-              }
-            })
-            .catch(() => {});
-        }, 3000);
-      }
-
-      function onSessionKickedOut(deviceName) {
-        isSessionKicked = true;
-        if (kickDeviceEl) kickDeviceEl.textContent = deviceName;
-        if (kickModal) kickModal.classList.remove('hidden');
-
-        // Mute suara game
-        if (window.snakeGame && window.snakeGame.sounds) {
-          try { window.snakeGame.sounds.muted = true; } catch(e) {}
-        }
-      }
-
-      function resumeSessionHere() {
-        isSessionKicked = false;
-        currentSessionId = 'SES_' + Math.random().toString(36).substring(2, 9) + '_' + Date.now();
-        sessionStartTime = Date.now();
-        if (kickModal) kickModal.classList.add('hidden');
-        claimActiveSession();
-
-        // Kembalikan suara game
-        if (window.snakeGame && window.snakeGame.sounds) {
-          try { window.snakeGame.sounds.muted = false; } catch(e) {}
-        }
-      }
-
-      // Tombol Reclaim Session
-      document.getElementById('btnReclaimSession')?.addEventListener('click', resumeSessionHere);
-
-      // Fungsi Pembuka Game Resmi
-      function grantAccessAndStart(key, name) {
-        licenseKey = key.toUpperCase().trim();
-        buyerName = name || 'Pembeli Resmi';
-
-        // Sembunyikan gerbang kunci
-        if (gateModal) gateModal.classList.add('hidden');
-
-        // Inisialisasi game hanya saat sudah resmi terverifikasi
-        if (typeof window.startSnakeGame === 'function') {
-          window.startSnakeGame();
-        }
-
-        updateLicenseWatermark(buyerName, licenseKey);
-        claimActiveSession();
-        listenRemoteSessions();
-      }
-
-      // 3. Evaluasi Parameter URL / Session
-      const params = new URLSearchParams(window.location.search);
-      const rawToken = params.get('token') || params.get('auth');
-      const directLic = (params.get('lisensi') || params.get('license') || params.get('pin') || '').trim();
-
-      if (rawToken) {
-        const verified = LOKAMAIN_SECURITY.verifyAndDecodeToken(rawToken);
-        if (verified) {
-          try {
-            sessionStorage.setItem('lokamain_verified_token', rawToken);
-            window.history.replaceState({}, document.title, window.location.pathname);
-          } catch(e) {}
-          grantAccessAndStart(verified.licenseId, verified.buyerName);
-        } else {
-          // Token dipalsukan atau rusak
-          if (gateErrorText) {
-            gateErrorText.textContent = '⚠️ Token Lisensi Tidak Valid atau Telah Dimodifikasi! Akses ditolak.';
-            gateErrorText.classList.remove('hidden');
-          }
-        }
-      } else if (directLic) {
-        // Parameter lisensi langsung
-        const dName = (params.get('nama') || 'Pembeli Resmi').trim();
-        try {
-          window.history.replaceState({}, document.title, window.location.pathname);
-        } catch(e) {}
-        grantAccessAndStart(directLic, dName);
-      } else {
-        // Cek apakah tab ini baru saja di-refresh (ada di sessionStorage)
-        const cachedToken = sessionStorage.getItem('lokamain_verified_token');
-        if (cachedToken) {
-          const verified = LOKAMAIN_SECURITY.verifyAndDecodeToken(cachedToken);
-          if (verified) {
-            grantAccessAndStart(verified.licenseId, verified.buyerName);
-          }
-        } else {
-          const cachedKey = sessionStorage.getItem('lokamain_active_key');
-          const cachedBuyer = sessionStorage.getItem('lokamain_active_buyer');
-          if (cachedKey) {
-            grantAccessAndStart(cachedKey, cachedBuyer);
-          }
-        }
-        // JIKA TIDAK ADA TOKEN / SESSION: Gerbang Tetap Terkunci (gateLockModal tetap tampil)!
-      }
-
-      // Handler Input Manual pada Gerbang Kunci
-      document.getElementById('btnGateUnlock')?.addEventListener('click', () => {
-        let inputVal = (document.getElementById('inputGateLicenseCode')?.value || '').trim();
-        if (!inputVal) {
-          if (gateErrorText) {
-            gateErrorText.textContent = '⚠️ Mohon masukkan Kode Lisensi atau tempel link Anda!';
-            gateErrorText.classList.remove('hidden');
-          }
-          return;
-        }
-
-        // Jika pembeli menempelkan seluruh link atau token
-        if (inputVal.includes('token=')) {
-          const match = inputVal.match(/token=([a-zA-Z0-9_-]+)/);
-          if (match && match[1]) inputVal = match[1];
-        } else if (inputVal.includes('lisensi=')) {
-          const match = inputVal.match(/lisensi=([a-zA-Z0-9_-]+)/);
-          if (match && match[1]) inputVal = match[1];
-        }
-
-        // Coba verifikasi sebagai token terenkripsi
-        const verified = LOKAMAIN_SECURITY.verifyAndDecodeToken(inputVal);
-        if (verified) {
-          try { sessionStorage.setItem('lokamain_verified_token', inputVal); } catch(e) {}
-          grantAccessAndStart(verified.licenseId, verified.buyerName);
-          return;
-        }
-
-        // Jika berupa kode lisensi (misal LM-8821 atau kode apa pun minimal 3 karakter)
-        if (inputVal.length >= 3) {
-          grantAccessAndStart(inputVal, 'Pembeli Resmi');
-          return;
-        }
-
-        if (gateErrorText) {
-          gateErrorText.textContent = '⚠️ Kode Lisensi / Token tidak valid atau terlalu pendek!';
-          gateErrorText.classList.remove('hidden');
-        }
-      });
-
-      // Buka kunci jika menekan Enter pada input kode
-      document.getElementById('inputGateLicenseCode')?.addEventListener('keydown', (e) => {
-        if (e.key === 'Enter') {
-          document.getElementById('btnGateUnlock')?.click();
-        }
-      });
-
-      // 4. Dukungan Tombol Remote Smart TV & Keyboard Fisik
-      window.addEventListener('keydown', (e) => {
-        if (isSessionKicked) {
-          if (e.key === 'Enter') resumeSessionHere();
-          return;
-        }
-
-        if (e.target.tagName === 'INPUT' || e.target.tagName === 'TEXTAREA') return;
-
-        // Remote TV: Tombol Enter / Spasi / OK -> Lempar Dadu
-        if (e.key === ' ' || e.key === 'Enter') {
-          if (window.snakeGame && window.snakeGame.gameState === 'IDLE' && !window.snakeGame.isMoving) {
-            window.snakeGame.rollDice();
-          }
-        }
-
-        // Remote TV: Tombol Panah Kiri atau Angka 1 -> Pilihan Kuis A
-        if (e.key === 'ArrowLeft' || e.key === '1') {
-          if (window.snakeGame && window.snakeGame.gameState === 'QUIZ') {
-            window.snakeGame.handleQuizAnswer('A');
-          }
-        }
-
-        // Remote TV: Tombol Panah Kanan atau Angka 2 -> Pilihan Kuis B
-        if (e.key === 'ArrowRight' || e.key === '2') {
-          if (window.snakeGame && window.snakeGame.gameState === 'QUIZ') {
-            window.snakeGame.handleQuizAnswer('B');
-          }
-        }
-
-        // Remote TV: Tombol Panah Bawah -> Jongkok Hindari Ular
-        if (e.key === 'ArrowDown') {
-          if (window.snakeGame && window.snakeGame.gameState === 'SQUAT_CHALLENGE') {
-            window.snakeGame.handleSquatSuccess();
-          }
-        }
-
-        // Remote TV: Tombol Panah Atas -> Panjat Tangga
-        if (e.key === 'ArrowUp') {
-          if (window.snakeGame && window.snakeGame.gameState === 'CLIMB_CHALLENGE') {
-            window.snakeGame.climbProgress = (window.snakeGame.climbProgress || 0) + 1;
-            window.snakeGame.handleClimbStep(window.snakeGame.climbProgress, 4);
-            if (window.snakeGame.climbProgress >= 4) {
-              window.snakeGame.handleClimbSuccess();
-            }
-          }
-        }
-      });
-    })();
-  </script>
 </body>
 </html>
-

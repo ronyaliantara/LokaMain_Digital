@@ -1,293 +1,575 @@
 /**
  * ==========================================================================
- * app.js - Engine Permainan Ular Tangga Kinestetik & Dashboard Guru
- * Mengatur state permainan, canvas rendering, audio synthesizer,
- * dan integrasi MediaPipe Pose.
+ * app.js - Engine Ular Tangga Kinestetik IPS SMP (50 Kotak - 4 Pemain)
+ * Super Ringan, Performa Halus (Cached Board Rendering ~60 FPS),
+ * Hukuman Ular Interaktif (Jongkok + Hukuman Seru), dan Dashboard Guru Tanpa Link Pembeli.
  * ==========================================================================
  */
 
-/**
- * Helper identitas ruang kelas / pembeli dari parameter URL
- * Contoh: ?sekolah=SMPN%201%20Malang atau ?kelas=smp1
- * Setiap pembeli memiliki ruang kelas terhubung sendiri sehingga tidak bercampur.
- */
-function getRoomInfo() {
-  const params = new URLSearchParams(window.location.search);
-  const raw = params.get('nama') || params.get('sekolah') || params.get('kelas') || params.get('guru') || params.get('pembeli') || params.get('ruang') || params.get('id') || localStorage.getItem('lokamain_buyer_name');
-  if (raw) {
-    const cleanName = decodeURIComponent(raw).trim();
-    const cleanId = cleanName.toLowerCase().replace(/[^a-z0-9_-]/g, '_');
-    return {
-      id: cleanId || 'default',
-      name: cleanName
-    };
-  }
-  return { id: 'default', name: 'Umum' };
+// Helper HTML escaping untuk tabel guru
+function escapeHtml(value) {
+  return String(value ?? '')
+    .replace(/&/g, '&amp;')
+    .replace(/</g, '&lt;')
+    .replace(/>/g, '&gt;')
+    .replace(/"/g, '&quot;')
+    .replace(/'/g, '&#39;');
 }
 
-// Bank Soal Bawaan (Default Questions: 25 Soal Bahasa Arab SMP - Materi As-Sa'ah / الساعة)
+// Bank Soal Bawaan: 50 Soal IPS SMP (Kurikulum Merdeka / SMP Kelas 7, 8, 9)
 const DEFAULT_QUESTIONS = [
   {
-    id: 1,
-    category: "Bilangan Jam (الساعة)",
-    question: "Apakah bahasa Arab dari \"Jam 01.00 tepat\"?",
-    optionA: "اَلسَّاعَةُ الْوَاحِدَةُ تَمَامًا (As-Saa'atul Waahidah tamaaman)",
-    optionB: "اَلسَّاعَةُ الثَّانِيَةُ تَمَامًا (As-Saa'atus Saaniyah tamaaman)",
-    correct: "A",
-    explanation: "Jam 01.00 tepat adalah اَلسَّاعَةُ الْوَاحِدَةُ تَمَامًا (As-Saa'atul Waahidah tamaaman)."
+    "id": 1,
+    "category": "Geografi Indonesia",
+    "question": "Berdasarkan letak astronomisnya, wilayah Indonesia terletak di antara...",
+    "optionA": "6° LU - 11° LS dan 95° BT - 141° BT",
+    "optionB": "11° LU - 6° LS dan 90° BT - 135° BT",
+    "correct": "A",
+    "explanation": "Letak astronomis Indonesia adalah 6° Lintang Utara - 11° Lintang Selatan dan 95° Bujur Timur - 141° Bujur Timur."
   },
   {
-    id: 2,
-    category: "Bilangan Jam (الساعة)",
-    question: "Bahasa Arab untuk menunjukkan \"Jam 02.00\" adalah...",
-    optionA: "اَلسَّاعَةُ الْوَاحِدَةُ (As-Saa'atul Waahidah)",
-    optionB: "اَلسَّاعَةُ الثَّانِيَةُ (As-Saa'atus Saaniyah)",
-    correct: "B",
-    explanation: "Jam 02.00 dalam bahasa Arab adalah اَلسَّاعَةُ الثَّانِيَةُ (As-Saa'atus Saaniyah)."
+    "id": 2,
+    "category": "Geografi Indonesia",
+    "question": "Secara geografis, kepulauan Indonesia berada di antara dua benua, yaitu...",
+    "optionA": "Benua Eropa dan Benua Afrika",
+    "optionB": "Benua Asia dan Benua Australia",
+    "correct": "B",
+    "explanation": "Indonesia terletak di posisi silang strategis antara Benua Asia di sebelah utara dan Benua Australia di sebelah selatan."
   },
   {
-    id: 3,
-    category: "Bilangan Jam (الساعة)",
-    question: "Apa arti dari kalimat \"اَلسَّاعَةُ الثَّالِثَةُ\" (As-Saa'atus Saalitsah)?",
-    optionA: "Jam 03.00",
-    optionB: "Jam 04.00",
-    correct: "A",
-    explanation: "اَلسَّاعَةُ الثَّالِثَةُ artinya adalah Jam 03.00."
+    "id": 3,
+    "category": "Geografi Indonesia",
+    "question": "Indonesia beriklim tropis karena dilalui garis khatulistiwa. Dua musim di Indonesia adalah musim...",
+    "optionA": "Kemarau dan Penghujan",
+    "optionB": "Panas dan Musim Dingin Berbatu",
+    "correct": "A",
+    "explanation": "Iklim tropis Indonesia memiliki dua musim bergantian setiap enam bulan sekali: musim hujan dan musim kemarau."
   },
   {
-    id: 4,
-    category: "Bilangan Jam (الساعة)",
-    question: "Bahasa Arab untuk menunjukkan \"Jam 04.00\" adalah...",
-    optionA: "اَلسَّاعَةُ الْخَامِسَةُ (As-Saa'atul Khaamisah)",
-    optionB: "اَلسَّاعَةُ الرَّابِعَةُ (As-Saa'atur Raabi'ah)",
-    correct: "B",
-    explanation: "Jam 04.00 dalam bahasa Arab adalah اَلسَّاعَةُ الرَّابِعَةُ (As-Saa'atur Raabi'ah)."
+    "id": 4,
+    "category": "Geografi Indonesia",
+    "question": "Garis khayal yang memisahkan persebaran fauna Asiatis (barat) dengan fauna Peralihan (tengah) adalah...",
+    "optionA": "Garis Weber",
+    "optionB": "Garis Wallace",
+    "correct": "B",
+    "explanation": "Garis Wallace membatasi fauna barat (Asiatis seperti gajah, harimau) dengan fauna kepulauan tengah (Peralihan)."
   },
   {
-    id: 5,
-    category: "Bilangan Jam (الساعة)",
-    question: "\"اَلسَّاعَةُ الْخَامِسَةُ\" (As-Saa'atul Khaamisah) menunjukkan pukul...",
-    optionA: "Jam 05.00",
-    optionB: "Jam 06.00",
-    correct: "A",
-    explanation: "اَلسَّاعَةُ الْخَامِسَةُ artinya adalah Jam 05.00."
+    "id": 5,
+    "category": "Geografi Indonesia",
+    "question": "Garis khayal yang memisahkan daerah fauna tipe Peralihan dengan tipe Australis (Papua & Maluku) adalah...",
+    "optionA": "Garis Weber",
+    "optionB": "Garis Khatulistiwa",
+    "correct": "A",
+    "explanation": "Garis Weber memisahkan fauna wilayah Peralihan (Sulawesi, Nusa Tenggara) dengan fauna Australis (Papua)."
   },
   {
-    id: 6,
-    category: "Bilangan Jam (الساعة)",
-    question: "Bahasa Arab dari \"Jam 06.00\" adalah...",
-    optionA: "اَلسَّاعَةُ السَّابِعَةُ (As-Saa'atus Saabi'ah)",
-    optionB: "اَلسَّاعَةُ السَّادِسَةُ (As-Saa'atus Saadisah)",
-    correct: "B",
-    explanation: "Jam 06.00 dalam bahasa Arab adalah اَلسَّاعَةُ السَّادِسَةُ (As-Saa'atus Saadisah)."
+    "id": 6,
+    "category": "Geografi Indonesia",
+    "question": "Hewan reptil purba endemik Indonesia yang hanya hidup di kawasan Kepulauan Nusa Tenggara adalah...",
+    "optionA": "Bekantan",
+    "optionB": "Komodo",
+    "correct": "B",
+    "explanation": "Komodo (Varanus komodoensis) adalah kadal raksasa endemik tipe fauna Peralihan yang dilindungi di Pulau Komodo NTT."
   },
   {
-    id: 7,
-    category: "Bilangan Jam (الساعة)",
-    question: "Apa arti dari \"اَلسَّاعَةُ السَّابِعَةُ\" (As-Saa'atus Saabi'ah)?",
-    optionA: "Jam 07.00",
-    optionB: "Jam 08.00",
-    correct: "A",
-    explanation: "اَلسَّاعَةُ السَّابِعَةُ artinya adalah Jam 07.00."
+    "id": 7,
+    "category": "Geografi Dunia",
+    "question": "Benua terluas di dunia yang juga memiliki jumlah penduduk terbanyak adalah Benua...",
+    "optionA": "Benua Asia",
+    "optionB": "Benua Amerika",
+    "correct": "A",
+    "explanation": "Benua Asia adalah benua terbesar di bumi dengan luas sekitar 44,58 juta km² dan dihuni lebih dari separuh populasi dunia."
   },
   {
-    id: 8,
-    category: "Bilangan Jam (الساعة)",
-    question: "Bahasa Arab untuk menunjukkan \"Jam 08.00\" adalah...",
-    optionA: "اَلسَّاعَةُ التَّاسِعَةُ (As-Saa'atut Taasi'ah)",
-    optionB: "اَلسَّاعَةُ الثَّامِنَةُ (As-Saa'atus Tsaaminah)",
-    correct: "B",
-    explanation: "Jam 08.00 dalam bahasa Arab adalah اَلسَّاعَةُ الثَّامِنَةُ (As-Saa'atus Tsaaminah)."
+    "id": 8,
+    "category": "Geografi Dunia",
+    "question": "Samudera terluas di permukaan bumi yang menutupi sepertiga luas dunia adalah Samudera...",
+    "optionA": "Samudera Atlantik",
+    "optionB": "Samudera Pasifik",
+    "correct": "B",
+    "explanation": "Samudera Pasifik membentang luas dari Asia/Australia hingga benua Amerika dan merupakan samudera terbesar di bumi."
   },
   {
-    id: 9,
-    category: "Bilangan Jam (الساعة)",
-    question: "\"اَلسَّاعَةُ التَّاسِعَةُ\" (As-Saa'atut Taasi'ah) artinya adalah...",
-    optionA: "Jam 09.00",
-    optionB: "Jam 10.00",
-    correct: "A",
-    explanation: "اَلسَّاعَةُ التَّاسِعَةُ artinya adalah Jam 09.00."
+    "id": 9,
+    "category": "Geografi Indonesia",
+    "question": "Daratan sempit yang menjorok masuk ke arah laut disebut...",
+    "optionA": "Tanjung",
+    "optionB": "Teluk",
+    "correct": "A",
+    "explanation": "Tanjung adalah daratan yang menjorok ke laut, sedangkan perairan laut yang menjorok masuk ke daratan disebut teluk."
   },
   {
-    id: 10,
-    category: "Bilangan Jam (الساعة)",
-    question: "Bahasa Arab dari \"Jam 10.00\" adalah...",
-    optionA: "اَلسَّاعَةُ التَّاسِعَةُ (As-Saa'atut Taasi'ah)",
-    optionB: "اَلسَّاعَةُ الْعَاشِرَةُ (As-Saa'atul 'Aasyirah)",
-    correct: "B",
-    explanation: "Jam 10.00 dalam bahasa Arab adalah اَلسَّاعَةُ الْعَاشِرَةُ (As-Saa'atul 'Aasyirah)."
+    "id": 10,
+    "category": "Peta & Pemetaan",
+    "question": "Keterangan pada peta yang membandingkan jarak di gambar peta dengan jarak sebenarnya adalah...",
+    "optionA": "Simbol Peta",
+    "optionB": "Skala Peta",
+    "correct": "B",
+    "explanation": "Skala peta menunjukkan rasio perbandingan jarak pada peta terhadap jarak nyata di permukaan bumi (misal 1:100.000)."
   },
   {
-    id: 11,
-    category: "Bilangan Jam (الساعة)",
-    question: "Apa arti dari \"اَلسَّاعَةُ الْحَادِيَةَ عَشْرَةَ\" (As-Saa'atul Haadiyata 'asyrah)?",
-    optionA: "Jam 11.00",
-    optionB: "Jam 12.00",
-    correct: "A",
-    explanation: "اَلسَّاعَةُ الْحَادِيَةَ عَشْرَةَ artinya adalah Jam 11.00."
+    "id": 11,
+    "category": "Kawasan ASEAN",
+    "question": "Organisasi geopolitik negara-negara Asia Tenggara (ASEAN) didirikan pada 8 Agustus 1967 melalui...",
+    "optionA": "Deklarasi Bangkok",
+    "optionB": "Perjanjian Renville",
+    "correct": "A",
+    "explanation": "Deklarasi Bangkok ditandatangani di Thailand oleh lima menteri luar negeri negara pendiri ASEAN."
   },
   {
-    id: 12,
-    category: "Bilangan Jam (الساعة)",
-    question: "Bahasa Arab dari \"Jam 12.00\" adalah...",
-    optionA: "اَلسَّاعَةُ الْعَاشِرَةُ (As-Saa'atul 'Aasyirah)",
-    optionB: "اَلسَّاعَةُ الثَّانِيَةَ عَشْرَةَ (As-Saa'atus Saaniyata 'asyrah)",
-    correct: "B",
-    explanation: "Jam 12.00 dalam bahasa Arab adalah اَلسَّاعَةُ الثَّانِيَةَ عَشْرَةَ (As-Saa'atus Saaniyata 'asyrah)."
+    "id": 12,
+    "category": "Kawasan ASEAN",
+    "question": "Tokoh menteri luar negeri Indonesia yang menjadi penandatangan Deklarasi Bangkok adalah...",
+    "optionA": "Mohammad Natsir",
+    "optionB": "Adam Malik",
+    "correct": "B",
+    "explanation": "H. Adam Malik adalah Menteri Luar Negeri Republik Indonesia yang mewakili Indonesia saat berdirinya ASEAN tahun 1967."
   },
   {
-    id: 13,
-    category: "Menit & Pecahan Waktu",
-    question: "Dalam membaca jam, huruf sambung \"وَ\" (wa) mempunyai arti...",
-    optionA: "Lewat / Lebih",
-    optionB: "Kurang",
-    correct: "A",
-    explanation: "Huruf \"وَ\" (wa) digunakan untuk menunjukkan waktu lewat/lebih."
+    "id": 13,
+    "category": "Kawasan ASEAN",
+    "question": "Negara anggota ASEAN yang tidak pernah dijajah oleh bangsa Barat manapun adalah...",
+    "optionA": "Thailand",
+    "optionB": "Vietnam",
+    "correct": "A",
+    "explanation": "Thailand berhasil menjaga kemerdekaannya melalui jalur diplomasi modern dan berfungsi sebagai daerah penyangga kolonial."
   },
   {
-    id: 14,
-    category: "Menit & Pecahan Waktu",
-    question: "Dalam membaca jam, kata \"إِلَّا\" (illa) mempunyai arti...",
-    optionA: "Tepat",
-    optionB: "Kurang",
-    correct: "B",
-    explanation: "Kata \"إِلَّا\" (illa) digunakan untuk menunjukkan waktu kurang."
+    "id": 14,
+    "category": "Kawasan ASEAN",
+    "question": "Satu-satunya negara di Asia Tenggara yang tidak memiliki batas garis pantai (landlocked) adalah...",
+    "optionA": "Myanmar",
+    "optionB": "Laos",
+    "correct": "B",
+    "explanation": "Laos adalah satu-satunya negara di Asia Tenggara yang daratannya sepenuhnya terkepung oleh negara tetangga."
   },
   {
-    id: 15,
-    category: "Menit & Pecahan Waktu",
-    question: "Istilah \"النِّصْفُ\" (an-nishfu) dalam materi jam berarti...",
-    optionA: "Setengah jam (30 menit)",
-    optionB: "Seperempat jam (15 menit)",
-    correct: "A",
-    explanation: "النِّصْفُ (an-nishfu) artinya adalah setengah jam atau 30 menit."
+    "id": 15,
+    "category": "Kawasan ASEAN",
+    "question": "Selat di Asia Tenggara yang menjadi salah satu jalur pelayaran internasional terpadat di dunia adalah...",
+    "optionA": "Selat Malaka",
+    "optionB": "Selat Karimata",
+    "correct": "A",
+    "explanation": "Selat Malaka menghubungkan perniagaan antara Samudera Hindia dan Laut Cina Selatan menuju Samudera Pasifik."
   },
   {
-    id: 16,
-    category: "Menit & Pecahan Waktu",
-    question: "Istilah \"الرُّبْعُ\" (ar-rub'u) dalam materi jam berarti...",
-    optionA: "10 menit",
-    optionB: "Seperempat jam (15 menit)",
-    correct: "B",
-    explanation: "الرُّبْعُ (ar-rub'u) artinya adalah seperempat jam atau 15 menit."
+    "id": 16,
+    "category": "Sejarah Indonesia",
+    "question": "Zaman kehidupan manusia sebelum mengenal tulisan dan aksara dinamakan zaman...",
+    "optionA": "Megalitikum Modern",
+    "optionB": "Praaksara",
+    "correct": "B",
+    "explanation": "Masa praaksara adalah masa di mana kehidupan manusia belum mengenal bentuk tulisan apapun untuk berkomunikasi."
   },
   {
-    id: 17,
-    category: "Membaca Waktu",
-    question: "Apa arti dari \"اَلسَّاعَةُ السَّابِعَةُ وَالنِّصْفُ\" (As-Saa'atus Saabi'ah wan nishfu)?",
-    optionA: "Jam 07.30 (Tujuh lewat tiga puluh menit)",
-    optionB: "Jam 07.15 (Tujuh lewat lima belas menit)",
-    correct: "A",
-    explanation: "اَلسَّاعَةُ السَّابِعَةُ وَالنِّصْفُ artinya jam 07.30 (tujuh lewat setengah jam)."
+    "id": 17,
+    "category": "Sejarah Hindu-Buddha",
+    "question": "Kerajaan Hindu tertua di Indonesia yang dibuktikan dengan adanya tujuh prasasti Yupa adalah...",
+    "optionA": "Kerajaan Kutai Martadipura",
+    "optionB": "Kerajaan Majapahit",
+    "correct": "A",
+    "explanation": "Kerajaan Kutai di Kalimantan Timur berdiri sekitar abad ke-4 M dengan raja terkenalnya bernama Mulawarman."
   },
   {
-    id: 18,
-    category: "Membaca Waktu",
-    question: "Bahasa Arab dari \"Jam 06.15 (Enam lewat seperempat)\" adalah...",
-    optionA: "اَلسَّاعَةُ السَّادِسَةُ وَالنِّصْفُ",
-    optionB: "اَلسَّاعَةُ السَّادِسَةُ وَالرُّبْعُ",
-    correct: "B",
-    explanation: "Jam 06.15 adalah اَلسَّاعَةُ السَّادِسَةُ وَالرُّبْعُ (enam lewat seperempat)."
+    "id": 18,
+    "category": "Sejarah Hindu-Buddha",
+    "question": "Kerajaan maritim bercorak Buddha yang menjadi pusat pembelajaran agama Buddha internasional adalah...",
+    "optionA": "Kerajaan Singasari",
+    "optionB": "Kerajaan Sriwijaya",
+    "correct": "B",
+    "explanation": "Sriwijaya berpusat di Palembang dan tersohor ke Tiongkok serta India sebagai pusat kajian ajaran Buddha dan armada laut terkuat."
   },
   {
-    id: 19,
-    category: "Membaca Waktu",
-    question: "\"اَلسَّاعَةُ التَّاسِعَةُ إِلَّا الرُّبْعَ\" (As-Saa'atut Taasi'ah illar rub'a) artinya adalah...",
-    optionA: "Jam 09.00 kurang 15 menit (08.45)",
-    optionB: "Jam 09.00 lewat 15 menit (09.15)",
-    correct: "A",
-    explanation: "إِلَّا الرُّبْعَ artinya kurang seperempat (15 menit), sehingga menunjukkan pukul 08.45."
+    "id": 19,
+    "category": "Sejarah Hindu-Buddha",
+    "question": "Kemegahan Candi Borobudur dibangun pada abad ke-8 Masehi oleh Kerajaan Mataram Kuno di bawah Dinasti...",
+    "optionA": "Dinasti Syailendra",
+    "optionB": "Dinasti Sanjaya",
+    "correct": "A",
+    "explanation": "Dinasti Syailendra yang bercorak Buddha Mahayana membangun Candi Borobudur yang menjadi mahakarya warisan dunia UNESCO."
   },
   {
-    id: 20,
-    category: "Percakapan Jam",
-    question: "Kalimat tanya untuk menanyakan \"Jam berapa sekarang?\" adalah...",
-    optionA: "كَمْ رَقْمُ بَيْتِكَ؟ (Kam raqmu baitika?)",
-    optionB: "كَمِ السَّاعَةُ الْآنَ؟ (Kamis saa'atul aan?)",
-    correct: "B",
-    explanation: "كَمِ السَّاعَةُ الْآنَ؟ artinya \"Jam berapa sekarang?\"."
+    "id": 20,
+    "category": "Sejarah Hindu-Buddha",
+    "question": "Sumpah sakral yang diucapkan Patih Gajah Mada untuk mempersatukan wilayah Nusantara bernama...",
+    "optionA": "Piagam Jakarta",
+    "optionB": "Sumpah Palapa",
+    "correct": "B",
+    "explanation": "Gajah Mada bersumpah Palapa di hadapan Ratu Tribhuwana Tunggadewi untuk mempersatukan segenap kepulauan Nusantara."
   },
   {
-    id: 21,
-    category: "Keterangan Waktu",
-    question: "Keterangan waktu \"صَبَاحًا\" (Shabaahan) memiliki arti...",
-    optionA: "Pagi hari",
-    optionB: "Malam hari",
-    correct: "A",
-    explanation: "صَبَاحًا (Shabaahan) artinya adalah pada waktu pagi hari."
+    "id": 21,
+    "category": "Sejarah Islam",
+    "question": "Kerajaan bercorak Islam pertama di Indonesia yang berada di wilayah pesisir timur Aceh adalah...",
+    "optionA": "Samudera Pasai",
+    "optionB": "Kesultanan Banten",
+    "correct": "A",
+    "explanation": "Kerajaan Samudera Pasai didirikan oleh Sultan Malik As-Saleh pada akhir abad ke-13 dan menjadi pusat penyebaran Islam."
   },
   {
-    id: 22,
-    category: "Keterangan Waktu",
-    question: "Keterangan waktu \"نَهَارًا\" (Nahaaran) memiliki arti...",
-    optionA: "Sore hari",
-    optionB: "Siang hari",
-    correct: "B",
-    explanation: "نَهَارًا (Nahaaran) artinya adalah pada waktu siang hari."
+    "id": 22,
+    "category": "Sejarah Kolonial",
+    "question": "Bangsa Barat pertama yang berhasil menaklukkan Malaka pada tahun 1511 demi rempah-rempah adalah...",
+    "optionA": "Bangsa Inggris",
+    "optionB": "Bangsa Portugis",
+    "correct": "B",
+    "explanation": "Armada Portugis di bawah pimpinan Afonso de Albuquerque menguasai bandar niaga Malaka pada tahun 1511."
   },
   {
-    id: 23,
-    category: "Keterangan Waktu",
-    question: "Keterangan waktu \"مَسَاءً\" (Masaa-an) memiliki arti...",
-    optionA: "Sore hari",
-    optionB: "Pagi hari",
-    correct: "A",
-    explanation: "مَسَاءً (Masaa-an) artinya adalah pada waktu sore hari."
+    "id": 23,
+    "category": "Pergerakan Nasional",
+    "question": "Hari Kebangkitan Nasional diperingati setiap 20 Mei untuk mengenang berdirinya organisasi...",
+    "optionA": "Budi Utomo",
+    "optionB": "Indische Partij",
+    "correct": "A",
+    "explanation": "Budi Utomo berdiri pada 20 Mei 1908 dan menjadi pelopor gerakan modern kaum intelektual memperjuangkan kemerdekaan."
   },
   {
-    id: 24,
-    category: "Keterangan Waktu",
-    question: "Keterangan waktu \"لَيْلًا\" (Lailan) memiliki arti...",
-    optionA: "Siang hari",
-    optionB: "Malam hari",
-    correct: "B",
-    explanation: "لَيْلًا (Lailan) artinya adalah pada waktu malam hari."
+    "id": 24,
+    "category": "Pergerakan Nasional",
+    "question": "Ikrar persatuan pemuda 'Satu Nusa, Satu Bangsa, dan Satu Bahasa' dideklarasikan pada...",
+    "optionA": "17 Agustus 1945",
+    "optionB": "28 Oktober 1928",
+    "correct": "B",
+    "explanation": "Kongres Pemuda II pada 28 Oktober 1928 melahirkan ikrar Sumpah Pemuda yang menjadi pemersatu bangsa Indonesia."
   },
   {
-    id: 25,
-    category: "Percakapan & Aktivitas",
-    question: "Apa arti dari kalimat tanya \"فِي أَيِّ سَاعَةٍ تَذْهَبُ إِلَى الْمَدْرَسَةِ؟\"?",
-    optionA: "Pada jam berapa kamu pergi ke sekolah?",
-    optionB: "Di mana letak bangunan sekolahmu?",
-    correct: "A",
-    explanation: "\"فِي أَيِّ سَاعَةٍ\" artinya \"Pada jam berapa\", تَذْهَبُ إِلَى الْمَدْرَسَةِ artinya \"kamu pergi ke sekolah\"."
+    "id": 25,
+    "category": "Kemerdekaan RI",
+    "question": "Tokoh pemuda yang mengetik naskah resmi teks Proklamasi Kemerdekaan Indonesia adalah...",
+    "optionA": "Sayuti Melik",
+    "optionB": "Chairul Saleh",
+    "correct": "A",
+    "explanation": "Sayuti Melik menyempurnakan dan mengetik naskah proklamasi yang disusun oleh Soekarno, Hatta, dan Achmad Soebardjo."
+  },
+  {
+    "id": 26,
+    "category": "Kemerdekaan RI",
+    "question": "Proklamasi Kemerdekaan 17 Agustus 1945 dibacakan langsung oleh Ir. Soekarno di jalan...",
+    "optionA": "Kramat Raya No. 106",
+    "optionB": "Pegangsaan Timur No. 56",
+    "correct": "B",
+    "explanation": "Pembacaan proklamasi berlangsung di halaman rumah Bung Karno di Jalan Pegangsaan Timur No. 56 Jakarta pukul 10 pagi."
+  },
+  {
+    "id": 27,
+    "category": "Kemerdekaan RI",
+    "question": "Peristiwa membawa Bung Karno dan Hatta ke Rengasdengklok bertujuan untuk...",
+    "optionA": "Menjauhkan dari pengaruh Jepang agar segera merdeka",
+    "optionB": "Menyerahkan kekuasaan kepada pihak sekutu",
+    "correct": "A",
+    "explanation": "Para pemuda ingin memastikan proklamasi lahir murni dari perjuangan bangsa Indonesia tanpa janji kemerdekaan dari Jepang."
+  },
+  {
+    "id": 28,
+    "category": "Kemerdekaan RI",
+    "question": "Sosok pahlawan wanita yang menjahit Bendera Pusaka Sang Saka Merah Putih pertama kali adalah...",
+    "optionA": "Cut Nyak Dien",
+    "optionB": "Ibu Fatmawati",
+    "correct": "B",
+    "explanation": "Ibu Fatmawati menjahit kain merah dan putih yang dikibarkan saat proklamasi 17 Agustus 1945 oleh Latief Hendraningrat."
+  },
+  {
+    "id": 29,
+    "category": "Perjuangan Kemerdekaan",
+    "question": "Pertempuran sengit mempertahankan kemerdekaan di Surabaya pada 10 November 1945 diperingati sebagai...",
+    "optionA": "Hari Pahlawan",
+    "optionB": "Hari Kesaktian Pancasila",
+    "correct": "A",
+    "explanation": "Tanggal 10 November diperingati sebagai Hari Pahlawan untuk menghormati pengorbanan pejuang rakyat Surabaya di bawah Bung Tomo."
+  },
+  {
+    "id": 30,
+    "category": "Pahlawan Nasional",
+    "question": "Pemimpin perjuangan rakyat Maluku melawan penjajah Belanda yang bernama asli Thomas Matulessy adalah...",
+    "optionA": "Sultan Hasanuddin",
+    "optionB": "Kapitan Pattimura",
+    "correct": "B",
+    "explanation": "Kapitan Pattimura memimpin perlawanan bersenjata merebut Benteng Duurstede di Saparua Maluku pada tahun 1817."
+  },
+  {
+    "id": 31,
+    "category": "Sosiologi SMP",
+    "question": "Hubungan timbal balik yang dinamis antara individu dengan individu, atau kelompok masyarakat disebut...",
+    "optionA": "Interaksi Sosial",
+    "optionB": "Pengendalian Sosial",
+    "correct": "A",
+    "explanation": "Interaksi sosial merupakan syarat utama terjadinya aktivitas sosial dalam kehidupan bermasyarakat."
+  },
+  {
+    "id": 32,
+    "category": "Sosiologi SMP",
+    "question": "Interaksi sosial yang bersifat mempererat hubungan, persatuan, dan kebersamaan dinamakan proses...",
+    "optionA": "Disosiatif",
+    "optionB": "Asosiatif",
+    "correct": "B",
+    "explanation": "Bentuk asosiatif mencakup kerja sama (kooperasi), akomodasi (penyelesaian konflik), dan asimilasi budaya."
+  },
+  {
+    "id": 33,
+    "category": "Sosiologi SMP",
+    "question": "Proses interaksi sosial yang mengarah pada pertentangan, perselisihan, atau perpecahan disebut proses...",
+    "optionA": "Disosiatif",
+    "optionB": "Integratif",
+    "correct": "A",
+    "explanation": "Bentuk disosiatif menimbulkan kerenggangan seperti persaingan tidak sehat, kontravensi, dan pertikaian (konflik)."
+  },
+  {
+    "id": 34,
+    "category": "Sosiologi SMP",
+    "question": "Aturan bertindak yang bersumber dari bisikan hati nurani manusia mengenai hal terpuji dan tercela adalah norma...",
+    "optionA": "Kesopanan",
+    "optionB": "Kesusilaan",
+    "correct": "B",
+    "explanation": "Norma kesusilaan berpijak pada suara hati moral manusia; pelanggarannya membuahkan rasa malu dan penyesalan mendalam."
+  },
+  {
+    "id": 35,
+    "category": "Sosiologi SMP",
+    "question": "Norma dalam masyarakat yang memiliki sanksi paling tegas, mengikat, dan dipaksakan oleh penegak hukum adalah...",
+    "optionA": "Norma Hukum",
+    "optionB": "Norma Adat Istiadat",
+    "correct": "A",
+    "explanation": "Norma hukum dibuat oleh negara melalui perundang-undangan dengan sanksi pidana atau denda yang pasti."
+  },
+  {
+    "id": 36,
+    "category": "Sosiologi SMP",
+    "question": "Lembaga sosial pertama dan utama yang menjalankan sosialisasi primer dalam membentuk akhlak anak adalah...",
+    "optionA": "Lembaga Ekonomi",
+    "optionB": "Lembaga Keluarga",
+    "correct": "B",
+    "explanation": "Keluarga merupakan lingkungan pertama tempat anak belajar bahasa, norma, kasih sayang, dan budi pekerti luhur."
+  },
+  {
+    "id": 37,
+    "category": "Sosiologi SMP",
+    "question": "Perpindahan kedudukan sosial seseorang ke lapisan sosial yang lebih tinggi dalam masyarakat disebut mobilitas...",
+    "optionA": "Vertikal Naik (Social Climbing)",
+    "optionB": "Horizontal Sejajar",
+    "correct": "A",
+    "explanation": "Mobilitas vertikal naik terjadi saat seseorang berhasil menaikkan status ekonominya, misalnya melalui pendidikan atau prestasi kerja."
+  },
+  {
+    "id": 38,
+    "category": "Keragaman Budaya",
+    "question": "Rumah adat khas Minangkabau yang beratap runcing menyerupai tanduk kerbau dinamakan...",
+    "optionA": "Rumah Joglo",
+    "optionB": "Rumah Gadang",
+    "correct": "B",
+    "explanation": "Rumah Gadang dari Sumatera Barat memiliki atap melengkung runcing ke atas (gonjong) yang sarat makna falsafah Minang."
+  },
+  {
+    "id": 39,
+    "category": "Keragaman Budaya",
+    "question": "Upacara adat pembakaran jenazah sakral umat Hindu di Bali untuk menyucikan roh leluhur dinamakan...",
+    "optionA": "Upacara Ngaben",
+    "optionB": "Upacara Rambu Solo",
+    "correct": "A",
+    "explanation": "Ngaben adalah upacara pembakaran jenazah di Bali untuk mengembalikan raga manusia ke asal unsur alam (Panca Maha Bhuta)."
+  },
+  {
+    "id": 40,
+    "category": "Sosiologi SMP",
+    "question": "Sikap saling menghormati dan menghargai keragaman suku, agama, dan adat di Indonesia mencerminkan sikap...",
+    "optionA": "Primordialisme Negatif",
+    "optionB": "Toleransi",
+    "correct": "B",
+    "explanation": "Toleransi adalah kunci keharmonisan bangsa majemuk Indonesia sesuai semboyan luhur Bhinneka Tunggal Ika."
+  },
+  {
+    "id": 41,
+    "category": "Ekonomi SMP",
+    "question": "Kebutuhan manusia yang mutlak harus dipenuhi agar dapat bertahan hidup (makanan, pakaian, rumah) disebut...",
+    "optionA": "Kebutuhan Primer",
+    "optionB": "Kebutuhan Tersier",
+    "correct": "A",
+    "explanation": "Kebutuhan primer merupakan kebutuhan dasar biologis yang tidak dapat diabaikan keberadaannya."
+  },
+  {
+    "id": 42,
+    "category": "Ekonomi SMP",
+    "question": "Kondisi di mana kebutuhan manusia tak terbatas namun barang dan jasa yang tersedia jumlahnya terbatas disebut...",
+    "optionA": "Kemakmuran Berlebih",
+    "optionB": "Kelangkaan (Scarcity)",
+    "correct": "B",
+    "explanation": "Kelangkaan adalah inti masalah ekonomi yang mendorong manusia melakukan pilihan terbaik dalam mengelola sumber daya."
+  },
+  {
+    "id": 43,
+    "category": "Ekonomi SMP",
+    "question": "Dorongan atau alasan dalam diri seseorang untuk melakukan tindakan ekonomi tertentu disebut...",
+    "optionA": "Motif Ekonomi",
+    "optionB": "Politik Fiskal",
+    "correct": "A",
+    "explanation": "Motif ekonomi bisa berupa keinginan bertahan hidup, mencari keuntungan, memperoleh penghargaan, atau menolong sesama."
+  },
+  {
+    "id": 44,
+    "category": "Ekonomi SMP",
+    "question": "Pedoman bertindak secara rasional untuk mendapatkan hasil maksimal dengan pengorbanan tertentu dinamakan...",
+    "optionA": "Biaya Peluang Semu",
+    "optionB": "Prinsip Ekonomi",
+    "correct": "B",
+    "explanation": "Prinsip ekonomi mengajarkan pemanfaatan sumber daya secara hemat dan efisien untuk hasil yang optimal."
+  },
+  {
+    "id": 45,
+    "category": "Ekonomi SMP",
+    "question": "Jumlah barang atau jasa yang ingin dibeli oleh konsumen pada berbagai tingkat harga tertentu disebut...",
+    "optionA": "Permintaan (Demand)",
+    "optionB": "Penawaran (Supply)",
+    "correct": "A",
+    "explanation": "Permintaan mencerminkan daya beli dan keinginan konsumen untuk memperoleh komoditas pada tingkat harga di pasar."
+  },
+  {
+    "id": 46,
+    "category": "Ekonomi SMP",
+    "question": "Sesuai hukum permintaan, jika harga suatu barang mengalami lonjakan kenaikan, maka jumlah permintaan akan...",
+    "optionA": "Meningkat Drastis",
+    "optionB": "Menurun / Berkurang",
+    "correct": "B",
+    "explanation": "Hukum permintaan: jika harga naik, jumlah barang yang diminta turun; jika harga turun, jumlah yang diminta naik."
+  },
+  {
+    "id": 47,
+    "category": "Ekonomi SMP",
+    "question": "Sesuai hukum penawaran, apabila harga jual suatu barang naik, maka jumlah barang yang ditawarkan pedagang akan...",
+    "optionA": "Meningkat / Bertambah",
+    "optionB": "Menurun Menjadi Nol",
+    "correct": "A",
+    "explanation": "Pedagang bersemangat menjual lebih banyak barang ketika harga tinggi guna mendulang laba yang lebih besar."
+  },
+  {
+    "id": 48,
+    "category": "Ekonomi SMP",
+    "question": "Kegiatan menjual komoditas atau produk olahan dari dalam negeri ke pasar mancanegara disebut kegiatan...",
+    "optionA": "Impor",
+    "optionB": "Ekspor",
+    "correct": "B",
+    "explanation": "Ekspor menghasilkan devisa bagi kas negara melalui penjualan produk lokal ke konsumen di luar negeri."
+  },
+  {
+    "id": 49,
+    "category": "Ekonomi SMP",
+    "question": "Pelaku ekonomi yang bertugas mengonsumsi produk sekaligus menyewakan faktor produksi (tenaga kerja, tanah) adalah...",
+    "optionA": "Rumah Tangga Konsumen (RTK)",
+    "optionB": "Rumah Tangga Produsen (RTP)",
+    "correct": "A",
+    "explanation": "RTK menyumbangkan faktor produksi kepada perusahaan dan menggunakan balas jasanya (gaji, sewa) untuk belanja kebutuhan."
+  },
+  {
+    "id": 50,
+    "category": "Ekonomi SMP",
+    "question": "Uang tunai fisik berupa uang kertas dan uang logam resmi yang diterbitkan Bank Indonesia disebut...",
+    "optionA": "Uang Giral",
+    "optionB": "Uang Kartal",
+    "correct": "B",
+    "explanation": "Uang kartal adalah alat pembayaran tunai yang wajib diterima, sedangkan uang giral tersimpan berupa rekening koran atau cek."
   }
 ];
 
-// Konfigurasi Tangga & Ular
+// Konfigurasi 5 Tangga (Naik) pada Papan 50 Kotak (10 Kolom x 5 Baris)
 const LADDERS = [
-  { start: 3, end: 11, color: '#f59e0b' },
-  { start: 9, end: 18, color: '#10b981' },
-  { start: 14, end: 22, color: '#8b5cf6' }
+  { start: 4,  end: 14, color: '#f59e0b', name: 'Tangga Emas' },
+  { start: 9,  end: 28, color: '#10b981', name: 'Tangga Kilat' },
+  { start: 18, end: 37, color: '#06b6d4', name: 'Tangga Harapan' },
+  { start: 25, end: 35, color: '#8b5cf6', name: 'Tangga Ungu' },
+  { start: 33, end: 48, color: '#ec4899', name: 'Tangga Juara' }
 ];
 
+// Konfigurasi 5 Ular (Turun) pada Papan 50 Kotak
 const SNAKES = [
-  { start: 12, end: 4, color: '#ef4444' },
-  { start: 19, end: 8, color: '#ec4899' },
-  { start: 24, end: 16, color: '#f97316' }
+  { start: 16, end: 6,  color: '#f97316', name: 'Kobra Oranye' },
+  { start: 26, end: 12, color: '#10b981', name: 'Viper Zamrud' },
+  { start: 38, end: 19, color: '#a855f7', name: 'Piton Ungu' },
+  { start: 44, end: 23, color: '#eab308', name: 'Boa Gurun' },
+  { start: 49, end: 30, color: '#ef4444', name: 'Naga Api Trap' }
+];
+
+// Daftar 10 Hukuman Seru & Edukatif IPS saat terkena ular (Jongkok + Tantangan Seru)
+const FUN_PUNISHMENTS = [
+  {
+    title: 'Desisan Sang Ular 🐍',
+    instruction: 'Lakukan jongkok 3 kali sambil menirukan desisan ular: "Sssss... ampun raja ular!"'
+  },
+  {
+    title: 'Sebutkan 3 Provinsi 🗺️',
+    instruction: 'Sambil jongkok 3 kali, sebutkan 3 nama provinsi di Indonesia dengan lantang!'
+  },
+  {
+    title: 'Negara Sahabat ASEAN 🌏',
+    instruction: 'Lakukan jongkok 3 kali sambil menyebutkan 3 negara anggota ASEAN selain Indonesia!'
+  },
+  {
+    title: 'Lagu Nasional Semangat 🎵',
+    instruction: 'Lakukan jongkok 3 kali sambil menyanyikan bait lagu "Garuda Pancasila" atau lagu daerah!'
+  },
+  {
+    title: 'Sebutkan 3 Pahlawan 🎖️',
+    instruction: 'Sambil jongkok 3 kali, sebutkan 3 nama pahlawan nasional kemerdekaan Indonesia!'
+  },
+  {
+    title: 'Yel-Yel Semangat IPS 📣',
+    instruction: 'Lakukan jongkok 3 kali lalu teriakkan: "IPS Itu Seru, Kami Generasi Cerdas!"'
+  },
+  {
+    title: 'Gaya Pose Patung Lucu 🗿',
+    instruction: 'Lakukan jongkok 3 kali, lalu pasang pose patung paling kocak ke arah teman-teman selama 3 detik!'
+  },
+  {
+    title: 'Kenampakan Alam Bumi 🏞️',
+    instruction: 'Sambil jongkok 3 kali, sebutkan 3 kenampakan alam (misal: gunung, danau, tanjung, teluk)!'
+  },
+  {
+    title: 'Samudera Megah Dunia 🌊',
+    instruction: 'Lakukan jongkok 3 kali sambil menyebutkan 3 nama samudera besar di permukaan bumi!'
+  },
+  {
+    title: 'Semboyan Persatuan 🇮🇩',
+    instruction: 'Lakukan jongkok 3 kali lalu ucapkan semboyan negara kita: "Bhinneka Tunggal Ika!"'
+  }
 ];
 
 /**
  * ==========================================================================
- * Web Audio API Synthesizer (Zero-Dependency Sound Effects)
+ * Web Audio API Synthesizer (Hemat Memori, Zero-Lag)
  * ==========================================================================
  */
 class SoundEngine {
   constructor() {
     this.ctx = null;
-    this.isMuted = localStorage.getItem('kinesthetic_sound_muted') === 'true';
+    this.isMuted = localStorage.getItem('ips_snakes_sound_muted') === 'true';
   }
 
   ensureContext() {
     if (!this.ctx) {
       const AudioCtx = window.AudioContext || window.webkitAudioContext;
-      if (AudioCtx) {
-        this.ctx = new AudioCtx();
-      }
+      if (AudioCtx) this.ctx = new AudioCtx();
     }
     if (this.ctx && this.ctx.state === 'suspended') {
       this.ctx.resume();
     }
+  }
+
+  playTone(freq, type = 'sine', duration = 0.1, gainVal = 0.15) {
+    if (this.isMuted) return;
+    this.ensureContext();
+    if (!this.ctx) return;
+
+    try {
+      const osc = this.ctx.createOscillator();
+      const gain = this.ctx.createGain();
+      osc.type = type;
+      osc.frequency.setValueAtTime(freq, this.ctx.currentTime);
+      gain.gain.setValueAtTime(gainVal, this.ctx.currentTime);
+      gain.gain.exponentialRampToValueAtTime(0.0001, this.ctx.currentTime + duration);
+      osc.connect(gain);
+      gain.connect(this.ctx.destination);
+      osc.start();
+      osc.stop(this.ctx.currentTime + duration);
+    } catch (e) {}
   }
 
   playDiceRoll() {
@@ -295,194 +577,77 @@ class SoundEngine {
     this.ensureContext();
     if (!this.ctx) return;
 
-    for (let i = 0; i < 6; i++) {
+    for (let i = 0; i < 5; i++) {
       setTimeout(() => {
-        const osc = this.ctx.createOscillator();
-        const gain = this.ctx.createGain();
-        osc.type = 'triangle';
-        osc.frequency.setValueAtTime(220 + Math.random() * 200, this.ctx.currentTime);
-        gain.gain.setValueAtTime(0.12, this.ctx.currentTime);
-        gain.gain.exponentialRampToValueAtTime(0.001, this.ctx.currentTime + 0.08);
-        osc.connect(gain);
-        gain.connect(this.ctx.destination);
-        osc.start();
-        osc.stop(this.ctx.currentTime + 0.08);
-      }, i * 110);
+        this.playTone(220 + Math.random() * 180, 'triangle', 0.06, 0.12);
+      }, i * 90);
     }
   }
 
-  playHop() {
-    if (this.isMuted) return;
-    this.ensureContext();
-    if (!this.ctx) return;
-
-    const osc = this.ctx.createOscillator();
-    const gain = this.ctx.createGain();
-    osc.type = 'sine';
-    const now = this.ctx.currentTime;
-    osc.frequency.setValueAtTime(260, now);
-    osc.frequency.exponentialRampToValueAtTime(520, now + 0.15);
-    gain.gain.setValueAtTime(0.2, now);
-    gain.gain.exponentialRampToValueAtTime(0.001, now + 0.2);
-    osc.connect(gain);
-    gain.connect(this.ctx.destination);
-    osc.start();
-    osc.stop(now + 0.2);
-  }
-
-  playCorrect() {
-    if (this.isMuted) return;
-    this.ensureContext();
-    if (!this.ctx) return;
-
-    const notes = [523.25, 659.25, 783.99, 1046.50]; // C5, E5, G5, C6
-    notes.forEach((freq, idx) => {
-      const osc = this.ctx.createOscillator();
-      const gain = this.ctx.createGain();
-      osc.type = 'sine';
-      const now = this.ctx.currentTime + (idx * 0.1);
-      osc.frequency.setValueAtTime(freq, now);
-      gain.gain.setValueAtTime(0.22, now);
-      gain.gain.exponentialRampToValueAtTime(0.001, now + 0.35);
-      osc.connect(gain);
-      gain.connect(this.ctx.destination);
-      osc.start(now);
-      osc.stop(now + 0.35);
-    });
-  }
-
-  playWrong() {
-    if (this.isMuted) return;
-    this.ensureContext();
-    if (!this.ctx) return;
-
-    const osc = this.ctx.createOscillator();
-    const gain = this.ctx.createGain();
-    osc.type = 'sawtooth';
-    const now = this.ctx.currentTime;
-    osc.frequency.setValueAtTime(180, now);
-    osc.frequency.exponentialRampToValueAtTime(110, now + 0.3);
-    gain.gain.setValueAtTime(0.18, now);
-    gain.gain.exponentialRampToValueAtTime(0.001, now + 0.35);
-    osc.connect(gain);
-    gain.connect(this.ctx.destination);
-    osc.start(now);
-    osc.stop(now + 0.35);
-  }
-
-  playSnakeAlert() {
-    if (this.isMuted) return;
-    this.ensureContext();
-    if (!this.ctx) return;
-
-    // Desis ular & nada waspada
-    const osc = this.ctx.createOscillator();
-    const gain = this.ctx.createGain();
-    osc.type = 'sawtooth';
-    const now = this.ctx.currentTime;
-    osc.frequency.setValueAtTime(320, now);
-    osc.frequency.linearRampToValueAtTime(220, now + 0.4);
-    gain.gain.setValueAtTime(0.2, now);
-    gain.gain.exponentialRampToValueAtTime(0.001, now + 0.5);
-    osc.connect(gain);
-    gain.connect(this.ctx.destination);
-    osc.start(now);
-    osc.stop(now + 0.5);
-  }
-
-  playShield() {
-    if (this.isMuted) return;
-    this.ensureContext();
-    if (!this.ctx) return;
-
-    // Efek perisai logam berdenting
-    const freqs = [880, 1320, 1760];
-    freqs.forEach((freq) => {
-      const osc = this.ctx.createOscillator();
-      const gain = this.ctx.createGain();
-      osc.type = 'sine';
-      const now = this.ctx.currentTime;
-      osc.frequency.setValueAtTime(freq, now);
-      gain.gain.setValueAtTime(0.15, now);
-      gain.gain.exponentialRampToValueAtTime(0.001, now + 0.6);
-      osc.connect(gain);
-      gain.connect(this.ctx.destination);
-      osc.start(now);
-      osc.stop(now + 0.6);
-    });
-  }
-
-  playClimbStep() {
-    if (this.isMuted) return;
-    this.ensureContext();
-    if (!this.ctx) return;
-
-    const osc = this.ctx.createOscillator();
-    const gain = this.ctx.createGain();
-    osc.type = 'sine';
-    const now = this.ctx.currentTime;
-    osc.frequency.setValueAtTime(440 + Math.random() * 80, now);
-    gain.gain.setValueAtTime(0.2, now);
-    gain.gain.exponentialRampToValueAtTime(0.001, now + 0.12);
-    osc.connect(gain);
-    gain.connect(this.ctx.destination);
-    osc.start(now);
-    osc.stop(now + 0.12);
+  playStep() {
+    this.playTone(420, 'sine', 0.08, 0.14);
   }
 
   playLadderAscent() {
     if (this.isMuted) return;
-    this.ensureContext();
-    if (!this.ctx) return;
-
-    const notes = [392, 440, 493.88, 523.25, 587.33, 659.25, 783.99];
+    const notes = [330, 415, 493, 554, 659];
     notes.forEach((freq, idx) => {
-      const osc = this.ctx.createOscillator();
-      const gain = this.ctx.createGain();
-      osc.type = 'triangle';
-      const now = this.ctx.currentTime + (idx * 0.08);
-      osc.frequency.setValueAtTime(freq, now);
-      gain.gain.setValueAtTime(0.18, now);
-      gain.gain.exponentialRampToValueAtTime(0.001, now + 0.25);
-      osc.connect(gain);
-      gain.connect(this.ctx.destination);
-      osc.start(now);
-      osc.stop(now + 0.25);
+      setTimeout(() => this.playTone(freq, 'triangle', 0.14, 0.15), idx * 80);
     });
+  }
+
+  playClimbStep() {
+    this.playTone(480, 'triangle', 0.1, 0.15);
+  }
+
+  playSnakeAlert() {
+    if (this.isMuted) return;
+    this.playTone(180, 'sawtooth', 0.35, 0.2);
+  }
+
+  playSnakeSlide() {
+    if (this.isMuted) return;
+    const notes = [520, 460, 400, 340, 280, 220, 160];
+    notes.forEach((freq, idx) => {
+      setTimeout(() => this.playTone(freq, 'sawtooth', 0.1, 0.15), idx * 80);
+    });
+  }
+
+  playSquatDing() {
+    this.playTone(880, 'sine', 0.2, 0.2);
+  }
+
+  playCorrect() {
+    if (this.isMuted) return;
+    this.playTone(523.25, 'triangle', 0.12, 0.15);
+    setTimeout(() => this.playTone(659.25, 'triangle', 0.12, 0.15), 100);
+    setTimeout(() => this.playTone(783.99, 'triangle', 0.25, 0.18), 200);
+  }
+
+  playWrong() {
+    if (this.isMuted) return;
+    this.playTone(240, 'sawtooth', 0.2, 0.18);
+    setTimeout(() => this.playTone(180, 'sawtooth', 0.3, 0.2), 150);
   }
 
   playVictory() {
     if (this.isMuted) return;
-    this.ensureContext();
-    if (!this.ctx) return;
-
-    const fanfare = [
-      { f: 523.25, t: 0.0 },
-      { f: 523.25, t: 0.15 },
-      { f: 523.25, t: 0.3 },
-      { f: 659.25, t: 0.45 },
-      { f: 783.99, t: 0.65 },
-      { f: 1046.50, t: 0.95 }
-    ];
-    fanfare.forEach(item => {
-      const osc = this.ctx.createOscillator();
-      const gain = this.ctx.createGain();
-      osc.type = 'triangle';
-      const now = this.ctx.currentTime + item.t;
-      osc.frequency.setValueAtTime(item.f, now);
-      gain.gain.setValueAtTime(0.25, now);
-      gain.gain.exponentialRampToValueAtTime(0.001, now + 0.45);
-      osc.connect(gain);
-      gain.connect(this.ctx.destination);
-      osc.start(now);
-      osc.stop(now + 0.45);
+    const melody = [523, 659, 784, 1046];
+    melody.forEach((freq, i) => {
+      setTimeout(() => this.playTone(freq, 'triangle', 0.25, 0.2), i * 150);
     });
+  }
+
+  toggleMute() {
+    this.isMuted = !this.isMuted;
+    localStorage.setItem('ips_snakes_sound_muted', this.isMuted);
+    return this.isMuted;
   }
 }
 
 /**
  * ==========================================================================
- * Particle System (Bintang & Konfeti)
+ * Particle System Ringan (Konfeti & Sparkle)
  * ==========================================================================
  */
 class ParticleSystem {
@@ -490,23 +655,20 @@ class ParticleSystem {
     this.particles = [];
   }
 
-  burst(x, y, count = 25, type = 'star') {
-    const colors = ['#f59e0b', '#10b981', '#3b82f6', '#ec4899', '#8b5cf6', '#eab308'];
+  burst(x, y, count = 20, type = 'star') {
+    const colors = ['#f59e0b', '#3b82f6', '#10b981', '#ec4899', '#8b5cf6', '#ef4444', '#fbbf24'];
     for (let i = 0; i < count; i++) {
       const angle = Math.random() * Math.PI * 2;
-      const speed = 2 + Math.random() * 6;
+      const speed = 2 + Math.random() * 5;
       this.particles.push({
         x,
         y,
         vx: Math.cos(angle) * speed,
-        vy: Math.sin(angle) * speed - 2,
-        gravity: 0.15,
+        vy: Math.sin(angle) * speed - 1.5,
         color: colors[Math.floor(Math.random() * colors.length)],
-        size: 4 + Math.random() * 6,
-        rotation: Math.random() * Math.PI,
-        vRot: (Math.random() - 0.5) * 0.2,
-        alpha: 1.0,
-        decay: 0.015 + Math.random() * 0.02,
+        size: 3 + Math.random() * 5,
+        alpha: 1,
+        life: 0.95 + Math.random() * 0.04,
         type
       });
     }
@@ -517,11 +679,10 @@ class ParticleSystem {
       const p = this.particles[i];
       p.x += p.vx;
       p.y += p.vy;
-      p.vy += p.gravity;
-      p.rotation += p.vRot;
-      p.alpha -= p.decay;
+      p.vy += 0.15; // gravitasi
+      p.alpha *= p.life;
 
-      if (p.alpha <= 0) {
+      if (p.alpha < 0.05) {
         this.particles.splice(i, 1);
         continue;
       }
@@ -529,107 +690,119 @@ class ParticleSystem {
       ctx.save();
       ctx.globalAlpha = p.alpha;
       ctx.fillStyle = p.color;
-      ctx.translate(p.x, p.y);
-      ctx.rotate(p.rotation);
-
-      if (p.type === 'star') {
-        this.drawStar(ctx, 0, 0, 5, p.size, p.size / 2);
-      } else {
-        ctx.fillRect(-p.size / 2, -p.size / 2, p.size, p.size);
-      }
+      ctx.beginPath();
+      ctx.arc(p.x, p.y, p.size, 0, Math.PI * 2);
+      ctx.fill();
       ctx.restore();
     }
-  }
-
-  drawStar(ctx, cx, cy, spikes, outerRadius, innerRadius) {
-    let rot = Math.PI / 2 * 3;
-    let x = cx;
-    let y = cy;
-    const step = Math.PI / spikes;
-
-    ctx.beginPath();
-    ctx.moveTo(cx, cy - outerRadius);
-    for (let i = 0; i < spikes; i++) {
-      x = cx + Math.cos(rot) * outerRadius;
-      y = cy + Math.sin(rot) * outerRadius;
-      ctx.lineTo(x, y);
-      rot += step;
-
-      x = cx + Math.cos(rot) * innerRadius;
-      y = cy + Math.sin(rot) * innerRadius;
-      ctx.lineTo(x, y);
-      rot += step;
-    }
-    ctx.lineTo(cx, cy - outerRadius);
-    ctx.closePath();
-    ctx.fill();
   }
 }
 
 /**
  * ==========================================================================
- * Game Engine Utama (Ular Tangga Kinestetik - Mode 2 Pemain)
+ * Game Engine Utama (50 Kotak - 4 Pemain - Desain Premium & Anti-Macet)
  * ==========================================================================
  */
 class SnakeAndLaddersGame {
   constructor() {
-    // Canvas & Render
     this.canvas = document.getElementById('gameCanvas');
     this.ctx = this.canvas.getContext('2d');
     this.particleSystem = new ParticleSystem();
     this.sounds = new SoundEngine();
 
-    // State Mode 2 Pemain
-    this.currentPlayer = 1; // 1 = Pemain 1 (Biru), 2 = Pemain 2 (Oranye)
+    // Offscreen Canvas untuk Pre-rendering Papan (Performa 60-120 FPS tanpa lag)
+    this.boardCacheCanvas = document.createElement('canvas');
+    this.boardCacheCtx = this.boardCacheCanvas.getContext('2d');
+    this.boardCacheDirty = true;
+
+    // Konfigurasi 4 Pemain
+    this.totalPlayers = 4; // Default 4 Pemain
+    this.currentPlayer = 1; // 1 s/d 4
     this.turnsCount = 0;
     this.isMoving = false;
-    this.gameState = 'IDLE'; // 'IDLE', 'ROLLING', 'MOVING', 'QUIZ', 'SQUAT_CHALLENGE', 'CLIMB_CHALLENGE', 'VICTORY'
+    this.gameState = 'IDLE'; // 'IDLE', 'ROLLING', 'MOVING', 'QUIZ', 'SQUAT_PUNISHMENT', 'CLIMB_CHALLENGE', 'VICTORY'
 
-    // Data Kedua Pemain
+    // Data Lengkap 4 Pemain
     this.players = {
       1: {
         id: 1,
         name: 'Pemain 1',
         label: 'P1',
-        themeColor: '#2563eb', // Biru
+        colorName: 'Biru',
+        themeColor: '#2563eb', // Azure Sapphire
         colorLight: '#60a5fa',
         colorDark: '#1d4ed8',
+        emblem: '👑',
         tile: 1,
         x: 0,
         y: 0,
-        shieldActive: false,
         correctAnswers: 0,
-        totalAnswered: 0
+        totalAnswered: 0,
+        squatsDone: 0
       },
       2: {
         id: 2,
         name: 'Pemain 2',
         label: 'P2',
-        themeColor: '#ea580c', // Oranye
-        colorLight: '#fb923c',
-        colorDark: '#c2410c',
+        colorName: 'Merah',
+        themeColor: '#dc2626', // Ruby Crimson
+        colorLight: '#f87171',
+        colorDark: '#b91c1c',
+        emblem: '⚡',
         tile: 1,
         x: 0,
         y: 0,
-        shieldActive: false,
         correctAnswers: 0,
-        totalAnswered: 0
+        totalAnswered: 0,
+        squatsDone: 0
+      },
+      3: {
+        id: 3,
+        name: 'Pemain 3',
+        label: 'P3',
+        colorName: 'Hijau',
+        themeColor: '#059669', // Emerald Jade
+        colorLight: '#34d399',
+        colorDark: '#047857',
+        emblem: '🍀',
+        tile: 1,
+        x: 0,
+        y: 0,
+        correctAnswers: 0,
+        totalAnswered: 0,
+        squatsDone: 0
+      },
+      4: {
+        id: 4,
+        name: 'Pemain 4',
+        label: 'P4',
+        colorName: 'Ungu',
+        themeColor: '#7c3aed', // Royal Violet
+        colorLight: '#c084fc',
+        colorDark: '#6d28d9',
+        emblem: '⭐',
+        tile: 1,
+        x: 0,
+        y: 0,
+        correctAnswers: 0,
+        totalAnswered: 0,
+        squatsDone: 0
       }
     };
 
-    // Bank Soal & Riwayat Soal (Dipastikan Tidak Menyamai antara P1 dan P2)
+    // Bank Soal IPS SMP (50 Soal)
     this.questions = this.loadQuestions();
     this.activeQuestion = null;
     this.usedQuestionIds = new Set();
-    this.usedQuestionsP1 = new Set();
-    this.usedQuestionsP2 = new Set();
 
-    // Tantangan Aktif
-    this.squatTimer = null;
-    this.squatSecondsRemaining = 3;
-    this.climbProgress = 0;
+    // Hukuman Ular Aktif
     this.activeSnake = null;
+    this.activePunishment = null;
+    this.squatRepsRemaining = 3;
+
+    // Tantangan Tangga Aktif
     this.activeLadder = null;
+    this.climbProgress = 0;
 
     // Pose Engine
     this.poseEngine = null;
@@ -642,37 +815,28 @@ class SnakeAndLaddersGame {
     return this.players[this.currentPlayer];
   }
 
-  getInactivePlayer() {
-    return this.players[this.currentPlayer === 1 ? 2 : 1];
-  }
-
   async init() {
     this.setupEventListeners();
     this.resizeCanvas();
     window.addEventListener('resize', () => this.resizeCanvas());
 
-    // Update posisi kedua avatar ke petak 1
-    const p1Pos = this.getTilePosition(1);
-    this.players[1].x = p1Pos.x;
-    this.players[1].y = p1Pos.y;
-    this.players[2].x = p1Pos.x;
-    this.players[2].y = p1Pos.y;
-
-    this.updateHUD();
-
-    // Update Identitas Ruang Kelas / Pembeli di Header
-    const room = getRoomInfo();
-    const roomBadgeText = document.getElementById('roomBadgeText');
-    if (roomBadgeText) {
-      roomBadgeText.textContent = room.name === 'Umum' ? 'Lisensi: Resmi' : `Lisensi: ${room.name}`;
+    // Auto-resize observer untuk container papan ular tangga agar selalu 100% pas
+    const container = document.getElementById('boardCanvasContainer');
+    if (container && window.ResizeObserver) {
+      const ro = new ResizeObserver(() => this.resizeCanvas());
+      ro.observe(container);
     }
 
-    // Inisialisasi Pose Engine dengan Dukungan 2 Layar (P1 Kiri & P2 Kanan)
+    // Posisikan semua 4 avatar di petak 1
+    this.updateAllAvatarPositions();
+    this.updateHUD();
+
+    // Inisialisasi Pose Engine dengan Dual Viewport Kamera (Layar Kiri & Layar Kanan)
     this.poseEngine = new KinestheticPoseEngine({
-      videoElementP1: document.getElementById('webcamVideoP1'),
-      videoElementP2: document.getElementById('webcamVideoP2'),
-      canvasElementP1: document.getElementById('poseCanvasP1'),
-      canvasElementP2: document.getElementById('poseCanvasP2')
+      videoElementLeft: document.getElementById('webcamVideoLeft'),
+      videoElementRight: document.getElementById('webcamVideoRight'),
+      canvasElementLeft: document.getElementById('poseCanvasLeft'),
+      canvasElementRight: document.getElementById('poseCanvasRight')
     });
 
     this.bindPoseCallbacks();
@@ -681,174 +845,137 @@ class SnakeAndLaddersGame {
     // Mulai giliran Pemain 1
     this.startPlayerTurn();
 
-    // Start Game Loop Animation
+    // Jalankan Game Rendering Loop
     requestAnimationFrame((t) => this.gameLoop(t));
   }
 
   /**
-   * Muat soal dari localStorage atau gunakan default (Tersimpan khusus per ruang/pembeli)
+   * Muat 50 Soal IPS SMP (Otomatis migrasi dari versi sebelumnya)
    */
   loadQuestions() {
-    const room = getRoomInfo();
-    const STORAGE_KEY = `kinesthetic_snakes_questions_${room.id}`;
-    const VERSION_KEY = `kinesthetic_questions_version_${room.id}`;
-    const CURRENT_VERSION = 'v2_assaah_25';
-
+    const STORAGE_KEY = 'ips_smp_questions_50_v3';
     try {
-      const storedVersion = localStorage.getItem(VERSION_KEY);
       const stored = localStorage.getItem(STORAGE_KEY);
-
-      // Migrasi otomatis ke materi 25 soal As-Sa'ah Bahasa Arab jika versi belum sesuai
-      if (storedVersion !== CURRENT_VERSION || !stored) {
-        this.saveQuestions(DEFAULT_QUESTIONS);
-        localStorage.setItem(VERSION_KEY, CURRENT_VERSION);
-        return JSON.parse(JSON.stringify(DEFAULT_QUESTIONS));
-      }
-
       if (stored) {
         const parsed = JSON.parse(stored);
-        if (Array.isArray(parsed) && parsed.length > 0) {
+        if (Array.isArray(parsed) && parsed.length >= 50) {
           return parsed;
         }
       }
-    } catch (e) {
-      console.error('Error membaca bank soal localStorage:', e);
-    }
+    } catch (e) {}
+
+    // Simpan default 50 Soal IPS SMP
     this.saveQuestions(DEFAULT_QUESTIONS);
-    localStorage.setItem(VERSION_KEY, CURRENT_VERSION);
     return JSON.parse(JSON.stringify(DEFAULT_QUESTIONS));
   }
 
   saveQuestions(qList) {
     try {
-      const room = getRoomInfo();
-      const STORAGE_KEY = `kinesthetic_snakes_questions_${room.id}`;
-      localStorage.setItem(STORAGE_KEY, JSON.stringify(qList));
+      localStorage.setItem('ips_smp_questions_50_v3', JSON.stringify(qList));
       this.questions = qList;
-    } catch (e) {
-      console.error('Error menyimpan soal ke localStorage:', e);
-    }
+    } catch (e) {}
   }
 
   /**
-   * Hubungkan callback gerakan dari pose.js ke alur game
-   */
-  bindPoseCallbacks() {
-    this.poseEngine.callbacks.onCameraStatus = (msg, type) => {
-      this.setCameraStatus(msg, type);
-    };
-
-    // 1. Kocok Dadu (Angkat Kedua Tangan)
-    this.poseEngine.callbacks.onArmsUp = () => {
-      if (this.gameState === 'IDLE' && !this.isMoving) {
-        this.rollDice();
-      }
-    };
-
-    // 2. Kuis: Hover Zona Pilihan A atau B
-    this.poseEngine.callbacks.onZoneHover = ({ zone, progress }) => {
-      if (this.gameState === 'QUIZ') {
-        this.updateQuizHoverUI(zone, progress);
-      }
-    };
-
-    // 2. Kuis: Pilihan Terkunci setelah 1.5s
-    this.poseEngine.callbacks.onZoneSelect = (selectedZone) => {
-      if (this.gameState === 'QUIZ') {
-        this.handleQuizAnswer(selectedZone);
-      }
-    };
-
-    // 3. Tantangan Ular: Berhasil Jongkok Tepat Waktu
-    this.poseEngine.callbacks.onSquatSuccess = () => {
-      if (this.gameState === 'SQUAT_CHALLENGE') {
-        this.handleSquatSuccess();
-      }
-    };
-
-    // 4. Tantangan Tangga: Repetisi Memanjat
-    this.poseEngine.callbacks.onClimbStep = (count, total) => {
-      if (this.gameState === 'CLIMB_CHALLENGE') {
-        this.handleClimbStep(count, total);
-      }
-    };
-
-    this.poseEngine.callbacks.onClimbComplete = () => {
-      if (this.gameState === 'CLIMB_CHALLENGE') {
-        this.handleClimbSuccess();
-      }
-    };
-  }
-
-  /**
-   * Responsive High-DPI Canvas Sizing (Pas untuk Layar Laptop & Smart TV)
+   * Resize Canvas Papan 50 Kotak (10 Kolom x 5 Baris)
+   * Mengisi wadah (container) secara proporsional dan menjamin petak 1 s/d 50
+   * 100% tampak utuh, tajam, dan tidak pernah terpotong di layar manapun!
    */
   resizeCanvas() {
-    const container = this.canvas.parentElement;
+    const container = document.getElementById('boardCanvasContainer');
     if (!container) return;
 
-    const availW = container.clientWidth || 360;
-    const availH = container.clientHeight || 360;
-    // Ukuran dinamis berbasis batas terkecil dengan bantalan 12px
-    const size = Math.floor(Math.min(availW, availH) - 12);
-    const finalSize = Math.max(220, size);
+    // Ambil dimensi riil container
+    const rect = container.getBoundingClientRect();
+    const cWidth = container.clientWidth || rect.width || 500;
+    const cHeight = container.clientHeight || rect.height || 260;
 
-    const dpr = window.devicePixelRatio || 1;
-    this.canvas.width = finalSize * dpr;
-    this.canvas.height = finalSize * dpr;
-    this.canvas.style.width = `${finalSize}px`;
-    this.canvas.style.height = `${finalSize}px`;
+    // Margin aman di sekeliling canvas agar tidak mepet batas wadah
+    const marginSafe = 6;
+    const availW = Math.max(160, cWidth - marginSafe * 2);
+    const availH = Math.max(100, cHeight - marginSafe * 2);
 
-    this.ctx.resetTransform?.();
-    this.ctx.scale(dpr, dpr);
+    // Padding internal papan
+    const padW = 10;
+    const padH = 10;
+    const maxTileW = (availW - padW) / 10;
+    const maxTileH = (availH - padH) / 5;
 
-    this.boardSize = finalSize;
-    this.tileSize = (finalSize - 40) / 5;
-    this.margin = 20;
+    // Otomatis tentukan tileSize agar pas mengisi wadah (10 kolom x 5 baris)
+    // Sesuai permintaan: panjang full kotak yang di-screenshot gpp yang penting kelihatan 1-50!
+    let tileSize = Math.floor(Math.min(maxTileW, maxTileH));
+    tileSize = Math.max(16, Math.min(tileSize, 70));
 
-    // Perbarui posisi kedua pemain ke petak masing-masing
-    const p1Pos = this.getTilePosition(this.players[1].tile);
-    this.players[1].x = p1Pos.x;
-    this.players[1].y = p1Pos.y;
+    const finalW = Math.floor(tileSize * 10 + padW);
+    const finalH = Math.floor(tileSize * 5 + padH);
 
-    const p2Pos = this.getTilePosition(this.players[2].tile);
-    this.players[2].x = p2Pos.x;
-    this.players[2].y = p2Pos.y;
+    const dpr = Math.min(window.devicePixelRatio || 1, 2);
+    this.canvas.width = finalW * dpr;
+    this.canvas.height = finalH * dpr;
+    this.canvas.style.width = `${finalW}px`;
+    this.canvas.style.height = `${finalH}px`;
+
+    // Gunakan setTransform agar tidak terjadi akumulasi scale dan bebas bug DPR
+    this.ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
+
+    // Update offscreen cache canvas dengan ukuran dan DPR yang sama persis
+    this.boardCacheCanvas.width = finalW * dpr;
+    this.boardCacheCanvas.height = finalH * dpr;
+    this.boardCacheCtx.setTransform(dpr, 0, 0, dpr, 0, 0);
+
+    this.boardWidth = finalW;
+    this.boardHeight = finalH;
+    this.tileSize = tileSize;
+    this.marginX = (finalW - (tileSize * 10)) / 2;
+    this.marginY = (finalH - (tileSize * 5)) / 2;
+
+    this.boardCacheDirty = true;
+    this.updateAllAvatarPositions();
+  }
+
+  updateAllAvatarPositions() {
+    for (let pId = 1; pId <= this.totalPlayers; pId++) {
+      const pos = this.getTilePosition(this.players[pId].tile);
+      this.players[pId].x = pos.x;
+      this.players[pId].y = pos.y;
+    }
   }
 
   /**
-   * Konversi nomor petak 1-25 ke koordinat X, Y (Pola Zigzag Klasik 5x5)
-   * Nomor 1 di kiri bawah, nomor 25 di kiri atas sesuai spesifikasi
+   * Hitung Posisi Petak 1-50 pada Grid 10 Kolom x 5 Baris
+   * Pola Zigzag:
+   * Baris 0 (bawah): 1 -> 10 (kiri ke kanan)
+   * Baris 1:        20 <- 11 (kanan ke kiri)
+   * Baris 2:        21 -> 30 (kiri ke kanan)
+   * Baris 3:        40 <- 31 (kanan ke kiri)
+   * Baris 4 (atas): 41 -> 50 (kiri ke kanan, 50 di kanan atas)
    */
   getTilePosition(tileNum) {
-    const n = Math.max(1, Math.min(25, tileNum));
-    const rowIndex = Math.floor((n - 1) / 5); // 0 (bawah) sampai 4 (atas)
-    const yIndex = 4 - rowIndex; // 4 (bawah) sampai 0 (atas di canvas)
+    const n = Math.max(1, Math.min(50, tileNum));
+    const rowIndex = Math.floor((n - 1) / 10); // 0 (bawah) s/d 4 (atas)
+    const yIndex = 4 - rowIndex; // 4 (bawah di canvas) s/d 0 (atas di canvas)
 
     let colIndex;
-    if (rowIndex === 4) {
-      // Baris 4 (Paling Atas): nomor 25 di kiri atas (col 0) hingga 21 di kanan atas (col 4)
-      colIndex = 4 - ((n - 1) % 5);
-    } else if (rowIndex % 2 === 0) {
-      // Baris genap (0, 2): Bergerak dari kiri ke kanan (0 -> 4)
-      colIndex = (n - 1) % 5;
+    if (rowIndex % 2 === 0) {
+      // Baris genap (0, 2, 4): kiri ke kanan (0 -> 9)
+      colIndex = (n - 1) % 10;
     } else {
-      // Baris ganjil (1, 3): Bergerak dari kanan ke kiri (4 -> 0)
-      colIndex = 4 - ((n - 1) % 5);
+      // Baris ganjil (1, 3): kanan ke kiri (9 -> 0)
+      colIndex = 9 - ((n - 1) % 10);
     }
 
-    const x = this.margin + (colIndex * this.tileSize) + (this.tileSize / 2);
-    const y = this.margin + (yIndex * this.tileSize) + (this.tileSize / 2);
+    const x = this.marginX + (colIndex * this.tileSize) + (this.tileSize / 2);
+    const y = this.marginY + (yIndex * this.tileSize) + (this.tileSize / 2);
 
     return { x, y, colIndex, yIndex, rowIndex };
   }
 
   /**
-   * Alur Giliran Pemain Baru (Mode 2 Pemain)
+   * Alur Giliran Pemain
    */
   startPlayerTurn(isBonusRoll = false) {
     const player = this.getActivePlayer();
-    if (player.tile >= 25) {
+    if (player.tile >= 50) {
       this.triggerVictory(player);
       return;
     }
@@ -857,266 +984,254 @@ class SnakeAndLaddersGame {
     this.poseEngine.setActivePlayer(this.currentPlayer);
     this.poseEngine.setMode('DICE_ROLL');
 
-    const colorName = player.id === 1 ? 'Biru' : 'Oranye';
-    const bannerColor = player.id === 1 ? 'blue' : 'orange';
+    this.updateHUD();
 
     if (isBonusRoll) {
       this.showInstruction(
-        `🎲 BONUS! ${player.name}: Jawaban Benar! Angkat Tangan untuk Dadu Lagi!`,
-        bannerColor
+        `🎲 BONUS! ${player.name}: Jawaban Benar! Angkat Tangan atau Klik Dadu!`,
+        player.colorName.toLowerCase()
       );
     } else {
       this.showInstruction(
-        `🙌 ${player.name}: Angkat Kedua Tangan untuk Melempar Dadu!`,
-        bannerColor
+        `🙌 ${player.name} (${player.colorName}): Angkat Kedua Tangan / Klik Dadu untuk Melangkah!`,
+        player.colorName.toLowerCase()
       );
     }
-    this.updateHUD();
-    this.hideAllModals();
   }
 
-  /**
-   * Mengganti Giliran ke Pemain Lainnya (P1 <-> P2)
-   */
   switchTurn() {
-    this.currentPlayer = this.currentPlayer === 1 ? 2 : 1;
-    const nextPlayer = this.getActivePlayer();
-    const colorName = nextPlayer.id === 1 ? 'Biru' : 'Oranye';
-    const bannerColor = nextPlayer.id === 1 ? 'blue' : 'orange';
-
-    this.updateHUD();
-    this.showInstruction(
-      `🔄 Giliran Berganti ke ${nextPlayer.name} (${colorName})!`,
-      bannerColor
-    );
-
-    setTimeout(() => {
-      this.startPlayerTurn();
-    }, 1300);
+    this.turnsCount++;
+    // Rotasi giliran: 1 -> 2 -> 3 -> 4 -> 1
+    this.currentPlayer = (this.currentPlayer % this.totalPlayers) + 1;
+    this.startPlayerTurn();
   }
 
   /**
-   * Mengocok Dadu 3D untuk Pemain yang Sedang Aktif
+   * Lempar Dadu (1-6)
    */
-  rollDice() {
-    if (this.gameState !== 'IDLE' || this.isMoving) return;
+  async rollDice() {
+    if (this.isMoving || this.gameState !== 'IDLE') return;
 
     this.gameState = 'ROLLING';
+    this.poseEngine.setMode('IDLE');
     this.sounds.playDiceRoll();
-    this.turnsCount++;
-    this.updateHUD();
-
-    const player = this.getActivePlayer();
-    const bannerColor = player.id === 1 ? 'blue' : 'orange';
-    this.showInstruction(`🎲 ${player.name} sedang melempar dadu...`, bannerColor);
 
     const diceCube = document.getElementById('diceCube');
-    diceCube.classList.remove('show-1', 'show-2', 'show-3', 'show-4', 'show-5', 'show-6');
-    diceCube.classList.add('dice-rolling');
+    diceCube?.classList.add('dice-rolling');
 
-    // Angka dadu acak 1-6
-    const rollResult = Math.floor(Math.random() * 6) + 1;
+    const rollValue = Math.floor(Math.random() * 6) + 1;
 
     setTimeout(() => {
-      diceCube.classList.remove('dice-rolling');
-      diceCube.classList.add(`show-${rollResult}`);
+      diceCube?.classList.remove('dice-rolling');
+      diceCube?.setAttribute('class', `dice-cube show-${rollValue}`);
 
-      this.showInstruction(
-        `🎉 ${player.name} Mendapat Angka ${rollResult}! Maju ${rollResult} Petak!`,
-        'green'
-      );
+      const player = this.getActivePlayer();
+      this.showInstruction(`🎲 ${player.name} melempar angka ${rollValue}! Bergerak ${rollValue} langkah...`, 'blue');
 
       setTimeout(() => {
-        this.moveAvatarSteps(rollResult);
-      }, 700);
-    }, 1100);
+        this.movePlayerSteps(player, rollValue);
+      }, 600);
+    }, 800);
   }
 
   /**
-   * Animasi Bidak Pemain Aktif Melompat Halus per Petak
+   * Animasi Langkah Bidak Petak demi Petak
    */
-  async moveAvatarSteps(steps) {
-    this.gameState = 'MOVING';
+  async movePlayerSteps(player, steps) {
     this.isMoving = true;
+    this.gameState = 'MOVING';
 
-    const player = this.getActivePlayer();
-    let targetTile = player.tile + steps;
-    if (targetTile > 25) targetTile = 25; // Sampai di finish
-
-    while (player.tile < targetTile) {
+    for (let s = 1; s <= steps; s++) {
+      if (player.tile >= 50) break;
       player.tile++;
-      const nextPos = this.getTilePosition(player.tile);
-      this.sounds.playHop();
+      const pos = this.getTilePosition(player.tile);
 
-      // Animasi lompatan parabolik halus
-      await this.animateHop(player, nextPos.x, nextPos.y);
+      this.sounds.playStep();
+      this.particleSystem.burst(pos.x, pos.y, 6, 'star');
+
+      await this.animateHop(player, pos.x, pos.y, 220);
       this.updateHUD();
-      await new Promise(r => setTimeout(r, 90));
     }
 
     this.isMoving = false;
 
-    // Evaluasi Petak Pendaratan
-    setTimeout(() => {
-      this.evaluateLandingTile();
-    }, 350);
-  }
-
-  /**
-   * Animasi Parabolik Hop untuk Bidak Pemain
-   */
-  animateHop(player, targetX, targetY) {
-    return new Promise(resolve => {
-      const startX = player.x;
-      const startY = player.y;
-      const duration = 280;
-      const startTime = performance.now();
-
-      const hopFrame = (now) => {
-        const elapsed = now - startTime;
-        const progress = Math.min(1.0, elapsed / duration);
-
-        // Interpolasi posisi X dan Y
-        player.x = startX + (targetX - startX) * progress;
-        // Parabola lompatan ke atas
-        const arc = Math.sin(progress * Math.PI) * 28;
-        player.y = (startY + (targetY - startY) * progress) - arc;
-
-        if (progress < 1.0) {
-          requestAnimationFrame(hopFrame);
-        } else {
-          player.x = targetX;
-          player.y = targetY;
-          this.particleSystem.burst(targetX, targetY, 8, 'star');
-          resolve();
-        }
-      };
-
-      requestAnimationFrame(hopFrame);
-    });
-  }
-
-  /**
-   * Evaluasi Petak Pendaratan (Ular, Tangga, Finish, atau Kuis)
-   */
-  evaluateLandingTile() {
-    const player = this.getActivePlayer();
-
-    if (player.tile === 25) {
+    // Cek Kemenangan di Petak 50
+    if (player.tile >= 50) {
       this.triggerVictory(player);
       return;
     }
 
-    // 1. Cek Petak Kepala Ular (Tantangan Refleks Jongkok)
+    // Evaluasi Petak Pendaratan: Ular -> Tangga -> Soal Kuis
+    this.evaluateTileLanding(player);
+  }
+
+  animateHop(player, targetX, targetY, duration) {
+    return new Promise((resolve) => {
+      const startX = player.x;
+      const startY = player.y;
+      const startTime = performance.now();
+
+      const step = (now) => {
+        const elapsed = now - startTime;
+        const progress = Math.min(1, elapsed / duration);
+        const ease = 0.5 - Math.cos(progress * Math.PI) / 2;
+
+        player.x = startX + (targetX - startX) * ease;
+        // Efek lompatan parabola
+        const bounce = Math.sin(progress * Math.PI) * 16;
+        player.y = (startY + (targetY - startY) * ease) - bounce;
+
+        if (progress < 1) {
+          requestAnimationFrame(step);
+        } else {
+          player.x = targetX;
+          player.y = targetY;
+          resolve();
+        }
+      };
+
+      requestAnimationFrame(step);
+    });
+  }
+
+  animateSlide(player, targetX, targetY, duration) {
+    return new Promise((resolve) => {
+      const startX = player.x;
+      const startY = player.y;
+      const startTime = performance.now();
+
+      const step = (now) => {
+        const elapsed = now - startTime;
+        const progress = Math.min(1, elapsed / duration);
+        const ease = progress * progress * (3 - 2 * progress); // smoothstep
+
+        player.x = startX + (targetX - startX) * ease;
+        player.y = startY + (targetY - startY) * ease;
+
+        if (progress < 1) {
+          requestAnimationFrame(step);
+        } else {
+          player.x = targetX;
+          player.y = targetY;
+          resolve();
+        }
+      };
+
+      requestAnimationFrame(step);
+    });
+  }
+
+  /**
+   * Evaluasi Petak Pendaratan
+   */
+  evaluateTileLanding(player) {
+    // 1. Cek Petak Ular (Harus Meluncur Turun + HUKUMAN JONGKOK & Hukuman Seru!)
     const snake = SNAKES.find(s => s.start === player.tile);
     if (snake) {
-      this.startSnakeChallenge(snake);
+      this.handleSnakeBite(snake);
       return;
     }
 
-    // 2. Cek Petak Kaki Tangga (Tantangan Memanjat)
+    // 2. Cek Petak Kaki Tangga (Tantangan Memanjat Naik)
     const ladder = LADDERS.find(l => l.start === player.tile);
     if (ladder) {
       this.startLadderChallenge(ladder);
       return;
     }
 
-    // 3. Petak Biasa: Kuis Interaktif
+    // 3. Petak Biasa: Kuis Soal IPS SMP
     this.startQuizChallenge();
   }
 
   /**
-   * Logika Tantangan Ular (Squat / Jongkok 3 Detik)
+   * ==========================================================================
+   * HUKUMAN ULAR (Wajib Jongkok + Hukuman Seru & Edukatif IPS)
+   * ==========================================================================
    */
-  startSnakeChallenge(snake) {
-    this.gameState = 'SQUAT_CHALLENGE';
+  async handleSnakeBite(snake) {
+    const player = this.getActivePlayer();
     this.activeSnake = snake;
-    this.squatSecondsRemaining = 3.0;
+    this.gameState = 'SQUAT_PUNISHMENT';
     this.sounds.playSnakeAlert();
 
-    this.poseEngine.setMode('SQUAT');
+    this.showInstruction(`🐍 AWAS! ${player.name} Terkena Gigitan ${snake.name} di Petak ${snake.start}!`, 'red');
 
-    const player = this.getActivePlayer();
-    const p1Alert = document.getElementById('p1SnakeAlert');
-    const p2Alert = document.getElementById('p2SnakeAlert');
-    const overlay = player.id === 1 ? p1Alert : p2Alert;
-    const timerBar = player.id === 1 ? document.getElementById('p1SnakeTimerBar') : document.getElementById('p2SnakeTimerBar');
-    const timerText = player.id === 1 ? document.getElementById('p1SnakeTimerText') : document.getElementById('p2SnakeTimerText');
-    overlay?.classList.remove('hidden');
-
-    this.showInstruction(`🐍 AWAS ULAR! ${player.name}, Jongkok Sekarang untuk Menghindar!`, 'red');
-
-    const startTime = performance.now();
-    const totalDuration = 3000;
-
-    const tick = () => {
-      if (this.gameState !== 'SQUAT_CHALLENGE') return;
-
-      const elapsed = performance.now() - startTime;
-      const remainingMs = Math.max(0, totalDuration - elapsed);
-      const remainingSec = (remainingMs / 1000).toFixed(1);
-
-      if (timerText) timerText.innerText = `${remainingSec}s`;
-      if (timerBar) {
-        const pct = (remainingMs / totalDuration) * 100;
-        timerBar.style.width = `${pct}%`;
-      }
-
-      if (remainingMs <= 0) {
-        // Gagal jongkok tepat waktu
-        this.handleSquatFailed();
-      } else {
-        requestAnimationFrame(tick);
-      }
-    };
-
-    requestAnimationFrame(tick);
-  }
-
-  handleSquatSuccess() {
-    this.gameState = 'IDLE';
-    const player = this.getActivePlayer();
-    this.sounds.playShield();
-    player.shieldActive = true;
-    this.particleSystem.burst(player.x, player.y, 25, 'star');
-
-    document.getElementById('p1SnakeAlert')?.classList.add('hidden');
-    document.getElementById('p2SnakeAlert')?.classList.add('hidden');
-
-    this.showInstruction(`🛡️ LUAR BIASA! ${player.name} Berhasil Menghindar dari Ular!`, 'green');
-
-    setTimeout(() => {
-      player.shieldActive = false;
-      // Posisi aman, lanjut giliran pemain berikutnya
-      this.switchTurn();
-    }, 1800);
-  }
-
-  async handleSquatFailed() {
-    this.gameState = 'MOVING';
-    const player = this.getActivePlayer();
-    document.getElementById('p1SnakeAlert')?.classList.add('hidden');
-    document.getElementById('p2SnakeAlert')?.classList.add('hidden');
-
-    this.sounds.playWrong();
-    this.showInstruction(`😱 ${player.name} Terkena Patukan Ular! Meluncur turun...`, 'red');
-
-    const snake = this.activeSnake;
+    // Meluncur turun ke ekor ular
+    this.sounds.playSnakeSlide();
     const destPos = this.getTilePosition(snake.end);
-
-    // Animasi meluncur turun perlahan ke ekor ular
-    await this.animateSlide(player, destPos.x, destPos.y);
+    await this.animateSlide(player, destPos.x, destPos.y, 850);
     player.tile = snake.end;
     this.updateHUD();
 
+    // Munculkan Modal Hukuman Ular
+    this.openSnakePunishmentModal(snake);
+  }
+
+  openSnakePunishmentModal(snake) {
+    const player = this.getActivePlayer();
+    const modal = document.getElementById('snakePunishmentModal');
+    if (!modal) return;
+
+    // Pilih 1 hukuman seru acak dari FUN_PUNISHMENTS
+    const randomPunishment = FUN_PUNISHMENTS[Math.floor(Math.random() * FUN_PUNISHMENTS.length)];
+    this.activePunishment = randomPunishment;
+    this.squatRepsRemaining = 3;
+
+    // Set Teks Modal
+    const titleEl = document.getElementById('punishPlayerTitle');
+    const descEl = document.getElementById('punishDescText');
+    const funTitleEl = document.getElementById('punishFunTitle');
+    const funInstEl = document.getElementById('punishFunInstruction');
+    const counterEl = document.getElementById('squatCounterBadge');
+
+    if (titleEl) titleEl.innerText = `🐍 HUKUMAN ULAR: ${player.name.toUpperCase()}!`;
+    if (descEl) descEl.innerText = `${player.name} meluncur turun dari petak ${snake.start} ke petak ${snake.end}. Selesaikan hukuman jongkok & tantangan seru ini!`;
+    if (funTitleEl) funTitleEl.innerText = randomPunishment.title;
+    if (funInstEl) funInstEl.innerText = randomPunishment.instruction;
+    if (counterEl) counterEl.innerText = `0 / 3 Jongkok`;
+
+    // Aktifkan mode pose SQUAT di kamera
+    this.poseEngine.setMode('SQUAT', { targetReps: 3 });
+
+    modal.classList.remove('hidden');
+    modal.classList.add('flex');
+  }
+
+  handleSquatRepDone(current, target) {
+    this.sounds.playSquatDing();
+    const counterEl = document.getElementById('squatCounterBadge');
+    if (counterEl) counterEl.innerText = `${current} / ${target} Jongkok Selesai!`;
+
+    const player = this.getActivePlayer();
+    player.squatsDone++;
+    this.particleSystem.burst(player.x, player.y, 10, 'star');
+
+    if (current >= target) {
+      this.showInstruction(`👏 Hebat! ${player.name} telah menyelesaikan 3x Jongkok! Tekan tombol selesai.`, 'green');
+    }
+  }
+
+  finishSnakePunishment() {
+    const modal = document.getElementById('snakePunishmentModal');
+    modal?.classList.add('hidden');
+    modal?.classList.remove('flex');
+
+    const player = this.getActivePlayer();
+    this.particleSystem.burst(player.x, player.y, 30, 'star');
+    this.sounds.playCorrect();
+
+    this.showInstruction(`✅ Hukuman Selesai! ${player.name} siap melanjutkan permainan.`, 'green');
+    this.poseEngine.setMode('IDLE');
+
     setTimeout(() => {
-      // Tetap berganti giliran ke pemain berikutnya
       this.switchTurn();
     }, 1200);
   }
 
   /**
-   * Logika Tantangan Tangga (Memanjat 4 Kali)
+   * ==========================================================================
+   * TANTANGAN TANGGA (Memanjat 4 Kali)
+   * ==========================================================================
    */
   startLadderChallenge(ladder) {
     this.gameState = 'CLIMB_CHALLENGE';
@@ -1126,24 +1241,22 @@ class SnakeAndLaddersGame {
     this.poseEngine.setMode('CLIMB', { targetReps: 4 });
 
     const player = this.getActivePlayer();
-    const p1Alert = document.getElementById('p1LadderAlert');
-    const p2Alert = document.getElementById('p2LadderAlert');
-    const overlay = player.id === 1 ? p1Alert : p2Alert;
-    const counterText = player.id === 1 ? document.getElementById('p1LadderCounterText') : document.getElementById('p2LadderCounterText');
-    const progressBar = player.id === 1 ? document.getElementById('p1LadderProgressBar') : document.getElementById('p2LadderProgressBar');
-    overlay?.classList.remove('hidden');
+    const overlay = document.getElementById('ladderAlertOverlay');
+    const counterText = document.getElementById('ladderCounterText');
+    const progressBar = document.getElementById('ladderProgressBar');
 
+    overlay?.classList.remove('hidden');
     if (counterText) counterText.innerText = '0 / 4';
     if (progressBar) progressBar.style.width = '0%';
 
-    this.showInstruction(`🧗 TANTANGAN TANGGA! ${player.name}, Angkat Tangan Bergantian 4 Kali!`, 'purple');
+    this.showInstruction(`🪜 TANTANGAN TANGGA! ${player.name}, Angkat Tangan Kiri-Kanan Bergantian 4 Kali!`, 'purple');
   }
 
   handleClimbStep(count, total) {
     this.sounds.playClimbStep();
     const player = this.getActivePlayer();
-    const counterText = player.id === 1 ? document.getElementById('p1LadderCounterText') : document.getElementById('p2LadderCounterText');
-    const progressBar = player.id === 1 ? document.getElementById('p1LadderProgressBar') : document.getElementById('p2LadderProgressBar');
+    const counterText = document.getElementById('ladderCounterText');
+    const progressBar = document.getElementById('ladderProgressBar');
 
     if (counterText) counterText.innerText = `${count} / ${total}`;
     if (progressBar) progressBar.style.width = `${(count / total) * 100}%`;
@@ -1153,8 +1266,7 @@ class SnakeAndLaddersGame {
   async handleClimbSuccess() {
     this.gameState = 'MOVING';
     const player = this.getActivePlayer();
-    document.getElementById('p1LadderAlert')?.classList.add('hidden');
-    document.getElementById('p2LadderAlert')?.classList.add('hidden');
+    document.getElementById('ladderAlertOverlay')?.classList.add('hidden');
 
     this.sounds.playLadderAscent();
     this.showInstruction(`🎉 HORE! ${player.name} Berhasil Memanjat Tangga ke Puncak!`, 'green');
@@ -1168,552 +1280,598 @@ class SnakeAndLaddersGame {
     this.particleSystem.burst(destPos.x, destPos.y, 30, 'star');
 
     setTimeout(() => {
-      // Lanjut giliran pemain berikutnya setelah naik tangga
       this.switchTurn();
     }, 1200);
   }
 
   /**
-   * Animasi Meluncur (Slide) untuk Ular & Tangga
-   */
-  animateSlide(player, targetX, targetY, duration = 800) {
-    return new Promise(resolve => {
-      const startX = player.x;
-      const startY = player.y;
-      const startTime = performance.now();
-
-      const frame = (now) => {
-        const elapsed = now - startTime;
-        const progress = Math.min(1.0, elapsed / duration);
-        // Easing cubic
-        const ease = progress < 0.5
-          ? 4 * progress * progress * progress
-          : 1 - Math.pow(-2 * progress + 2, 3) / 2;
-
-        player.x = startX + (targetX - startX) * ease;
-        player.y = startY + (targetY - startY) * ease;
-
-        if (progress < 1.0) {
-          requestAnimationFrame(frame);
-        } else {
-          player.x = targetX;
-          player.y = targetY;
-          resolve();
-        }
-      };
-
-      requestAnimationFrame(frame);
-    });
-  }
-
-  /**
-   * Logika Kuis Interaktif (Pose Memilih Jawaban A atau B)
-   * Menggunakan pengacakan ketat sehingga P1 dan P2 tidak akan mendapatkan soal yang sama
+   * ==========================================================================
+   * TANTANGAN KUIS SOAL IPS SMP (50 Soal)
+   * ==========================================================================
    */
   startQuizChallenge() {
     this.gameState = 'QUIZ';
-    this.poseEngine.setMode('QUIZ');
-
     const player = this.getActivePlayer();
 
-    // Saring soal yang BELUM PERNAH didapatkan oleh P1 maupun P2
+    // Pilih soal yang belum pernah keluar
     let available = this.questions.filter(q => !this.usedQuestionIds.has(q.id));
-
-    // Jika seluruh 25 soal sudah habis pernah keluar dalam pertandingan, reset riwayat bersama
     if (available.length === 0) {
       this.usedQuestionIds.clear();
-      available = [...this.questions];
+      available = this.questions;
     }
 
-    // Ambil secara acak satu soal dari sisa soal yang belum pernah keluar
-    const randomIndex = Math.floor(Math.random() * available.length);
-    this.activeQuestion = available[randomIndex];
-
-    // Catat ID soal agar tidak pernah bisa menyamai soal yang diterima P1 dan P2
-    this.usedQuestionIds.add(this.activeQuestion.id);
-    if (player.id === 1) {
-      this.usedQuestionsP1.add(this.activeQuestion.id);
-    } else {
-      this.usedQuestionsP2.add(this.activeQuestion.id);
-    }
+    const q = available[Math.floor(Math.random() * available.length)];
+    this.activeQuestion = q;
+    this.usedQuestionIds.add(q.id);
 
     // Tampilkan Kartu Soal
-    const quizCard = document.getElementById('quizCardOverlay');
+    const quizOverlay = document.getElementById('quizCardOverlay');
     const catBadge = document.getElementById('quizCategoryBadge');
     const qText = document.getElementById('quizQuestionText');
     const optAText = document.getElementById('quizOptionAText');
     const optBText = document.getElementById('quizOptionBText');
     const expBox = document.getElementById('quizExplanationBox');
+    const dwellBarA = document.getElementById('dwellBarA');
+    const dwellBarB = document.getElementById('dwellBarB');
 
-    catBadge.innerText = `${player.name} • ${this.activeQuestion.category || 'As-Sa\'ah'}`;
-    qText.innerText = this.activeQuestion.question;
-    optAText.innerText = this.activeQuestion.optionA;
-    optBText.innerText = this.activeQuestion.optionB;
-    expBox.classList.add('hidden');
+    if (catBadge) catBadge.innerText = `📚 ${player.name} (${player.colorName}) • ${q.category || 'IPS SMP'}`;
+    if (qText) qText.innerText = q.question;
+    if (optAText) optAText.innerText = q.optionA;
+    if (optBText) optBText.innerText = q.optionB;
 
-    this.resetOptionCardStyles();
-    quizCard.classList.remove('hidden');
+    // Tampilkan cuplikan opsi jawaban di dalam sensor kotak kamera layar kiri & kanan
+    const lBoxA = document.getElementById('leftTargetOptionAText');
+    const lBoxB = document.getElementById('leftTargetOptionBText');
+    const rBoxA = document.getElementById('rightTargetOptionAText');
+    const rBoxB = document.getElementById('rightTargetOptionBText');
 
-    const colorName = player.id === 1 ? 'Biru' : 'Oranye';
-    const bannerColor = player.id === 1 ? 'blue' : 'orange';
-    this.showInstruction(`👈 ${player.name} (${colorName}): Rentangkan Tangan Kiri (A) atau Kanan (B)!`, bannerColor);
+    if (lBoxA) lBoxA.innerText = q.optionA;
+    if (lBoxB) lBoxB.innerText = q.optionB;
+    if (rBoxA) rBoxA.innerText = q.optionA;
+    if (rBoxB) rBoxB.innerText = q.optionB;
+
+    if (dwellBarA) dwellBarA.style.width = '0%';
+    if (dwellBarB) dwellBarB.style.width = '0%';
+    expBox?.classList.add('hidden');
+
+    quizOverlay?.classList.remove('hidden');
+
+    // Aktifkan mode pose QUIZ
+    this.poseEngine.setMode('QUIZ');
+    this.showInstruction(`🤔 ${player.name}: Arahkan tangan ke Kotak A (Kiri) atau B (Kanan)!`, 'blue');
   }
 
-  updateQuizHoverUI(zone, progress) {
-    const cardA = document.getElementById('optionCardA');
-    const cardB = document.getElementById('optionCardB');
+  handleQuizHover(data) {
+    const { zone, progress } = data;
     const barA = document.getElementById('dwellBarA');
     const barB = document.getElementById('dwellBarB');
+    const cardA = document.getElementById('optionCardA');
+    const cardB = document.getElementById('optionCardB');
 
     if (zone === 'A') {
-      cardA?.classList.add('active-target', 'border-emerald-500');
-      cardB?.classList.remove('active-target', 'border-emerald-500');
       if (barA) barA.style.width = `${progress * 100}%`;
       if (barB) barB.style.width = '0%';
+      cardA?.classList.add('active-target', 'ring-2', 'ring-blue-500');
+      cardB?.classList.remove('active-target', 'ring-2', 'ring-purple-500');
     } else if (zone === 'B') {
-      cardB?.classList.add('active-target', 'border-emerald-500');
-      cardA?.classList.remove('active-target', 'border-emerald-500');
       if (barB) barB.style.width = `${progress * 100}%`;
       if (barA) barA.style.width = '0%';
+      cardB?.classList.add('active-target', 'ring-2', 'ring-purple-500');
+      cardA?.classList.remove('active-target', 'ring-2', 'ring-blue-500');
     } else {
-      cardA?.classList.remove('active-target', 'border-emerald-500');
-      cardB?.classList.remove('active-target', 'border-emerald-500');
       if (barA) barA.style.width = '0%';
       if (barB) barB.style.width = '0%';
+      cardA?.classList.remove('active-target', 'ring-2', 'ring-blue-500');
+      cardB?.classList.remove('active-target', 'ring-2', 'ring-purple-500');
     }
   }
 
-  resetOptionCardStyles() {
-    const cardA = document.getElementById('optionCardA');
-    const cardB = document.getElementById('optionCardB');
-    const barA = document.getElementById('dwellBarA');
-    const barB = document.getElementById('dwellBarB');
-
-    cardA?.classList.remove('active-target', 'border-emerald-500', 'bg-emerald-50', 'bg-emerald-100', 'bg-red-50', 'bg-red-100', 'border-red-500', 'border-emerald-600', 'border-red-600', 'ring-4', 'ring-emerald-400', 'ring-red-400');
-    cardB?.classList.remove('active-target', 'border-emerald-500', 'bg-emerald-50', 'bg-emerald-100', 'bg-red-50', 'bg-red-100', 'border-red-500', 'border-emerald-600', 'border-red-600', 'ring-4', 'ring-emerald-400', 'ring-red-400');
-    if (barA) barA.style.width = '0%';
-    if (barB) barB.style.width = '0%';
-  }
-
-  async handleQuizAnswer(selectedOption) {
-    if (this.gameState !== 'QUIZ' || !this.activeQuestion) return;
+  handleQuizAnswer(chosenZone) {
+    if (!this.activeQuestion || this.gameState !== 'QUIZ') return;
     this.gameState = 'IDLE';
+    this.poseEngine.setMode('IDLE');
 
     const player = this.getActivePlayer();
     player.totalAnswered++;
-    const isCorrect = selectedOption === this.activeQuestion.correct;
 
+    const isCorrect = chosenZone === this.activeQuestion.correct;
     const cardA = document.getElementById('optionCardA');
     const cardB = document.getElementById('optionCardB');
-    const expBox = document.getElementById('quizExplanationBox');
-    const expText = document.getElementById('quizExplanationText');
 
     if (isCorrect) {
       player.correctAnswers++;
       this.sounds.playCorrect();
-      this.particleSystem.burst(player.x, player.y, 35, 'star');
+      this.particleSystem.burst(player.x, player.y, 25, 'star');
 
-      const selectedCard = selectedOption === 'A' ? cardA : cardB;
-      selectedCard?.classList.add('bg-emerald-100', 'border-emerald-600');
+      if (chosenZone === 'A') cardA?.classList.add('bg-emerald-100', 'border-emerald-500');
+      if (chosenZone === 'B') cardB?.classList.add('bg-emerald-100', 'border-emerald-500');
 
-      this.showInstruction(`🌟 JAWABAN BENAR! 🎉 ${player.name} Berhak Melempar Dadu Lagi!`, 'green');
+      this.showInstruction(`🎉 BENAR! Jawaban ${player.name} Tepat! Dapatkan Bonus Lemparan Dadu!`, 'green');
 
       setTimeout(() => {
-        document.getElementById('quizCardOverlay').classList.add('hidden');
-        this.updateHUD();
-
-        // Pemain yang benar mendapat giliran melempar dadu lagi!
+        this.closeQuizOverlay();
+        // Bonus roll jika jawaban benar!
         this.startPlayerTurn(true);
-      }, 1500);
-
+      }, 1600);
     } else {
       this.sounds.playWrong();
-      const selectedCard = selectedOption === 'A' ? cardA : cardB;
-      selectedCard?.classList.add('bg-red-100', 'border-red-600');
+      if (chosenZone === 'A') cardA?.classList.add('bg-rose-100', 'border-rose-500');
+      if (chosenZone === 'B') cardB?.classList.add('bg-rose-100', 'border-rose-500');
 
-      this.showInstruction(`❌ JAWABAN ${player.name} KURANG TEPAT! Bidak Tetap di Tempat.`, 'red');
-
-      // Tampilkan penjelasan edukatif selama 3 detik
+      // Tampilkan penjelasan edukatif
+      const expBox = document.getElementById('quizExplanationBox');
+      const expText = document.getElementById('quizExplanationText');
       if (expBox && expText) {
-        expText.innerText = this.activeQuestion.explanation || 'Tetap semangat belajar!';
+        expText.innerText = this.activeQuestion.explanation || `Jawaban yang benar adalah Pilihan ${this.activeQuestion.correct}.`;
         expBox.classList.remove('hidden');
       }
 
+      this.showInstruction(`❌ Kurang Tepat! Jawaban yang benar adalah Pilihan ${this.activeQuestion.correct}. Giliran berpindah!`, 'red');
+
       setTimeout(() => {
-        document.getElementById('quizCardOverlay').classList.add('hidden');
-        this.updateHUD();
-        // Salah jawab: giliran berganti ke pemain berikutnya!
+        this.closeQuizOverlay();
         this.switchTurn();
-      }, 3200);
+      }, 3500);
     }
+
+    this.updateHUD();
+  }
+
+  closeQuizOverlay() {
+    const quizOverlay = document.getElementById('quizCardOverlay');
+    quizOverlay?.classList.add('hidden');
+
+    const cardA = document.getElementById('optionCardA');
+    const cardB = document.getElementById('optionCardB');
+    cardA?.classList.remove('active-target', 'ring-2', 'ring-blue-500', 'bg-emerald-100', 'border-emerald-500', 'bg-rose-100', 'border-rose-500');
+    cardB?.classList.remove('active-target', 'ring-2', 'ring-purple-500', 'bg-emerald-100', 'border-emerald-500', 'bg-rose-100', 'border-rose-500');
+
+    const barA = document.getElementById('dwellBarA');
+    const barB = document.getElementById('dwellBarB');
+    if (barA) barA.style.width = '0%';
+    if (barB) barB.style.width = '0%';
   }
 
   /**
-   * Kemenangan (Finish di Petak 25) - Mode 2 Pemain
+   * Kemenangan Petak 50
    */
-  triggerVictory(winnerPlayer) {
+  triggerVictory(winner) {
     this.gameState = 'VICTORY';
+    this.poseEngine.setMode('IDLE');
     this.sounds.playVictory();
-    this.particleSystem.burst(winnerPlayer.x, winnerPlayer.y, 60, 'star');
 
-    const modal = document.getElementById('victoryModal');
-    const titleEl = document.getElementById('victoryWinnerTitle');
-    const subTitleEl = document.getElementById('victorySubtitle');
-    const turnsEl = document.getElementById('victoryTurns');
+    this.particleSystem.burst(winner.x, winner.y, 60, 'star');
 
-    const p1TileEl = document.getElementById('vicP1Tile');
-    const p1ScoreEl = document.getElementById('vicP1Score');
-    const p2TileEl = document.getElementById('vicP2Tile');
-    const p2ScoreEl = document.getElementById('vicP2Score');
+    const vicModal = document.getElementById('victoryModal');
+    const vicTitle = document.getElementById('victoryWinnerTitle');
+    const vicSub = document.getElementById('victorySubtitle');
+    const vicTurns = document.getElementById('victoryTurns');
 
-    if (titleEl) {
-      titleEl.innerText = `🏆 HORE, ${winnerPlayer.name.toUpperCase()} MENANG!`;
-      titleEl.className = winnerPlayer.id === 1
-        ? 'text-2xl font-bold font-fun text-blue-400 mb-1'
-        : 'text-2xl font-bold font-fun text-orange-400 mb-1';
+    if (vicTitle) vicTitle.innerText = `🏆 HORE! ${winner.name.toUpperCase()} JUARA 1!`;
+    if (vicSub) vicSub.innerText = `Selamat kepada ${winner.name} (${winner.colorName}) yang berhasil mencapai Puncak Petak 50!`;
+    if (vicTurns) vicTurns.innerText = this.turnsCount;
+
+    // Tampilkan rekap skor 4 pemain
+    const vicGrid = document.getElementById('victoryPlayerSummaryGrid');
+    if (vicGrid) {
+      vicGrid.innerHTML = '';
+      for (let pId = 1; pId <= this.totalPlayers; pId++) {
+        const p = this.players[pId];
+        const acc = p.totalAnswered > 0 ? Math.round((p.correctAnswers / p.totalAnswered) * 100) : 100;
+        const card = document.createElement('div');
+        card.className = `p-2.5 rounded-xl border border-white/10 bg-slate-800/80`;
+        card.innerHTML = `
+          <p class="font-bold text-xs" style="color: ${p.themeColor}">${p.emblem} ${p.name}</p>
+          <p class="text-slate-300 text-[11px]">Petak: <strong class="text-white">${p.tile}</strong></p>
+          <p class="text-slate-300 text-[11px]">Akurasi: <strong class="text-emerald-400">${acc}%</strong></p>
+          <p class="text-slate-400 text-[10px]">Jongkok: ${p.squatsDone}x</p>
+        `;
+        vicGrid.appendChild(card);
+      }
     }
 
-    if (subTitleEl) {
-      subTitleEl.innerText = `${winnerPlayer.name} berhasil mencapai Puncak Petak 25 lebih dulu!`;
-    }
-
-    if (turnsEl) turnsEl.innerText = this.turnsCount;
-
-    // Stat P1
-    const p1 = this.players[1];
-    const p1Acc = p1.totalAnswered > 0 ? Math.round((p1.correctAnswers / p1.totalAnswered) * 100) : 100;
-    if (p1TileEl) p1TileEl.innerText = `${p1.tile}/25`;
-    if (p1ScoreEl) p1ScoreEl.innerText = `${p1Acc}% (${p1.correctAnswers}/${p1.totalAnswered})`;
-
-    // Stat P2
-    const p2 = this.players[2];
-    const p2Acc = p2.totalAnswered > 0 ? Math.round((p2.correctAnswers / p2.totalAnswered) * 100) : 100;
-    if (p2TileEl) p2TileEl.innerText = `${p2.tile}/25`;
-    if (p2ScoreEl) p2ScoreEl.innerText = `${p2Acc}% (${p2.correctAnswers}/${p2.totalAnswered})`;
-
-    modal?.classList.remove('hidden');
-    this.showInstruction(`🏆 PERMAINAN SELESAI! Selamat kepada ${winnerPlayer.name}!`, 'green');
+    vicModal?.classList.remove('hidden');
+    vicModal?.classList.add('flex');
   }
 
-  restartGame() {
-    this.currentPlayer = 1;
+  resetGame() {
     this.turnsCount = 0;
+    this.currentPlayer = 1;
     this.gameState = 'IDLE';
 
-    // Bersihkan riwayat soal acak agar pertandingan baru teracak segar dan unik untuk kedua pemain
-    this.usedQuestionIds.clear();
-    this.usedQuestionsP1.clear();
-    this.usedQuestionsP2.clear();
-
-    // Reset P1 & P2
-    for (let i = 1; i <= 2; i++) {
-      const p = this.players[i];
-      p.tile = 1;
-      p.shieldActive = false;
-      p.correctAnswers = 0;
-      p.totalAnswered = 0;
-      const pos = this.getTilePosition(1);
-      p.x = pos.x;
-      p.y = pos.y;
+    for (let pId = 1; pId <= 4; pId++) {
+      this.players[pId].tile = 1;
+      this.players[pId].correctAnswers = 0;
+      this.players[pId].totalAnswered = 0;
+      this.players[pId].squatsDone = 0;
     }
 
-    this.hideAllModals();
+    this.updateAllAvatarPositions();
+    this.updateHUD();
+
+    const vicModal = document.getElementById('victoryModal');
+    vicModal?.classList.add('hidden');
+    vicModal?.classList.remove('flex');
+
+    const snakeModal = document.getElementById('snakePunishmentModal');
+    snakeModal?.classList.add('hidden');
+    snakeModal?.classList.remove('flex');
+
+    document.getElementById('ladderAlertOverlay')?.classList.add('hidden');
+    this.closeQuizOverlay();
+
+    this.startPlayerTurn();
+  }
+
+  setPlayerCount(count) {
+    this.totalPlayers = Math.max(2, Math.min(4, count));
+    if (this.currentPlayer > this.totalPlayers) {
+      this.currentPlayer = 1;
+    }
     this.updateHUD();
     this.startPlayerTurn();
   }
 
-  hideAllModals() {
-    document.getElementById('quizCardOverlay')?.classList.add('hidden');
-    document.getElementById('p1TargetBoxA')?.classList.add('hidden');
-    document.getElementById('p1TargetBoxB')?.classList.add('hidden');
-    document.getElementById('p2TargetBoxA')?.classList.add('hidden');
-    document.getElementById('p2TargetBoxB')?.classList.add('hidden');
-    document.getElementById('p1SnakeAlert')?.classList.add('hidden');
-    document.getElementById('p2SnakeAlert')?.classList.add('hidden');
-    document.getElementById('p1LadderAlert')?.classList.add('hidden');
-    document.getElementById('p2LadderAlert')?.classList.add('hidden');
-    document.getElementById('victoryModal')?.classList.add('hidden');
-  }
-
   /**
-   * Perbarui Indikator HUD untuk 2 Layar Pemain (Layar 1: P1 & Layar 2: P2)
+   * Update Status Tampilan HUD (Dual Sensor Screen Kiri & Kanan, Top Strip 4 Pemain)
    */
   updateHUD() {
-    const activeP = this.getActivePlayer();
+    const active = this.getActivePlayer();
 
-    // 1. Banner Giliran Pusat di Tengah
-    const banner = document.getElementById('activePlayerBanner');
+    // 1. Banner Giliran di Header Papan
     const bannerText = document.getElementById('activePlayerText');
     const bannerIcon = document.getElementById('activePlayerIcon');
-    const turnsBadge = document.getElementById('hudTurns');
+    if (bannerText) bannerText.innerText = `Giliran: ${active.name} (${active.colorName})`;
+    if (bannerIcon) {
+      bannerIcon.innerText = active.id;
+      bannerIcon.style.backgroundColor = active.themeColor;
+    }
 
-    if (banner && bannerText && bannerIcon) {
-      if (activeP.id === 1) {
-        banner.className = 'flex items-center gap-2';
-        bannerIcon.innerText = '1';
-        bannerIcon.className = 'w-5 h-5 rounded-full bg-blue-600 text-white font-fun font-bold text-xs flex items-center justify-center shadow-sm';
-        bannerText.innerText = 'Giliran: Pemain 1 (Biru)';
-        bannerText.className = 'text-xs sm:text-sm font-fun font-bold text-blue-400';
+    const hudTurns = document.getElementById('hudTurns');
+    if (hudTurns) hudTurns.innerText = `Putaran: ${this.turnsCount}`;
+
+    // 2. Top Strip 4 Pemain (di Atas Papan Ular Tangga)
+    for (let pId = 1; pId <= 4; pId++) {
+      const p = this.players[pId];
+      const topCard = document.getElementById(`p${pId}TopCard`);
+      const topTile = document.getElementById(`p${pId}TopTile`);
+      const topBadge = document.getElementById(`p${pId}TopBadge`);
+
+      if (!topCard) continue;
+
+      if (pId > this.totalPlayers) {
+        topCard.classList.add('hidden');
+        continue;
       } else {
-        banner.className = 'flex items-center gap-2';
-        bannerIcon.innerText = '2';
-        bannerIcon.className = 'w-5 h-5 rounded-full bg-orange-600 text-white font-fun font-bold text-xs flex items-center justify-center shadow-sm';
-        bannerText.innerText = 'Giliran: Pemain 2 (Oranye)';
-        bannerText.className = 'text-xs sm:text-sm font-fun font-bold text-orange-400';
+        topCard.classList.remove('hidden');
+      }
+
+      if (topTile) topTile.innerText = p.tile;
+
+      if (pId === this.currentPlayer) {
+        topCard.classList.add('ring-2', 'ring-offset-2', 'ring-offset-slate-950');
+        topCard.style.borderColor = p.themeColor;
+        topCard.style.boxShadow = `0 0 16px ${p.themeColor}50`;
+        if (topBadge) {
+          topBadge.innerText = 'GILIRAN';
+          topBadge.className = 'text-[9px] font-bold px-1.5 py-0.5 rounded bg-amber-400 text-slate-950 font-fun';
+        }
+      } else {
+        topCard.classList.remove('ring-2', 'ring-offset-2', 'ring-offset-slate-950');
+        topCard.style.borderColor = 'rgba(255, 255, 255, 0.1)';
+        topCard.style.boxShadow = 'none';
+        if (topBadge) {
+          topBadge.innerText = 'TUNGGU';
+          topBadge.className = 'text-[9px] font-bold px-1.5 py-0.5 rounded bg-slate-800 text-slate-400 font-fun';
+        }
       }
     }
 
-    if (turnsBadge) turnsBadge.innerText = `Putaran: ${this.turnsCount}`;
+    // 3. Mini Cards P1, P2, P3, P4
+    for (let pId = 1; pId <= 4; pId++) {
+      const p = this.players[pId];
+      const card = document.getElementById(`playerCardP${pId}`);
+      const tileBadge = document.getElementById(`p${pId}TileBadge`);
+      const scoreBadge = document.getElementById(`p${pId}ScoreBadge`);
 
-    // 2. Status Pemain 1 (Layar 1 Kiri)
-    const p1 = this.players[1];
-    const p1TileBadge = document.getElementById('p1TileBadge');
-    const p1ScoreBadge = document.getElementById('p1ScoreBadge');
-    const p1TurnStatus = document.getElementById('p1TurnStatus');
-    const p1PlayerSec = document.getElementById('p1PlayerSection');
-    const p1ScreenCard = document.getElementById('p1ScreenCard');
-    const p1Standby = document.getElementById('p1StandbyOverlay');
+      if (!card) continue;
 
-    if (p1TileBadge) p1TileBadge.innerText = `Petak ${p1.tile}/25`;
-    const p1Acc = p1.totalAnswered > 0 ? Math.round((p1.correctAnswers / p1.totalAnswered) * 100) : 100;
-    if (p1ScoreBadge) p1ScoreBadge.innerText = `${p1Acc}%`;
-
-    // 3. Status Pemain 2 (Layar 2 Kanan)
-    const p2 = this.players[2];
-    const p2TileBadge = document.getElementById('p2TileBadge');
-    const p2ScoreBadge = document.getElementById('p2ScoreBadge');
-    const p2TurnStatus = document.getElementById('p2TurnStatus');
-    const p2PlayerSec = document.getElementById('p2PlayerSection');
-    const p2ScreenCard = document.getElementById('p2ScreenCard');
-    const p2Standby = document.getElementById('p2StandbyOverlay');
-
-    if (p2TileBadge) p2TileBadge.innerText = `Petak ${p2.tile}/25`;
-    const p2Acc = p2.totalAnswered > 0 ? Math.round((p2.correctAnswers / p2.totalAnswered) * 100) : 100;
-    if (p2ScoreBadge) p2ScoreBadge.innerText = `${p2Acc}%`;
-
-    // Visual Switch Antara Layar 1 (P1) dan Layar 2 (P2)
-    if (activeP.id === 1) {
-      // P1 Aktif (Terang & Bersinar Biru)
-      p1PlayerSec?.classList.remove('opacity-70', 'border-slate-700');
-      p1PlayerSec?.classList.add('opacity-100', 'border-blue-500', 'shadow-blue-500/30');
-      p1ScreenCard?.classList.add('border-blue-500', 'glow-pulse-blue');
-      p1ScreenCard?.classList.remove('border-slate-700');
-      p1Standby?.classList.add('hidden');
-      if (p1TurnStatus) {
-        p1TurnStatus.innerText = '🔥 GILIRAN ANDA';
-        p1TurnStatus.className = 'text-[9px] font-bold text-blue-300 mt-0.5';
+      if (pId > this.totalPlayers) {
+        card.classList.add('hidden');
+      } else {
+        card.classList.remove('hidden');
       }
 
-      // P2 Standby (Redup Menunggu P1)
-      p2PlayerSec?.classList.add('opacity-70', 'border-slate-700');
-      p2PlayerSec?.classList.remove('opacity-100', 'border-orange-500', 'shadow-orange-500/30');
-      p2ScreenCard?.classList.remove('border-orange-500', 'glow-pulse-orange');
-      p2ScreenCard?.classList.add('border-slate-700');
-      p2Standby?.classList.remove('hidden');
-      if (p2TurnStatus) {
-        p2TurnStatus.innerText = '⏳ MENUNGGU P1';
-        p2TurnStatus.className = 'text-[9px] font-bold text-slate-400 mt-0.5';
-      }
-    } else {
-      // P2 Aktif (Terang & Bersinar Oranye)
-      p2PlayerSec?.classList.remove('opacity-70', 'border-slate-700');
-      p2PlayerSec?.classList.add('opacity-100', 'border-orange-500', 'shadow-orange-500/30');
-      p2ScreenCard?.classList.add('border-orange-500', 'glow-pulse-orange');
-      p2ScreenCard?.classList.remove('border-slate-700');
-      p2Standby?.classList.add('hidden');
-      if (p2TurnStatus) {
-        p2TurnStatus.innerText = '🔥 GILIRAN ANDA';
-        p2TurnStatus.className = 'text-[9px] font-bold text-orange-400 mt-0.5';
-      }
+      if (tileBadge) tileBadge.innerText = `Petak ${p.tile}`;
+      const acc = p.totalAnswered > 0 ? Math.round((p.correctAnswers / p.totalAnswered) * 100) : 100;
+      if (scoreBadge) scoreBadge.innerText = `${acc}%`;
 
-      // P1 Standby (Redup Menunggu P2)
-      p1PlayerSec?.classList.add('opacity-70', 'border-slate-700');
-      p1PlayerSec?.classList.remove('opacity-100', 'border-blue-500', 'shadow-blue-500/30');
-      p1ScreenCard?.classList.remove('border-blue-500', 'glow-pulse-blue');
-      p1ScreenCard?.classList.add('border-slate-700');
-      p1Standby?.classList.remove('hidden');
-      if (p1TurnStatus) {
-        p1TurnStatus.innerText = '⏳ MENUNGGU P2';
-        p1TurnStatus.className = 'text-[9px] font-bold text-slate-400 mt-0.5';
+      if (pId === this.currentPlayer) {
+        card.style.borderColor = p.themeColor;
+      } else {
+        card.style.borderColor = 'rgba(255, 255, 255, 0.1)';
+      }
+    }
+
+    // 4. Update Status Layar Sensor Kiri (P1 Biru & P3 Hijau)
+    const leftSec = document.getElementById('leftSensorSection');
+    const leftHeader = document.getElementById('leftCamStageHeader');
+    const leftDot = document.getElementById('leftPlayerIndicatorDot');
+    const leftTurn = document.getElementById('leftTurnBadge');
+    const leftStandby = document.getElementById('leftStandbyOverlay');
+    const leftStandbySub = document.getElementById('leftStandbySubText');
+
+    const isLeftTurn = (this.currentPlayer === 1 || this.currentPlayer === 3);
+
+    if (leftSec) {
+      if (isLeftTurn) {
+        leftSec.style.borderColor = active.themeColor;
+        leftSec.className = `lg:col-span-3 flex flex-col justify-between gap-1.5 h-full rounded-2xl bg-slate-900/80 p-2 sm:p-2.5 border-2 shadow-xl transition-all overflow-hidden relative min-h-[300px] lg:min-h-0 ${active.id === 1 ? 'glow-pulse-blue' : 'glow-pulse-green'}`;
+        if (leftHeader) leftHeader.innerText = `${active.name} (${active.colorName})`;
+        if (leftDot) leftDot.className = `w-2.5 h-2.5 rounded-full animate-ping ${active.id === 1 ? 'bg-blue-400' : 'bg-emerald-400'}`;
+        if (leftTurn) {
+          leftTurn.innerText = '🔥 GILIRAN ANDA';
+          leftTurn.className = `text-[10px] font-bold px-2 py-0.5 rounded-full border ${active.id === 1 ? 'bg-blue-600/30 text-blue-300 border-blue-400/30' : 'bg-emerald-600/30 text-emerald-300 border-emerald-400/30'}`;
+        }
+        leftStandby?.classList.add('hidden');
+      } else {
+        leftSec.style.borderColor = 'rgba(255, 255, 255, 0.1)';
+        leftSec.className = 'lg:col-span-3 flex flex-col justify-between gap-1.5 h-full rounded-2xl bg-slate-900/80 p-2 sm:p-2.5 border border-white/10 shadow-xl transition-all overflow-hidden relative min-h-[300px] lg:min-h-0 opacity-75';
+        if (leftHeader) leftHeader.innerText = 'Sisi Kiri (P1 & P3)';
+        if (leftDot) leftDot.className = 'w-2.5 h-2.5 rounded-full bg-slate-500';
+        if (leftTurn) {
+          leftTurn.innerText = '⏳ MENUNGGU';
+          leftTurn.className = 'text-[10px] font-bold px-2 py-0.5 rounded-full bg-slate-800 text-slate-400 border border-white/10';
+        }
+        leftStandby?.classList.remove('hidden');
+        if (leftStandbySub) leftStandbySub.innerText = `${active.name} (${active.colorName}) sedang bersiap melangkah`;
+      }
+    }
+
+    // 5. Update Status Layar Sensor Kanan (P2 Merah & P4 Ungu)
+    const rightSec = document.getElementById('rightSensorSection');
+    const rightHeader = document.getElementById('rightCamStageHeader');
+    const rightDot = document.getElementById('rightPlayerIndicatorDot');
+    const rightTurn = document.getElementById('rightTurnBadge');
+    const rightStandby = document.getElementById('rightStandbyOverlay');
+    const rightStandbySub = document.getElementById('rightStandbySubText');
+
+    const isRightTurn = (this.currentPlayer === 2 || this.currentPlayer === 4);
+
+    if (rightSec) {
+      if (isRightTurn) {
+        rightSec.style.borderColor = active.themeColor;
+        rightSec.className = `lg:col-span-3 flex flex-col justify-between gap-1.5 h-full rounded-2xl bg-slate-900/80 p-2 sm:p-2.5 border-2 shadow-xl transition-all overflow-hidden relative min-h-[300px] lg:min-h-0 ${active.id === 2 ? 'glow-pulse-red' : 'glow-pulse-purple'}`;
+        if (rightHeader) rightHeader.innerText = `${active.name} (${active.colorName})`;
+        if (rightDot) rightDot.className = `w-2.5 h-2.5 rounded-full animate-ping ${active.id === 2 ? 'bg-red-400' : 'bg-purple-400'}`;
+        if (rightTurn) {
+          rightTurn.innerText = '🔥 GILIRAN ANDA';
+          rightTurn.className = `text-[10px] font-bold px-2 py-0.5 rounded-full border ${active.id === 2 ? 'bg-red-600/30 text-red-300 border-red-400/30' : 'bg-purple-600/30 text-purple-300 border-purple-400/30'}`;
+        }
+        rightStandby?.classList.add('hidden');
+      } else {
+        rightSec.style.borderColor = 'rgba(255, 255, 255, 0.1)';
+        rightSec.className = 'lg:col-span-3 flex flex-col justify-between gap-1.5 h-full rounded-2xl bg-slate-900/80 p-2 sm:p-2.5 border border-white/10 shadow-xl transition-all overflow-hidden relative min-h-[300px] lg:min-h-0 opacity-75';
+        if (rightHeader) rightHeader.innerText = 'Sisi Kanan (P2 & P4)';
+        if (rightDot) rightDot.className = 'w-2.5 h-2.5 rounded-full bg-slate-500';
+        if (rightTurn) {
+          rightTurn.innerText = '⏳ MENUNGGU';
+          rightTurn.className = 'text-[10px] font-bold px-2 py-0.5 rounded-full bg-slate-800 text-slate-400 border border-white/10';
+        }
+        rightStandby?.classList.remove('hidden');
+        if (rightStandbySub) rightStandbySub.innerText = `${active.name} (${active.colorName}) sedang bersiap melangkah`;
       }
     }
   }
 
-  showInstruction(text, color = 'blue') {
-    const p1Banner = document.getElementById('p1InstructionBanner');
-    const p2Banner = document.getElementById('p2InstructionBanner');
-    const activeP = this.getActivePlayer();
-
-    if (activeP.id === 1) {
-      if (p1Banner) {
-        p1Banner.innerText = text;
-        p1Banner.className = 'px-2.5 py-1.5 rounded-xl font-bold text-center text-[11px] sm:text-xs shadow transition-all shrink-0 bg-blue-600 text-white glow-pulse-blue';
-      }
-      if (p2Banner) {
-        p2Banner.innerText = '⏳ Bersiap untuk Giliran Pemain 2...';
-        p2Banner.className = 'px-2.5 py-1.5 rounded-xl font-bold text-center text-[11px] sm:text-xs shadow transition-all shrink-0 bg-slate-800 text-slate-400';
-      }
-    } else {
-      if (p2Banner) {
-        p2Banner.innerText = text;
-        p2Banner.className = 'px-2.5 py-1.5 rounded-xl font-bold text-center text-[11px] sm:text-xs shadow transition-all shrink-0 bg-orange-600 text-white glow-pulse-orange';
-      }
-      if (p1Banner) {
-        p1Banner.innerText = '⏳ Bersiap untuk Giliran Pemain 1...';
-        p1Banner.className = 'px-2.5 py-1.5 rounded-xl font-bold text-center text-[11px] sm:text-xs shadow transition-all shrink-0 bg-slate-800 text-slate-400';
-      }
-    }
-  }
-
-  setCameraStatus(msg, type) {
-    const badge = document.getElementById('cameraStatusBadge');
-    if (!badge) return;
-    badge.innerText = msg;
-    if (type === 'success') {
-      badge.className = 'keypoint-badge bg-emerald-100 text-emerald-700 border border-emerald-300';
-    } else if (type === 'error' || type === 'warning') {
-      badge.className = 'keypoint-badge bg-amber-100 text-amber-700 border border-amber-300';
-    } else {
-      badge.className = 'keypoint-badge bg-blue-100 text-blue-700 border border-blue-300';
-    }
+  showInstruction(msg, color = 'blue') {
+    const banner = document.getElementById('gameInstructionBanner');
+    if (!banner) return;
+    banner.innerText = msg;
+    banner.className = `px-3 py-2 rounded-xl font-bold text-center text-xs sm:text-sm shadow-md transition-all `;
+    if (color === 'red') banner.classList.add('bg-rose-950/90', 'text-rose-200', 'border', 'border-rose-500/50');
+    else if (color === 'green') banner.classList.add('bg-emerald-950/90', 'text-emerald-200', 'border', 'border-emerald-500/50');
+    else if (color === 'purple') banner.classList.add('bg-purple-950/90', 'text-purple-200', 'border', 'border-purple-500/50');
+    else if (color === 'orange') banner.classList.add('bg-orange-950/90', 'text-orange-200', 'border', 'border-orange-500/50');
+    else banner.classList.add('bg-blue-950/90', 'text-blue-200', 'border', 'border-blue-500/50');
   }
 
   /**
    * ==========================================================================
-   * Game Canvas Rendering Loop
+   * RENDERING ENGINE: PALING PENTING DESAIN ULAR TANGGANYA LEBIH BAGUSIN!
+   * Menggunakan Cached Offscreen Canvas untuk 60-120 FPS Buttery Smooth
    * ==========================================================================
    */
   gameLoop(timestamp) {
-    this.ctx.clearRect(0, 0, this.boardSize, this.boardSize);
+    this.ctx.clearRect(0, 0, this.boardWidth, this.boardHeight);
 
-    // 1. Gambar Background & Grid Papan 5x5
-    this.drawBoard();
+    // 1. Gambar Board Statis dari Cache (Hemat CPU >90%)
+    if (this.boardCacheDirty) {
+      this.renderBoardToCache();
+      this.boardCacheDirty = false;
+    }
+    // PENTING: Gunakan this.boardWidth dan this.boardHeight agar source dipetakan tepat ke sistem koordinat logical (DPR-safe)
+    this.ctx.drawImage(this.boardCacheCanvas, 0, 0, this.boardWidth, this.boardHeight);
 
-    // Gambar jalur langkah tipis (1 -> 25)
-    this.drawPathTrail();
-
-    // 2. Gambar Tangga (3 Tangga)
-    this.drawLadders();
-
-    // 3. Gambar Ular (3 Ular)
-    this.drawSnakes(timestamp);
-
-    // 4. Gambar Bidak Kedua Pemain (P1 & P2)
+    // 2. Gambar 4 Avatar Pemain (Bergerak / Floating Bob)
     this.drawAvatars(timestamp);
 
-    // 5. Update & Gambar Partikel Bintang/Konfeti
+    // 3. Update & Gambar Partikel Bintang/Konfeti
     this.particleSystem.updateAndDraw(this.ctx);
 
     requestAnimationFrame((t) => this.gameLoop(t));
   }
 
-  drawBoard() {
-    const ctx = this.ctx;
-    const tileColors = [
-      ['#fee2e2', '#fecaca'], // Red/Rose pastel
-      ['#fef3c7', '#fde68a'], // Amber pastel
-      ['#dcfce7', '#bbf7d0'], // Emerald pastel
-      ['#e0f2fe', '#bae6fd'], // Sky pastel
-      ['#f3e8ff', '#e9d5ff']  // Purple pastel
+  /**
+   * Pre-render Papan 50 Kotak, Tangga 3D & Ular Realistis ke Offscreen Canvas
+   */
+  renderBoardToCache() {
+    const ctx = this.boardCacheCtx;
+    ctx.clearRect(0, 0, this.boardWidth, this.boardHeight);
+
+    // A. Frame Luar Papan Modern Bertema Petualangan (Wood / Slate Finish)
+    this.drawBoardFrame(ctx);
+
+    // B. Garis Jejak Jalur Berkelok (Trail 1 -> 50)
+    this.drawPathTrail(ctx);
+
+    // C. 50 Petak Ceria dengan Efek 3D
+    this.drawTiles(ctx);
+
+    // D. 5 Tangga Kayu / Emas 3D
+    this.drawLadders(ctx);
+
+    // E. 5 Ular Artistik dengan Sisik & Kepala 3D Menggemaskan
+    this.drawSnakes(ctx);
+  }
+
+  drawBoardFrame(ctx) {
+    const pad = 4;
+    const w = this.boardWidth - pad * 2;
+    const h = this.boardHeight - pad * 2;
+
+    // Bingkai Luar
+    ctx.save();
+    this.roundRect(ctx, pad, pad, w, h, 16);
+    ctx.fillStyle = '#0f172a'; // Slate 900
+    ctx.fill();
+    ctx.lineWidth = 3;
+    ctx.strokeStyle = 'rgba(255, 255, 255, 0.12)';
+    ctx.stroke();
+
+    // Border Emas Lembut
+    this.roundRect(ctx, pad + 3, pad + 3, w - 6, h - 6, 14);
+    ctx.lineWidth = 1.5;
+    ctx.strokeStyle = 'rgba(245, 158, 11, 0.4)';
+    ctx.stroke();
+    ctx.restore();
+  }
+
+  drawPathTrail(ctx) {
+    ctx.save();
+    ctx.beginPath();
+    for (let i = 1; i <= 50; i++) {
+      const pos = this.getTilePosition(i);
+      if (i === 1) ctx.moveTo(pos.x, pos.y);
+      else ctx.lineTo(pos.x, pos.y);
+    }
+    ctx.strokeStyle = 'rgba(255, 255, 255, 0.15)';
+    ctx.lineWidth = 3;
+    ctx.setLineDash([5, 8]);
+    ctx.lineCap = 'round';
+    ctx.stroke();
+    ctx.restore();
+  }
+
+  drawTiles(ctx) {
+    // 5 Pasang Palet Warna Pastel Modern & Ceria
+    const tileThemes = [
+      ['#fee2e2', '#fecaca', '#f87171'], // Peach Coral
+      ['#fef3c7', '#fde68a', '#fbbf24'], // Golden Honey
+      ['#dcfce7', '#bbf7d0', '#34d399'], // Mint Emerald
+      ['#e0f2fe', '#bae6fd', '#38bdf8'], // Sky Cyan
+      ['#f3e8ff', '#e9d5ff', '#c084fc']  // Lavender Lilac
     ];
 
-    for (let i = 1; i <= 25; i++) {
+    for (let i = 1; i <= 50; i++) {
       const pos = this.getTilePosition(i);
       const half = this.tileSize / 2;
       const x = pos.x - half;
       const y = pos.y - half;
-      const pad = 3;
+      const pad = 1.5;
+      const tSize = this.tileSize - pad * 2;
 
-      // Warna petak selang-seling ceria
-      const colorPair = tileColors[(pos.rowIndex + pos.colIndex) % tileColors.length];
-      const grad = ctx.createLinearGradient(x, y, x + this.tileSize, y + this.tileSize);
-      grad.addColorStop(0, colorPair[0]);
-      grad.addColorStop(1, colorPair[1]);
-
-      // Kotak Petak Membulat
       ctx.save();
-      this.roundRect(ctx, x + pad, y + pad, this.tileSize - pad * 2, this.tileSize - pad * 2, 12);
-      ctx.fillStyle = grad;
-      ctx.fill();
-      ctx.lineWidth = 1.5;
-      ctx.strokeStyle = 'rgba(255, 255, 255, 0.8)';
-      ctx.stroke();
 
-      // Bayangan halus dalam
-      ctx.fillStyle = 'rgba(0, 0, 0, 0.03)';
-      ctx.fill();
+      // Warna Petak Selang-seling
+      const theme = tileThemes[(pos.rowIndex + pos.colIndex) % tileThemes.length];
+      const grad = ctx.createLinearGradient(x, y, x + tSize, y + tSize);
 
-      // Penanda Petak Khusus
       if (i === 1) {
-        // Petak START
-        ctx.fillStyle = '#10b981';
-        ctx.font = `bold ${Math.round(this.tileSize * 0.18)}px Fredoka, sans-serif`;
-        ctx.textAlign = 'center';
-        ctx.fillText('🏁 START', pos.x, pos.y + half - 8);
-      } else if (i === 25) {
-        // Petak FINISH
-        ctx.fillStyle = '#f59e0b';
-        ctx.font = `bold ${Math.round(this.tileSize * 0.20)}px Fredoka, sans-serif`;
-        ctx.textAlign = 'center';
-        ctx.fillText('🏆 FINISH', pos.x, pos.y + half - 8);
+        // Petak START (Emerald Hijau Bercahaya)
+        grad.addColorStop(0, '#10b981');
+        grad.addColorStop(1, '#059669');
+      } else if (i === 50) {
+        // Petak FINISH (Golden Crown Juara)
+        grad.addColorStop(0, '#f59e0b');
+        grad.addColorStop(1, '#d97706');
       } else {
-        // Ikon Ular / Tangga / Kuis
-        const isLadder = LADDERS.some(l => l.start === i);
-        const isSnake = SNAKES.some(s => s.start === i);
-
-        ctx.font = `${Math.round(this.tileSize * 0.22)}px sans-serif`;
-        ctx.textAlign = 'center';
-        if (isLadder) {
-          ctx.fillText('🪜', pos.x, pos.y + half - 8);
-        } else if (isSnake) {
-          ctx.fillText('🐍', pos.x, pos.y + half - 8);
-        } else {
-          ctx.fillText('❓', pos.x, pos.y + half - 8);
-        }
+        grad.addColorStop(0, theme[0]);
+        grad.addColorStop(1, theme[1]);
       }
 
-      // Nomor Petak
-      ctx.fillStyle = '#334155';
-      ctx.font = `bold ${Math.round(this.tileSize * 0.26)}px Fredoka, sans-serif`;
-      ctx.textAlign = 'left';
-      ctx.textBaseline = 'top';
-      ctx.fillText(`${i}`, x + pad + 6, y + pad + 4);
+      // Bentuk Kotak Petak Membulat yang Rapi
+      const cornerRadius = Math.max(3, Math.round(this.tileSize * 0.14));
+      this.roundRect(ctx, x + pad, y + pad, tSize, tSize, cornerRadius);
+      ctx.fillStyle = grad;
+      ctx.fill();
+
+      // Border halus
+      ctx.lineWidth = 1;
+      ctx.strokeStyle = i === 1 || i === 50 ? '#ffffff' : 'rgba(255, 255, 255, 0.9)';
+      ctx.stroke();
+
+      // Inner Highlight 3D (atas-kiri)
+      ctx.strokeStyle = 'rgba(255, 255, 255, 0.5)';
+      ctx.lineWidth = 1;
+      ctx.beginPath();
+      ctx.moveTo(x + pad + 3, y + pad + tSize - 2);
+      ctx.lineTo(x + pad + 3, y + pad + 3);
+      ctx.lineTo(x + pad + tSize - 2, y + pad + 3);
+      ctx.stroke();
+
+      // Badge Nomor Petak: TEBAL, JELAS, & TERBACA SEMPURNA 1 - 50
+      const numFontSize = Math.max(10, Math.round(this.tileSize * 0.28));
+      const numPadW = Math.max(15, this.tileSize * 0.38);
+      const numPadH = Math.max(11, this.tileSize * 0.30);
+      
+      this.roundRect(ctx, x + pad + 2, y + pad + 2, numPadW, numPadH, 3);
+      ctx.fillStyle = i === 1 || i === 50 ? 'rgba(0, 0, 0, 0.32)' : 'rgba(255, 255, 255, 0.92)';
+      ctx.fill();
+
+      ctx.fillStyle = i === 1 || i === 50 ? '#ffffff' : '#0f172a';
+      ctx.font = `bold ${numFontSize}px Fredoka, sans-serif`;
+      ctx.textAlign = 'center';
+      ctx.textBaseline = 'middle';
+      ctx.fillText(`${i}`, x + pad + 2 + numPadW / 2, y + pad + 2 + numPadH / 2);
+
+      // Icon & Penanda Petak Khusus (START, FINISH, TANGGA, ULAR)
+      if (i === 1) {
+        ctx.fillStyle = '#ffffff';
+        ctx.font = `bold ${Math.max(7, Math.round(this.tileSize * 0.17))}px Fredoka, sans-serif`;
+        ctx.textAlign = 'center';
+        ctx.textBaseline = 'bottom';
+        ctx.fillText('START', pos.x, y + tSize - 1.5);
+      } else if (i === 50) {
+        ctx.fillStyle = '#ffffff';
+        ctx.font = `bold ${Math.max(7, Math.round(this.tileSize * 0.17))}px Fredoka, sans-serif`;
+        ctx.textAlign = 'center';
+        ctx.textBaseline = 'bottom';
+        ctx.fillText('FINISH', pos.x, y + tSize - 1.5);
+      } else {
+        const isLadder = LADDERS.find(l => l.start === i);
+        const isSnake = SNAKES.find(s => s.start === i);
+
+        if (isLadder) {
+          ctx.fillStyle = '#065f46';
+          ctx.font = `bold ${Math.max(8, Math.round(this.tileSize * 0.20))}px Fredoka, sans-serif`;
+          ctx.textAlign = 'right';
+          ctx.textBaseline = 'bottom';
+          ctx.fillText(`↗${isLadder.end}`, x + tSize - 1.5, y + tSize - 1.5);
+        } else if (isSnake) {
+          ctx.fillStyle = '#991b1b';
+          ctx.font = `bold ${Math.max(8, Math.round(this.tileSize * 0.20))}px Fredoka, sans-serif`;
+          ctx.textAlign = 'right';
+          ctx.textBaseline = 'bottom';
+          ctx.fillText(`↘${isSnake.end}`, x + tSize - 1.5, y + tSize - 1.5);
+        }
+      }
 
       ctx.restore();
     }
   }
 
-  /**
-   * Gambar Garis Jalur Titik-Titik Halus Menghubungkan Petak 1 s/d 25
-   */
-  drawPathTrail() {
-    const ctx = this.ctx;
-    ctx.save();
-    ctx.strokeStyle = 'rgba(255, 255, 255, 0.45)';
-    ctx.lineWidth = 3;
-    ctx.setLineDash([5, 8]);
-    ctx.lineCap = 'round';
-    ctx.lineJoin = 'round';
-    ctx.beginPath();
-    for (let p = 1; p <= 25; p++) {
-      const pt = this.getTilePosition(p);
-      if (p === 1) {
-        ctx.moveTo(pt.x, pt.y);
-      } else {
-        ctx.lineTo(pt.x, pt.y);
-      }
-    }
-    ctx.stroke();
-    ctx.setLineDash([]);
-    ctx.restore();
-  }
-
-  /**
-   * Gambar 3 Tangga Menghubungkan Petak
-   */
-  drawLadders() {
-    const ctx = this.ctx;
-
+  drawLadders(ctx) {
     LADDERS.forEach(ladder => {
       const p1 = this.getTilePosition(ladder.start);
       const p2 = this.getTilePosition(ladder.end);
@@ -1724,25 +1882,27 @@ class SnakeAndLaddersGame {
       const angle = Math.atan2(dy, dx);
       const dist = Math.hypot(dx, dy);
 
-      const railOffset = 14;
+      const railOffset = Math.max(5, this.tileSize * 0.16);
       const perpX = -Math.sin(angle) * railOffset;
       const perpY = Math.cos(angle) * railOffset;
 
-      // Bayangan Tangga
-      ctx.strokeStyle = 'rgba(0, 0, 0, 0.15)';
-      ctx.lineWidth = 6;
+      const railWidth = Math.max(2.2, this.tileSize * 0.07);
+      const rungWidth = Math.max(1.8, this.tileSize * 0.05);
+
+      // 1. Bayangan 3D Tangga di Lantai
+      ctx.strokeStyle = 'rgba(0, 0, 0, 0.20)';
+      ctx.lineWidth = railWidth;
+      ctx.lineCap = 'round';
       ctx.beginPath();
-      ctx.moveTo(p1.x + perpX + 3, p1.y + perpY + 3);
-      ctx.lineTo(p2.x + perpX + 3, p2.y + perpY + 3);
-      ctx.moveTo(p1.x - perpX + 3, p1.y - perpY + 3);
-      ctx.lineTo(p2.x - perpX + 3, p2.y - perpY + 3);
+      ctx.moveTo(p1.x + perpX + 2, p1.y + perpY + 3);
+      ctx.lineTo(p2.x + perpX + 2, p2.y + perpY + 3);
+      ctx.moveTo(p1.x - perpX + 2, p1.y - perpY + 3);
+      ctx.lineTo(p2.x - perpX + 2, p2.y - perpY + 3);
       ctx.stroke();
 
-      // Batang Rel Kiri & Kanan Tangga (Kayu Ceria)
-      ctx.strokeStyle = '#d97706'; // Amber Wood
-      ctx.lineWidth = 6;
-      ctx.lineCap = 'round';
-
+      // 2. Rel Samping Tangga Kayu Jati Emas
+      ctx.strokeStyle = '#b45309'; // Kayu Jati gelap
+      ctx.lineWidth = railWidth;
       ctx.beginPath();
       ctx.moveTo(p1.x + perpX, p1.y + perpY);
       ctx.lineTo(p2.x + perpX, p2.y + perpY);
@@ -1750,98 +1910,130 @@ class SnakeAndLaddersGame {
       ctx.lineTo(p2.x - perpX, p2.y - perpY);
       ctx.stroke();
 
-      // Anak Tangga (Rungs)
-      const numRungs = Math.floor(dist / 22);
+      // Highlight rel atas
       ctx.strokeStyle = '#fbbf24';
-      ctx.lineWidth = 4;
+      ctx.lineWidth = Math.max(0.8, railWidth * 0.4);
       ctx.beginPath();
+      ctx.moveTo(p1.x + perpX - 0.5, p1.y + perpY - 0.5);
+      ctx.lineTo(p2.x + perpX - 0.5, p2.y + perpY - 0.5);
+      ctx.stroke();
+
+      // 3. Anak Tangga (Rungs Emas Mengkilap)
+      const numRungs = Math.max(2, Math.floor(dist / (this.tileSize * 0.48)));
       for (let r = 1; r < numRungs; r++) {
         const t = r / numRungs;
         const rx = p1.x + dx * t;
         const ry = p1.y + dy * t;
+
+        // Batang anak tangga emas
+        ctx.strokeStyle = '#f59e0b';
+        ctx.lineWidth = rungWidth;
+        ctx.beginPath();
         ctx.moveTo(rx + perpX, ry + perpY);
         ctx.lineTo(rx - perpX, ry - perpY);
+        ctx.stroke();
+
+        // Specular highlight putih anak tangga
+        ctx.strokeStyle = '#ffffff';
+        ctx.lineWidth = 0.8;
+        ctx.beginPath();
+        ctx.moveTo(rx + perpX * 0.7, ry + perpY * 0.7 - 0.5);
+        ctx.lineTo(rx - perpX * 0.7, ry - perpY * 0.7 - 0.5);
+        ctx.stroke();
       }
-      ctx.stroke();
 
       ctx.restore();
     });
   }
 
-  /**
-   * Gambar 3 Ular Visual dengan Lengkungan & Mata Kartun
-   */
-  drawSnakes(time) {
-    const ctx = this.ctx;
-
+  drawSnakes(ctx) {
     SNAKES.forEach((snake, idx) => {
       const head = this.getTilePosition(snake.start);
       const tail = this.getTilePosition(snake.end);
 
       ctx.save();
 
-      // Titik kontrol kurva Bézier yang melengkung indah
+      // Kontrol kurva S-Wave yang meliuk indah
       const midX = (head.x + tail.x) / 2;
       const midY = (head.y + tail.y) / 2;
-      const curveSign = idx % 2 === 0 ? 1 : -1;
-      const cpX = midX + curveSign * 35;
-      const cpY = midY - 25;
+      const sign = idx % 2 === 0 ? 1 : -1;
+      const cp1X = midX + sign * (this.tileSize * 0.50);
+      const cp1Y = midY - (this.tileSize * 0.28);
 
-      // 1. Gambar Badan Ular (Gradien Tebal ke Tipis)
+      const bodyWidth = Math.max(5, this.tileSize * 0.16);
+
+      // 1. Bayangan Badan Ular
+      ctx.beginPath();
+      ctx.moveTo(tail.x + 2, tail.y + 3);
+      ctx.quadraticCurveTo(cp1X + 2, cp1Y + 3, head.x + 2, head.y + 3);
+      ctx.lineCap = 'round';
+      ctx.lineWidth = bodyWidth;
+      ctx.strokeStyle = 'rgba(0, 0, 0, 0.20)';
+      ctx.stroke();
+
+      // 2. Badan Ular Utama
       ctx.beginPath();
       ctx.moveTo(tail.x, tail.y);
-      ctx.quadraticCurveTo(cpX, cpY, head.x, head.y);
+      ctx.quadraticCurveTo(cp1X, cp1Y, head.x, head.y);
       ctx.lineCap = 'round';
-      ctx.lineWidth = 16;
+      ctx.lineWidth = bodyWidth;
       ctx.strokeStyle = snake.color;
       ctx.stroke();
 
-      // Pola belang/totol tubuh ular
-      ctx.lineWidth = 10;
-      ctx.setLineDash([8, 12]);
-      ctx.strokeStyle = '#fef08a'; // Kuning motif
+      // 3. Motif Sisik / Pola Garis Tubuh Ular
+      ctx.lineWidth = Math.max(1.8, bodyWidth * 0.35);
+      ctx.setLineDash([4, 6]);
+      ctx.strokeStyle = '#fef08a'; // Kuning sisik
       ctx.stroke();
       ctx.setLineDash([]);
 
-      // 2. Gambar Ekor Ular
+      // 4. Ekor Ular Runcing / Cincin
       ctx.beginPath();
-      ctx.arc(tail.x, tail.y, 4, 0, Math.PI * 2);
+      ctx.arc(tail.x, tail.y, Math.max(2, bodyWidth * 0.35), 0, Math.PI * 2);
       ctx.fillStyle = snake.color;
       ctx.fill();
 
-      // 3. Gambar Kepala Ular Kartun Lucu di Petak Asal
+      // 5. Kepala Ular 3D Ekspresif
+      const headR = Math.max(6, this.tileSize * 0.18);
       ctx.beginPath();
-      ctx.arc(head.x, head.y, 14, 0, Math.PI * 2);
+      ctx.arc(head.x, head.y, headR, 0, Math.PI * 2);
       ctx.fillStyle = snake.color;
       ctx.fill();
-      ctx.lineWidth = 2;
+      ctx.lineWidth = 1.2;
       ctx.strokeStyle = '#ffffff';
       ctx.stroke();
 
       // Mata Ular
-      const eyeOffset = 5;
+      const eyeOffset = headR * 0.38;
       ctx.fillStyle = '#ffffff';
       ctx.beginPath();
-      ctx.arc(head.x - eyeOffset, head.y - 4, 4, 0, Math.PI * 2);
-      ctx.arc(head.x + eyeOffset, head.y - 4, 4, 0, Math.PI * 2);
+      ctx.arc(head.x - eyeOffset, head.y - 1.8, 2, 0, Math.PI * 2);
+      ctx.arc(head.x + eyeOffset, head.y - 1.8, 2, 0, Math.PI * 2);
       ctx.fill();
 
-      // Pupil Mata
+      // Pupil Hitam
       ctx.fillStyle = '#0f172a';
       ctx.beginPath();
-      ctx.arc(head.x - eyeOffset, head.y - 4, 2, 0, Math.PI * 2);
-      ctx.arc(head.x + eyeOffset, head.y - 4, 2, 0, Math.PI * 2);
+      ctx.arc(head.x - eyeOffset, head.y - 1.8, 1.1, 0, Math.PI * 2);
+      ctx.arc(head.x + eyeOffset, head.y - 1.8, 1.1, 0, Math.PI * 2);
       ctx.fill();
 
-      // Lidah Bercabang Merah
-      ctx.strokeStyle = '#dc2626';
-      ctx.lineWidth = 2;
+      // Kilap Putih di Pupil
+      ctx.fillStyle = '#ffffff';
       ctx.beginPath();
-      ctx.moveTo(head.x, head.y + 12);
-      ctx.lineTo(head.x, head.y + 18);
-      ctx.lineTo(head.x - 3, head.y + 21);
-      ctx.moveTo(head.x, head.y + 18);
-      ctx.lineTo(head.x + 3, head.y + 21);
+      ctx.arc(head.x - eyeOffset - 0.6, head.y - 3.8, 0.7, 0, Math.PI * 2);
+      ctx.arc(head.x + eyeOffset - 0.6, head.y - 3.8, 0.7, 0, Math.PI * 2);
+      ctx.fill();
+
+      // Lidah Ular Merah Bercabang
+      ctx.strokeStyle = '#dc2626';
+      ctx.lineWidth = 1.8;
+      ctx.beginPath();
+      ctx.moveTo(head.x, head.y + headR * 0.8);
+      ctx.lineTo(head.x, head.y + headR + 6);
+      ctx.lineTo(head.x - 2.5, head.y + headR + 9);
+      ctx.moveTo(head.x, head.y + headR + 6);
+      ctx.lineTo(head.x + 2.5, head.y + headR + 9);
       ctx.stroke();
 
       ctx.restore();
@@ -1849,122 +2041,104 @@ class SnakeAndLaddersGame {
   }
 
   /**
-   * Gambar Avatar Karakter Kedua Pemain (P1 Biru & P2 Oranye)
+   * Gambar Avatar 4 Pemain (Bidak 3D dengan Halo Bercahaya)
    */
   drawAvatars(time) {
     const ctx = this.ctx;
-    const sameTile = this.players[1].tile === this.players[2].tile;
 
-    // Gambar Pemain 1 lalu Pemain 2 (Pemain yang aktif digambar terakhir agar di atas)
-    const drawOrder = this.currentPlayer === 1 ? [2, 1] : [1, 2];
+    // Kelompokkan pemain yang berada di petak yang sama agar posisinya teratur rapi
+    const tileGroups = {};
+    for (let pId = 1; pId <= this.totalPlayers; pId++) {
+      const tile = this.players[pId].tile;
+      if (!tileGroups[tile]) tileGroups[tile] = [];
+      tileGroups[tile].push(pId);
+    }
+
+    // Gambar non-aktif terlebih dahulu, lalu aktif paling atas
+    const drawOrder = [];
+    for (let pId = 1; pId <= this.totalPlayers; pId++) {
+      if (pId !== this.currentPlayer) drawOrder.push(pId);
+    }
+    drawOrder.push(this.currentPlayer);
 
     drawOrder.forEach(pId => {
       const p = this.players[pId];
-      // Jika berada di petak yang sama, beri offset kiri/kanan agar tidak bertumpuk
-      const offsetX = sameTile ? (pId === 1 ? -12 : 12) : 0;
-      const idleBob = (this.isMoving && this.currentPlayer === pId) ? 0 : Math.sin((time + pId * 100) / 200) * 3;
+      const group = tileGroups[p.tile] || [pId];
+      const indexInGroup = group.indexOf(pId);
+
+      // Hitung offset agar 4 avatar di petak yang sama tidak saling menutupi
+      let offX = 0;
+      let offY = 0;
+      const span = Math.max(5, Math.round(this.tileSize * 0.16));
+
+      if (group.length === 2) {
+        offX = indexInGroup === 0 ? -span : span;
+      } else if (group.length === 3) {
+        if (indexInGroup === 0) { offX = -span; offY = -span * 0.7; }
+        else if (indexInGroup === 1) { offX = span; offY = -span * 0.7; }
+        else { offX = 0; offY = span * 0.8; }
+      } else if (group.length >= 4) {
+        if (indexInGroup === 0) { offX = -span; offY = -span * 0.75; }
+        else if (indexInGroup === 1) { offX = span; offY = -span * 0.75; }
+        else if (indexInGroup === 2) { offX = -span; offY = span * 0.75; }
+        else { offX = span; offY = span * 0.75; }
+      }
+
+      // Efek idle melayang (bobbing)
+      const idleBob = (this.isMoving && this.currentPlayer === pId) ? 0 : Math.sin((time + pId * 150) / 180) * 1.8;
 
       ctx.save();
-      ctx.translate(p.x + offsetX, p.y + idleBob);
+      ctx.translate(p.x + offX, p.y + offY + idleBob);
 
-      // 1. Cincin Penanda Giliran Aktif (Pulsing Glow Ring)
+      const r = Math.max(7, Math.round(this.tileSize * 0.20));
+
+      // 1. Cincin Penanda Giliran Aktif (Pulsing Neon Glow)
       if (this.currentPlayer === pId) {
         ctx.beginPath();
-        const pulseR = 21 + Math.sin(time / 140) * 2.5;
+        const pulseR = r + 3 + Math.sin(time / 130) * 1.5;
         ctx.arc(0, 0, pulseR, 0, Math.PI * 2);
-        ctx.lineWidth = 3;
-        ctx.strokeStyle = pId === 1 ? 'rgba(59, 130, 246, 0.9)' : 'rgba(234, 88, 12, 0.9)';
-        ctx.setLineDash([4, 4]);
+        ctx.lineWidth = 1.8;
+        ctx.strokeStyle = p.colorLight;
+        ctx.shadowColor = p.themeColor;
+        ctx.shadowBlur = 8;
         ctx.stroke();
-        ctx.setLineDash([]);
+        ctx.shadowBlur = 0;
       }
 
       // 2. Bayangan Bawah Avatar
-      ctx.fillStyle = 'rgba(15, 23, 42, 0.22)';
+      ctx.fillStyle = 'rgba(15, 23, 42, 0.35)';
       ctx.beginPath();
-      ctx.ellipse(0, 17 - idleBob, 14, 5, 0, 0, Math.PI * 2);
+      ctx.ellipse(0, r + 1.5 - idleBob, r * 0.9, r * 0.35, 0, 0, Math.PI * 2);
       ctx.fill();
 
-      // 3. Efek Perisai Pelindung (Jika berhasil jongkok dari ular)
-      if (p.shieldActive) {
-        ctx.beginPath();
-        ctx.arc(0, 0, 25, 0, Math.PI * 2);
-        ctx.fillStyle = pId === 1 ? 'rgba(56, 189, 248, 0.35)' : 'rgba(251, 146, 60, 0.35)';
-        ctx.fill();
-        ctx.lineWidth = 3;
-        ctx.strokeStyle = pId === 1 ? '#38bdf8' : '#fb923c';
-        ctx.stroke();
-      }
-
-      // 4. Badan Avatar Bulat
-      const bodyGrad = ctx.createRadialGradient(-3, -5, 2, 0, 0, 16);
-      bodyGrad.addColorStop(0, p.colorLight);
-      bodyGrad.addColorStop(1, p.colorDark);
+      // 3. Badan Avatar 3D
+      const grad = ctx.createRadialGradient(-r * 0.25, -r * 0.35, r * 0.1, 0, 0, r);
+      grad.addColorStop(0, p.colorLight);
+      grad.addColorStop(1, p.colorDark);
 
       ctx.beginPath();
-      ctx.arc(0, 0, 15, 0, Math.PI * 2);
-      ctx.fillStyle = bodyGrad;
-      ctx.fill();
-      ctx.lineWidth = 2.5;
-      ctx.strokeStyle = '#ffffff';
-      ctx.stroke();
-
-      // 5. Mata Karakter
-      ctx.fillStyle = '#ffffff';
-      ctx.beginPath();
-      ctx.ellipse(-4.5, -2, 3.5, 5, 0, 0, Math.PI * 2);
-      ctx.ellipse(4.5, -2, 3.5, 5, 0, 0, Math.PI * 2);
-      ctx.fill();
-
-      // Pupil Mata
-      ctx.fillStyle = '#0f172a';
-      ctx.beginPath();
-      ctx.arc(-4.5, -1, 2, 0, Math.PI * 2);
-      ctx.arc(4.5, -1, 2, 0, Math.PI * 2);
-      ctx.fill();
-
-      // Kilau Mata
-      ctx.fillStyle = '#ffffff';
-      ctx.beginPath();
-      ctx.arc(-5.5, -2.5, 1, 0, Math.PI * 2);
-      ctx.arc(3.5, -2.5, 1, 0, Math.PI * 2);
-      ctx.fill();
-
-      // 6. Senyuman Ceria
-      ctx.strokeStyle = '#ffffff';
-      ctx.lineWidth = 1.8;
-      ctx.lineCap = 'round';
-      ctx.beginPath();
-      ctx.arc(0, 3.5, 4.5, 0.1 * Math.PI, 0.9 * Math.PI);
-      ctx.stroke();
-
-      // 7. Pipi Merona
-      ctx.fillStyle = 'rgba(244, 114, 182, 0.65)';
-      ctx.beginPath();
-      ctx.arc(-8.5, 3.5, 2.5, 0, Math.PI * 2);
-      ctx.arc(8.5, 3.5, 2.5, 0, Math.PI * 2);
-      ctx.fill();
-
-      // 8. Badge Label "P1" atau "P2" di Atas Kepala
-      ctx.beginPath();
-      ctx.arc(0, -18, 7.5, 0, Math.PI * 2);
-      ctx.fillStyle = p.themeColor;
+      ctx.arc(0, 0, r, 0, Math.PI * 2);
+      ctx.fillStyle = grad;
       ctx.fill();
       ctx.lineWidth = 1.5;
       ctx.strokeStyle = '#ffffff';
       ctx.stroke();
 
+      // 4. Emblem Huruf / Nomor Pemain
       ctx.fillStyle = '#ffffff';
-      ctx.font = 'bold 8px Fredoka, sans-serif';
+      ctx.font = `bold ${Math.max(7, Math.round(r * 1.05))}px Fredoka, sans-serif`;
       ctx.textAlign = 'center';
       ctx.textBaseline = 'middle';
-      ctx.fillText(p.label, 0, -17.5);
+      ctx.shadowColor = 'rgba(0, 0, 0, 0.5)';
+      ctx.shadowBlur = 2;
+      ctx.fillText(`${p.id}`, 0, 0.5);
+      ctx.shadowBlur = 0;
 
       ctx.restore();
     });
   }
 
-  roundRect(ctx, x, y, width, height, radius) {
+  roundRect(ctx, x, y, width, height, radius = 8) {
     ctx.beginPath();
     ctx.moveTo(x + radius, y);
     ctx.lineTo(x + width - radius, y);
@@ -1979,45 +2153,17 @@ class SnakeAndLaddersGame {
   }
 
   /**
-   * Mengaktifkan atau Keluar dari Mode Layar Penuh (Fullscreen)
-   */
-  toggleFullscreen() {
-    const isFs = !!(document.fullscreenElement || document.webkitFullscreenElement || document.mozFullScreenElement || document.msFullscreenElement);
-
-    if (!isFs) {
-      const docEl = document.documentElement;
-      if (docEl.requestFullscreen) {
-        docEl.requestFullscreen().catch(err => console.warn('Layar penuh diblokir browser:', err));
-      } else if (docEl.webkitRequestFullscreen) {
-        docEl.webkitRequestFullscreen();
-      } else if (docEl.mozRequestFullScreen) {
-        docEl.mozRequestFullScreen();
-      } else if (docEl.msRequestFullscreen) {
-        docEl.msRequestFullscreen();
-      }
-    } else {
-      if (document.exitFullscreen) {
-        document.exitFullscreen().catch(err => console.warn('Gagal keluar layar penuh:', err));
-      } else if (document.webkitExitFullscreen) {
-        document.webkitExitFullscreen();
-      } else if (document.mozCancelFullScreen) {
-        document.mozCancelFullScreen();
-      } else if (document.msExitFullscreen) {
-        document.msExitFullscreen();
-      }
-    }
-  }
-
-  /**
-   * Event Listeners & Kontrol UI
+   * ==========================================================================
+   * Event Listeners & Kontrol Game
+   * ==========================================================================
    */
   setupEventListeners() {
-    // Tombol Dadu (Bisa diklik untuk cadangan / testing)
+    // Lempar Dadu via Klik
     document.getElementById('diceCubeContainer')?.addEventListener('click', () => {
-      this.rollDice();
+      if (this.gameState === 'IDLE') this.rollDice();
     });
 
-    // Klik langsung pada kartu opsi jawaban A / B
+    // Klik Pilihan Kuis A dan B
     document.getElementById('optionCardA')?.addEventListener('click', () => {
       if (this.gameState === 'QUIZ') this.handleQuizAnswer('A');
     });
@@ -2025,475 +2171,512 @@ class SnakeAndLaddersGame {
       if (this.gameState === 'QUIZ') this.handleQuizAnswer('B');
     });
 
-    // Mute Audio Toggle
-    const muteBtn = document.getElementById('soundToggleBtn');
-    muteBtn?.addEventListener('click', () => {
-      this.sounds.isMuted = !this.sounds.isMuted;
-      localStorage.setItem('kinesthetic_sound_muted', this.sounds.isMuted);
-      muteBtn.innerText = this.sounds.isMuted ? '🔇 Bisu' : '🔊 Suara';
+    // Tombol Hukuman Ular: Selesai Jongkok
+    document.getElementById('btnFinishSquatPunishment')?.addEventListener('click', () => {
+      this.finishSnakePunishment();
     });
-    if (this.sounds.isMuted && muteBtn) {
-      muteBtn.innerText = '🔇 Bisu';
-    }
 
-    // Tombol Restart Game
-    document.getElementById('resetGameBtn')?.addEventListener('click', () => {
-      if (confirm('Ulangi permainan dari awal (Petak 1)?')) {
-        this.restartGame();
+    // Tombol Manual Tambah Hitungan Jongkok (+1)
+    document.getElementById('btnManualSquatStep')?.addEventListener('click', () => {
+      const current = (this.poseEngine?.squatReps || 0) + 1;
+      if (this.poseEngine) this.poseEngine.squatReps = current;
+      this.handleSquatRepDone(current, 3);
+      if (current >= 3) {
+        setTimeout(() => this.finishSnakePunishment(), 500);
       }
     });
 
-    // Tombol Main Lagi di Victory Modal
+    // Tombol Manual Tambah Panjat Tangga (+1)
+    document.getElementById('btnManualClimbStep')?.addEventListener('click', () => {
+      const current = (this.poseEngine?.climbCount || 0) + 1;
+      if (this.poseEngine) this.poseEngine.climbCount = current;
+      this.handleClimbStep(current, 4);
+      if (current >= 4) {
+        this.handleClimbSuccess();
+      }
+    });
+
+    // Pilihan Jumlah Pemain (2, 3, atau 4 Pemain)
+    const selectPlayers = document.getElementById('playerCountSelect');
+    selectPlayers?.addEventListener('change', (e) => {
+      this.setPlayerCount(parseInt(e.target.value, 10));
+    });
+
+    // Toggle Suara
+    document.getElementById('soundToggleBtn')?.addEventListener('click', () => {
+      const isMuted = this.sounds.toggleMute();
+      const btn = document.getElementById('soundToggleBtn');
+      if (btn) btn.innerHTML = isMuted ? '🔇 <span class="hidden sm:inline">Bisu</span>' : '🔊 <span class="hidden sm:inline">Suara</span>';
+    });
+
+    // Reset Game
+    document.getElementById('resetGameBtn')?.addEventListener('click', () => {
+      if (confirm('Ulangi permainan dari awal? Semua posisi pemain akan kembali ke Petak 1.')) {
+        this.resetGame();
+      }
+    });
+
+    // Tombol Main Lagi di Modal Kemenangan
     document.getElementById('playAgainBtn')?.addEventListener('click', () => {
-      this.restartGame();
+      this.resetGame();
     });
 
-    // Toggle Mode Layar Penuh (Fullscreen)
-    const fsBtn = document.getElementById('fullscreenToggleBtn');
-    fsBtn?.addEventListener('click', () => {
-      this.toggleFullscreen();
+    // Tombol Layar Penuh
+    document.getElementById('fullscreenToggleBtn')?.addEventListener('click', () => {
+      if (!document.fullscreenElement) {
+        document.documentElement.requestFullscreen?.().catch(() => {});
+      } else {
+        document.exitFullscreen?.().catch(() => {});
+      }
     });
 
-    // Sinkronisasi Ikon & Teks Layar Penuh
-    const updateFsState = () => {
-      const isFs = !!(document.fullscreenElement || document.webkitFullscreenElement || document.mozFullScreenElement || document.msFullscreenElement);
-      if (fsBtn) {
-        fsBtn.innerHTML = isFs ? '🗗 Keluar Penuh' : '⛶ Layar Penuh';
-        if (isFs) {
-          fsBtn.classList.add('bg-indigo-600', 'text-white');
-          fsBtn.classList.remove('bg-slate-800', 'text-slate-200');
-        } else {
-          fsBtn.classList.remove('bg-indigo-600', 'text-white');
-          fsBtn.classList.add('bg-slate-800', 'text-slate-200');
+    // Toggle Kamera ON/OFF (Hemat Daya / Manual)
+    document.getElementById('cameraToggleBtn')?.addEventListener('click', () => {
+      if (this.poseEngine) {
+        const isEnabled = this.poseEngine.toggleCamera();
+        const btn = document.getElementById('cameraToggleBtn');
+        if (btn) {
+          btn.innerHTML = isEnabled ? '📹 <span class="hidden sm:inline">Kamera Aktif</span>' : '🚫 <span class="hidden sm:inline">Kamera Mati</span>';
+          btn.className = isEnabled
+            ? 'px-2.5 py-1.5 rounded-lg bg-emerald-800/80 hover:bg-emerald-700 text-white text-xs font-semibold border border-emerald-400/30 flex items-center gap-1.5 cursor-pointer'
+            : 'px-2.5 py-1.5 rounded-lg bg-slate-800 hover:bg-slate-700 text-slate-300 text-xs font-semibold border border-white/10 flex items-center gap-1.5 cursor-pointer';
         }
       }
-      setTimeout(() => {
-        this.resizeCanvas();
-        this.poseEngine?.syncCanvasSize();
-      }, 150);
-    };
+    });
 
-    document.addEventListener('fullscreenchange', updateFsState);
-    document.addEventListener('webkitfullscreenchange', updateFsState);
-    document.addEventListener('mozfullscreenchange', updateFsState);
-    document.addEventListener('MSFullscreenChange', updateFsState);
-
-    // Tombol Shortcut 'F' untuk Layar Penuh
-    window.addEventListener('keydown', (e) => {
-      if (e.target.tagName === 'INPUT' || e.target.tagName === 'TEXTAREA') return;
-      if (e.key === 'f' || e.key === 'F') {
-        this.toggleFullscreen();
+    // Toolbar Uji Simulasi Cepat
+    document.getElementById('simArmsUpBtn')?.addEventListener('click', () => this.rollDice());
+    document.getElementById('simChoiceABtn')?.addEventListener('click', () => this.handleQuizAnswer('A'));
+    document.getElementById('simChoiceBBtn')?.addEventListener('click', () => this.handleQuizAnswer('B'));
+    document.getElementById('simSquatBtn')?.addEventListener('click', () => {
+      if (this.gameState === 'SQUAT_PUNISHMENT') {
+        this.handleSquatRepDone(3, 3);
+        this.finishSnakePunishment();
       }
     });
-
-    // Setup Panel Mode Guru
-    this.setupTeacherMode();
-
-    // Setup Tombol Simulasi Gerak (Dev/Testing Toolbar)
-    this.setupSimulationControls();
-  }
-
-  /**
-   * Kontrol Toolbar Simulasi Pengujian (Sangat berguna untuk demo tanpa webcam)
-   */
-  setupSimulationControls() {
-    document.getElementById('simArmsUpBtn')?.addEventListener('click', () => {
-      if (this.gameState === 'IDLE') this.rollDice();
-    });
-
-    document.getElementById('simChoiceABtn')?.addEventListener('click', () => {
-      if (this.gameState === 'QUIZ') this.handleQuizAnswer('A');
-    });
-
-    document.getElementById('simChoiceBBtn')?.addEventListener('click', () => {
-      if (this.gameState === 'QUIZ') this.handleQuizAnswer('B');
-    });
-
-    document.getElementById('simSquatBtn')?.addEventListener('click', () => {
-      if (this.gameState === 'SQUAT_CHALLENGE') this.handleSquatSuccess();
-    });
-
     document.getElementById('simClimbBtn')?.addEventListener('click', () => {
       if (this.gameState === 'CLIMB_CHALLENGE') {
-        this.climbProgress = (this.climbProgress || 0) + 1;
-        this.handleClimbStep(this.climbProgress, 4);
-        if (this.climbProgress >= 4) {
-          this.handleClimbSuccess();
-        }
+        this.handleClimbStep(4, 4);
+        this.handleClimbSuccess();
       }
     });
+
+    // Keyboard Shortcuts (Space = Roll, A = Option A, B = Option B)
+    window.addEventListener('keydown', (e) => {
+      if (e.target.tagName === 'INPUT' || e.target.tagName === 'TEXTAREA') return;
+      if (e.code === 'Space') {
+        e.preventDefault();
+        if (this.gameState === 'IDLE') this.rollDice();
+      } else if (e.code === 'KeyA') {
+        if (this.gameState === 'QUIZ') this.handleQuizAnswer('A');
+      } else if (e.code === 'KeyB') {
+        if (this.gameState === 'QUIZ') this.handleQuizAnswer('B');
+      }
+    });
+
+    // Setup Dashboard Mode Guru (PIN: 1234, CRUD Soal, Impor/Ekspor Excel, TANPA Link Pembeli)
+    this.setupTeacherMode();
+  }
+
+  bindPoseCallbacks() {
+    this.poseEngine.callbacks.onArmsUp = () => {
+      if (this.gameState === 'IDLE') this.rollDice();
+    };
+
+    this.poseEngine.callbacks.onZoneHover = (data) => {
+      if (this.gameState === 'QUIZ') this.handleQuizHover(data);
+    };
+
+    this.poseEngine.callbacks.onZoneSelect = (zone) => {
+      if (this.gameState === 'QUIZ') this.handleQuizAnswer(zone);
+    };
+
+    this.poseEngine.callbacks.onSquatRep = (current, target) => {
+      if (this.gameState === 'SQUAT_PUNISHMENT') this.handleSquatRepDone(current, target);
+    };
+
+    this.poseEngine.callbacks.onSquatSuccess = () => {
+      if (this.gameState === 'SQUAT_PUNISHMENT') this.finishSnakePunishment();
+    };
+
+    this.poseEngine.callbacks.onClimbStep = (count, target) => {
+      if (this.gameState === 'CLIMB_CHALLENGE') this.handleClimbStep(count, target);
+    };
+
+    this.poseEngine.callbacks.onClimbComplete = () => {
+      if (this.gameState === 'CLIMB_CHALLENGE') this.handleClimbSuccess();
+    };
+
+    this.poseEngine.callbacks.onCameraStatus = (msg, type) => {
+      const badge = document.getElementById('cameraStatusBadge');
+      if (badge) {
+        badge.innerText = msg;
+        badge.className = type === 'success'
+          ? 'keypoint-badge bg-emerald-100 text-emerald-700 border border-emerald-300'
+          : type === 'warning'
+            ? 'keypoint-badge bg-amber-100 text-amber-700 border border-amber-300'
+            : 'keypoint-badge bg-blue-100 text-blue-700 border border-blue-300';
+      }
+    };
   }
 
   /**
    * ==========================================================================
-   * Mode Guru (Teacher Mode Dashboard & CRUD Soal)
+   * Dashboard Mode Guru (CRUD Soal & Excel, TANPA Link Pembeli)
    * ==========================================================================
    */
   setupTeacherMode() {
     const teacherBtn = document.getElementById('teacherModeBtn');
     const pinModal = document.getElementById('teacherPinModal');
     const pinInput = document.getElementById('teacherPinInput');
-    const pinSubmitBtn = document.getElementById('teacherPinSubmitBtn');
-    const pinCancelBtn = document.getElementById('teacherPinCancelBtn');
+    const pinSubmit = document.getElementById('teacherPinSubmitBtn');
+    const pinCancel = document.getElementById('teacherPinCancelBtn');
     const pinError = document.getElementById('teacherPinError');
 
-    const teacherDashboard = document.getElementById('teacherDashboardModal');
-    const closeDashboardBtn = document.getElementById('closeTeacherDashboardBtn');
+    const dashModal = document.getElementById('teacherDashboardModal');
+    const closeDash = document.getElementById('closeTeacherDashboardBtn');
 
-    // Buka Modal PIN
     teacherBtn?.addEventListener('click', () => {
-      if (pinInput) pinInput.value = '';
-      if (pinError) pinError.classList.add('hidden');
       pinModal?.classList.remove('hidden');
-      pinInput?.focus();
+      if (pinInput) {
+        pinInput.value = '';
+        pinInput.focus();
+      }
+      pinError?.classList.add('hidden');
     });
 
-    pinCancelBtn?.addEventListener('click', () => {
-      pinModal?.classList.add('hidden');
-    });
+    pinCancel?.addEventListener('click', () => pinModal?.classList.add('hidden'));
 
-    // Verifikasi PIN (Default: 1234)
-    pinSubmitBtn?.addEventListener('click', () => {
-      const pin = pinInput?.value.trim();
+    const verifyPin = () => {
+      const pin = (pinInput?.value || '').trim();
       if (pin === '1234') {
         pinModal?.classList.add('hidden');
         this.openTeacherDashboard();
       } else {
         pinError?.classList.remove('hidden');
       }
-    });
+    };
 
+    pinSubmit?.addEventListener('click', verifyPin);
     pinInput?.addEventListener('keydown', (e) => {
-      if (e.key === 'Enter') pinSubmitBtn?.click();
+      if (e.key === 'Enter') verifyPin();
     });
 
-    closeDashboardBtn?.addEventListener('click', () => {
-      teacherDashboard?.classList.add('hidden');
-    });
+    closeDash?.addEventListener('click', () => dashModal?.classList.add('hidden'));
 
-    // CRUD Tombol di Dashboard
+    // Tombol Tambah Soal
     document.getElementById('addQuestionBtn')?.addEventListener('click', () => {
       this.openQuestionEditor();
     });
 
-    document.getElementById('exportQuestionsBtn')?.addEventListener('click', () => {
-      this.exportQuestionsToJSON();
-    });
-
-    const fileImportInput = document.getElementById('importQuestionsInput');
-    document.getElementById('importQuestionsBtn')?.addEventListener('click', () => {
-      fileImportInput?.click();
-    });
-
-    fileImportInput?.addEventListener('change', (e) => {
-      this.importQuestionsFromJSON(e);
-    });
-
-    document.getElementById('resetDefaultQuestionsBtn')?.addEventListener('click', () => {
-      if (confirm('Kembalikan bank soal ke 25 soal bawaan Bahasa Arab (As-Sa\'ah) SMP?')) {
-        this.saveQuestions(JSON.parse(JSON.stringify(DEFAULT_QUESTIONS)));
-        localStorage.setItem('kinesthetic_questions_version', 'v2_assaah_25');
-        this.renderQuestionsTable();
-        alert('Bank soal berhasil di-reset ke 25 soal As-Sa\'ah Bahasa Arab SMP!');
-      }
-    });
-
-    // Tombol Pilihan Cepat Kategori Pelajaran
-    document.querySelectorAll('.cat-pill').forEach(pill => {
-      pill.addEventListener('click', (e) => {
-        const cat = e.currentTarget.dataset.cat;
-        const catInput = document.getElementById('qEditCategory');
-        if (catInput) {
-          catInput.value = cat;
-          catInput.focus();
-        }
-      });
-    });
-
-    // Otomasi Samakan Keterangan saat Salah (Realtime Sync & Preview)
-    const updateAutoExp = () => this.refreshExplanationPreview();
-    document.getElementById('qEditOptionA')?.addEventListener('input', updateAutoExp);
-    document.getElementById('qEditOptionB')?.addEventListener('input', updateAutoExp);
-    document.getElementById('qEditCorrectA')?.addEventListener('change', updateAutoExp);
-    document.getElementById('qEditCorrectB')?.addEventListener('change', updateAutoExp);
-
-    document.getElementById('qAutoExplanationCheckbox')?.addEventListener('change', (e) => {
-      if (e.target.checked) {
-        updateAutoExp();
-      }
-    });
-
-    document.getElementById('autoFillExplanationBtn')?.addEventListener('click', () => {
-      const autoCheck = document.getElementById('qAutoExplanationCheckbox');
-      if (autoCheck) autoCheck.checked = true;
-      updateAutoExp();
-    });
-
-    // Form Editor Simpan & Batal
-    document.getElementById('cancelEditQuestionBtn')?.addEventListener('click', () => {
-      document.getElementById('questionEditorModal')?.classList.add('hidden');
-    });
-
+    // Form Simpan Soal
     document.getElementById('questionForm')?.addEventListener('submit', (e) => {
       e.preventDefault();
       this.saveQuestionForm();
     });
 
-    // Modal Buat Link Khusus Pembeli (Ruang Kelas Terhubung)
-    const openShareBtn = document.getElementById('openShareRoomBtn');
-    const closeShareBtn = document.getElementById('closeShareRoomBtn');
-    const shareModal = document.getElementById('shareRoomModal');
-
-    openShareBtn?.addEventListener('click', () => {
-      shareModal?.classList.remove('hidden');
-      shareModal?.classList.add('flex');
+    document.getElementById('cancelEditQuestionBtn')?.addEventListener('click', () => {
+      document.getElementById('questionEditModal')?.classList.add('hidden');
     });
 
-    closeShareBtn?.addEventListener('click', () => {
-      shareModal?.classList.add('hidden');
-      shareModal?.classList.remove('flex');
+    // Ekspor Excel
+    document.getElementById('exportQuestionsBtn')?.addEventListener('click', () => {
+      this.exportQuestionsToExcel();
     });
 
-    const btnGenShare = document.getElementById('btnGenerateShareLink');
-    const shareInput = document.getElementById('shareBuyerInput');
-    const shareResult = document.getElementById('shareResultBox');
-    const shareUrl = document.getElementById('shareUrlOutput');
-    const shareWa = document.getElementById('shareWaTextOutput');
-
-    btnGenShare?.addEventListener('click', () => {
-      const buyer = (shareInput?.value || '').trim() || 'SMP Negeri 1';
-      const cleanParam = encodeURIComponent(buyer);
-      const lic = localStorage.getItem('lokamain_license_key') || 'LM-UT';
-      const url = `${window.location.origin}${window.location.pathname}?lisensi=${encodeURIComponent(lic)}&nama=${cleanParam}`;
-
-      if (shareUrl) shareUrl.value = url;
-      if (shareWa) {
-        shareWa.value = 
-`Halo Bapak/Ibu Guru di ${buyer},
-Berikut tautan resmi Media Edukasi Ular Tangga Kinestetik (Bahasa Arab: As-Sa'ah) untuk kelas Anda:
-
-👉 ${url}
-
-Panduan Penggunaan:
-1. Buka tautan di atas melalui browser Google Chrome atau Edge (bisa di Laptop, HP, atau Smart TV).
-2. Game langsung siap dimainkan tanpa perlu login atau password.
-3. Semua pengaturan dan bank soal terhubung khusus untuk ruang kelas sekolah Anda. Selamat belajar & bermain!`;
-      }
-      shareResult?.classList.remove('hidden');
+    // Unduh Template Excel
+    document.getElementById('downloadTemplateBtn')?.addEventListener('click', () => {
+      this.downloadExcelTemplate();
     });
 
-    document.getElementById('btnCopyShareUrl')?.addEventListener('click', () => {
-      if (shareUrl) {
-        navigator.clipboard.writeText(shareUrl.value).then(() => {
-          alert('Link berhasil disalin!');
-        });
+    // Impor Excel
+    const importInput = document.getElementById('importQuestionsInput');
+    document.getElementById('importQuestionsBtn')?.addEventListener('click', () => {
+      importInput?.click();
+    });
+
+    importInput?.addEventListener('change', (e) => {
+      const file = e.target.files?.[0];
+      if (file) this.importQuestionsFromExcel(file);
+      e.target.value = '';
+    });
+
+    // Reset ke 50 Soal Default IPS SMP
+    document.getElementById('resetDefaultQuestionsBtn')?.addEventListener('click', () => {
+      if (confirm('Kembalikan semua bank soal ke 50 Soal Bawaan IPS SMP? Perubahan soal kustom Anda akan diganti.')) {
+        this.saveQuestions(DEFAULT_QUESTIONS);
+        this.renderQuestionsTable();
+        alert('Berhasil! Bank soal kembali ke 50 Soal IPS SMP Bawaan.');
       }
     });
 
-    document.getElementById('btnCopyShareWa')?.addEventListener('click', () => {
-      if (shareWa) {
-        navigator.clipboard.writeText(shareWa.value).then(() => {
-          alert('Pesan WhatsApp siap kirim berhasil disalin!');
-        });
-      }
+    // Pencarian Soal di Tabel Guru
+    document.getElementById('teacherSearchInput')?.addEventListener('input', (e) => {
+      this.renderQuestionsTable(e.target.value);
     });
-  }
-
-  generateStandardExplanation(correct, optionA, optionB) {
-    const chosenText = correct === 'A' ? (optionA || 'Pilihan A') : (optionB || 'Pilihan B');
-    return `Jawaban yang tepat adalah Pilihan ${correct} ("${chosenText}"). Tetap semangat dan pelajari lagi ya!`;
-  }
-
-  refreshExplanationPreview() {
-    const correct = document.querySelector('input[name="qCorrect"]:checked')?.value || 'A';
-    const optA = document.getElementById('qEditOptionA')?.value.trim() || 'Pilihan A';
-    const optB = document.getElementById('qEditOptionB')?.value.trim() || 'Pilihan B';
-    const autoCheck = document.getElementById('qAutoExplanationCheckbox');
-    const expInput = document.getElementById('qEditExplanation');
-    const previewEl = document.getElementById('autoExplanationPreview');
-
-    const stdText = this.generateStandardExplanation(correct, optA, optB);
-    if (previewEl) {
-      previewEl.innerText = `Pratinjau: "${stdText}"`;
-    }
-    if (autoCheck && autoCheck.checked && expInput) {
-      expInput.value = stdText;
-    }
   }
 
   openTeacherDashboard() {
-    const dashboard = document.getElementById('teacherDashboardModal');
-    dashboard?.classList.remove('hidden');
+    const dashModal = document.getElementById('teacherDashboardModal');
+    dashModal?.classList.remove('hidden');
     this.renderQuestionsTable();
   }
 
-  renderQuestionsTable() {
-    const tbody = document.getElementById('questionsTableBody');
-    const totalCountEl = document.getElementById('teacherTotalQuestions');
+  renderQuestionsTable(searchQuery = '') {
+    const tbody = document.getElementById('teacherQuestionsTableBody');
+    const totalEl = document.getElementById('teacherTotalQuestions');
     if (!tbody) return;
 
-    if (totalCountEl) totalCountEl.innerText = `${this.questions.length} Soal Tersedia`;
-
     tbody.innerHTML = '';
+    const q = (searchQuery || '').toLowerCase();
+    const filtered = this.questions.filter(item =>
+      (item.question || '').toLowerCase().includes(q) ||
+      (item.category || '').toLowerCase().includes(q)
+    );
 
-    this.questions.forEach((q, idx) => {
+    if (totalEl) totalEl.innerText = `Total Soal: ${this.questions.length} Soal IPS SMP (${filtered.length} ditampilkan)`;
+
+    filtered.forEach((item, idx) => {
       const tr = document.createElement('tr');
-      tr.className = 'border-b hover:bg-slate-50 transition-colors text-sm';
+      tr.className = 'border-b border-white/5 hover:bg-slate-800/40 text-xs';
       tr.innerHTML = `
-        <td class="p-3 font-semibold text-slate-500">${idx + 1}</td>
-        <td class="p-3"><span class="px-2 py-1 bg-blue-100 text-blue-700 rounded-full text-xs font-semibold">${q.category}</span></td>
-        <td class="p-3 font-medium text-slate-800 max-w-xs truncate">${q.question}</td>
-        <td class="p-3 text-slate-900 font-semibold">A: ${q.optionA}<br>B: ${q.optionB}</td>
-        <td class="p-3"><span class="px-2.5 py-1 bg-emerald-100 text-emerald-800 font-bold rounded-md">${q.correct}</span></td>
-        <td class="p-3 text-xs text-slate-500 max-w-xs truncate">${q.explanation || '-'}</td>
-        <td class="p-3 whitespace-nowrap">
-          <button class="px-2.5 py-1 bg-amber-500 hover:bg-amber-600 text-white rounded text-xs mr-1 edit-q-btn cursor-pointer" data-id="${q.id}">✏️ Edit</button>
-          <button class="px-2.5 py-1 bg-red-500 hover:bg-red-600 text-white rounded text-xs del-q-btn cursor-pointer" data-id="${q.id}">🗑️ Hapus</button>
+        <td class="p-2 text-slate-400 font-mono text-center">${idx + 1}</td>
+        <td class="p-2">
+          <span class="px-2 py-0.5 rounded-full text-[10px] font-semibold bg-indigo-500/20 text-indigo-300 border border-indigo-400/30">
+            ${escapeHtml(item.category || 'IPS SMP')}
+          </span>
+        </td>
+        <td class="p-2 font-medium text-slate-200 max-w-xs break-words">${escapeHtml(item.question)}</td>
+        <td class="p-2 text-blue-300">${escapeHtml(item.optionA)}</td>
+        <td class="p-2 text-purple-300">${escapeHtml(item.optionB)}</td>
+        <td class="p-2 text-center font-bold text-emerald-400">${item.correct}</td>
+        <td class="p-2 text-center space-x-1 whitespace-nowrap">
+          <button data-id="${item.id}" class="btn-edit-q px-2 py-1 rounded bg-indigo-600/80 hover:bg-indigo-600 text-white text-[11px] font-bold cursor-pointer">✏️ Edit</button>
+          <button data-id="${item.id}" class="btn-del-q px-2 py-1 rounded bg-rose-600/80 hover:bg-rose-600 text-white text-[11px] font-bold cursor-pointer">🗑️ Hapus</button>
         </td>
       `;
       tbody.appendChild(tr);
     });
 
-    // Bind Edit & Delete
-    tbody.querySelectorAll('.edit-q-btn').forEach(btn => {
-      btn.addEventListener('click', (e) => {
-        const id = Number(e.currentTarget.dataset.id);
-        const q = this.questions.find(item => item.id === id);
-        if (q) this.openQuestionEditor(q);
+    tbody.querySelectorAll('.btn-edit-q').forEach(b => {
+      b.addEventListener('click', (e) => {
+        const id = parseInt(e.currentTarget.getAttribute('data-id'), 10);
+        const item = this.questions.find(x => x.id === id);
+        if (item) this.openQuestionEditor(item);
       });
     });
 
-    tbody.querySelectorAll('.del-q-btn').forEach(btn => {
-      btn.addEventListener('click', (e) => {
-        const id = Number(e.currentTarget.dataset.id);
+    tbody.querySelectorAll('.btn-del-q').forEach(b => {
+      b.addEventListener('click', (e) => {
+        const id = parseInt(e.currentTarget.getAttribute('data-id'), 10);
         if (confirm('Hapus soal ini dari bank soal?')) {
-          const filtered = this.questions.filter(item => item.id !== id);
-          this.saveQuestions(filtered);
-          this.renderQuestionsTable();
+          const updated = this.questions.filter(x => x.id !== id);
+          this.saveQuestions(updated);
+          this.renderQuestionsTable(searchQuery);
         }
       });
     });
   }
 
-  openQuestionEditor(questionData = null) {
-    const modal = document.getElementById('questionEditorModal');
-    const title = document.getElementById('questionEditorTitle');
-    const form = document.getElementById('questionForm');
-    const autoCheck = document.getElementById('qAutoExplanationCheckbox');
+  openQuestionEditor(item = null) {
+    const modal = document.getElementById('questionEditModal');
+    const idInput = document.getElementById('qEditId');
+    const qInput = document.getElementById('qEditQuestion');
+    const aInput = document.getElementById('qEditOptionA');
+    const bInput = document.getElementById('qEditOptionB');
+    const expInput = document.getElementById('qEditExplanation');
 
-    form.reset();
-
-    if (questionData) {
-      title.innerText = '✏️ Edit Soal Kuis';
-      document.getElementById('qEditId').value = questionData.id;
-      document.getElementById('qEditCategory').value = questionData.category;
-      document.getElementById('qEditQuestion').value = questionData.question;
-      document.getElementById('qEditOptionA').value = questionData.optionA;
-      document.getElementById('qEditOptionB').value = questionData.optionB;
-      document.getElementById('qEditExplanation').value = questionData.explanation || '';
-
-      if (questionData.correct === 'A') {
-        document.getElementById('qEditCorrectA').checked = true;
-      } else {
-        document.getElementById('qEditCorrectB').checked = true;
-      }
-
-      if (autoCheck) {
-        autoCheck.checked = !questionData.explanation || questionData.explanation.includes('Jawaban yang tepat adalah Pilihan');
-      }
+    if (item) {
+      if (idInput) idInput.value = item.id;
+      if (qInput) qInput.value = item.question || '';
+      if (aInput) aInput.value = item.optionA || '';
+      if (bInput) bInput.value = item.optionB || '';
+      if (expInput) expInput.value = item.explanation || '';
+      const rBtn = document.querySelector(`input[name="qCorrect"][value="${item.correct}"]`);
+      if (rBtn) rBtn.checked = true;
     } else {
-      title.innerText = '➕ Tambah Soal Baru';
-      document.getElementById('qEditId').value = '';
-      document.getElementById('qEditCorrectA').checked = true;
-      if (autoCheck) autoCheck.checked = true;
+      if (idInput) idInput.value = '';
+      if (qInput) qInput.value = '';
+      if (aInput) aInput.value = '';
+      if (bInput) bInput.value = '';
+      if (expInput) expInput.value = '';
+      const rA = document.querySelector('input[name="qCorrect"][value="A"]');
+      if (rA) rA.checked = true;
     }
 
-    this.refreshExplanationPreview();
     modal?.classList.remove('hidden');
   }
 
   saveQuestionForm() {
-    const idVal = document.getElementById('qEditId').value;
-    const category = document.getElementById('qEditCategory').value.trim() || 'Pengetahuan Umum';
-    const question = document.getElementById('qEditQuestion').value.trim();
-    const optionA = document.getElementById('qEditOptionA').value.trim();
-    const optionB = document.getElementById('qEditOptionB').value.trim();
-    const correct = document.querySelector('input[name="qCorrect"]:checked')?.value || 'A';
-    let explanation = document.getElementById('qEditExplanation').value.trim();
-    const autoCheck = document.getElementById('qAutoExplanationCheckbox');
+    const idInput = document.getElementById('qEditId');
+    const qInput = document.getElementById('qEditQuestion');
+    const aInput = document.getElementById('qEditOptionA');
+    const bInput = document.getElementById('qEditOptionB');
+    const expInput = document.getElementById('qEditExplanation');
+    const correctVal = document.querySelector('input[name="qCorrect"]:checked')?.value || 'A';
 
-    if (!question || !optionA || !optionB) {
-      alert('Mohon isi pertanyaan dan kedua pilihan jawaban!');
+    const qText = (qInput?.value || '').trim();
+    const optA = (aInput?.value || '').trim();
+    const optB = (bInput?.value || '').trim();
+    const exp = (expInput?.value || '').trim() || `Jawaban yang tepat adalah Pilihan ${correctVal}.`;
+
+    if (!qText || !optA || !optB) {
+      alert('Mohon isi teks pertanyaan dan kedua pilihan jawaban!');
       return;
     }
 
-    // Jika fitur samakan keterangan aktif ATAU kolom keterangan dikosongkan, otomatis gunakan format standar
-    if (autoCheck?.checked || !explanation) {
-      explanation = this.generateStandardExplanation(correct, optionA, optionB);
-    }
+    const editId = idInput?.value ? parseInt(idInput.value, 10) : null;
+    let list = [...this.questions];
 
-    const qList = [...this.questions];
-
-    if (idVal) {
-      // Edit
-      const id = Number(idVal);
-      const idx = qList.findIndex(item => item.id === id);
+    if (editId) {
+      const idx = list.findIndex(x => x.id === editId);
       if (idx !== -1) {
-        qList[idx] = { id, category, question, optionA, optionB, correct, explanation };
+        list[idx] = {
+          ...list[idx],
+          question: qText,
+          optionA: optA,
+          optionB: optB,
+          correct: correctVal,
+          explanation: exp
+        };
       }
     } else {
-      // Tambah Baru
-      const newId = Date.now();
-      qList.push({ id: newId, category, question, optionA, optionB, correct, explanation });
+      const newId = list.length > 0 ? Math.max(...list.map(x => x.id)) + 1 : 1;
+      list.push({
+        id: newId,
+        category: 'IPS SMP Kustom',
+        question: qText,
+        optionA: optA,
+        optionB: optB,
+        correct: correctVal,
+        explanation: exp
+      });
     }
 
-    this.saveQuestions(qList);
-    document.getElementById('questionEditorModal')?.classList.add('hidden');
+    this.saveQuestions(list);
+    document.getElementById('questionEditModal')?.classList.add('hidden');
     this.renderQuestionsTable();
+    alert('Soal berhasil disimpan!');
   }
 
-  exportQuestionsToJSON() {
-    const dataStr = "data:text/json;charset=utf-8," + encodeURIComponent(JSON.stringify(this.questions, null, 2));
-    const downloadAnchor = document.createElement('a');
-    downloadAnchor.setAttribute("href", dataStr);
-    downloadAnchor.setAttribute("download", "bank_soal_ular_tangga.json");
-    document.body.appendChild(downloadAnchor);
-    downloadAnchor.click();
-    downloadAnchor.remove();
+  exportQuestionsToExcel() {
+    if (typeof XLSX === 'undefined') {
+      alert('Pustaka SheetJS Excel belum siap.');
+      return;
+    }
+
+    const rows = this.questions.map((q, i) => ({
+      'No': i + 1,
+      'Kategori': q.category || 'IPS SMP',
+      'Pertanyaan': q.question,
+      'Pilihan A': q.optionA,
+      'Pilihan B': q.optionB,
+      'Kunci Jawaban (A/B)': q.correct,
+      'Penjelasan': q.explanation || ''
+    }));
+
+    const ws = XLSX.utils.json_to_sheet(rows);
+    const wb = XLSX.utils.book_new();
+    XLSX.utils.book_append_sheet(wb, ws, 'Soal_IPS_SMP');
+    XLSX.writeFile(wb, 'Bank_Soal_Ular_Tangga_IPS_SMP.xlsx');
   }
 
-  importQuestionsFromJSON(event) {
-    const file = event.target.files[0];
-    if (!file) return;
+  downloadExcelTemplate() {
+    if (typeof XLSX === 'undefined') return;
+    const templateRows = [
+      {
+        'No': 1,
+        'Kategori': 'Geografi Indonesia',
+        'Pertanyaan': 'Indonesia beriklim tropis karena dilalui oleh garis...',
+        'Pilihan A': 'Khatulistiwa (Ekuator)',
+        'Pilihan B': 'Bujur Nol Derajat',
+        'Kunci Jawaban (A/B)': 'A',
+        'Penjelasan': 'Garis khatulistiwa membelah Indonesia sehingga beriklim tropis.'
+      },
+      {
+        'No': 2,
+        'Kategori': 'Sejarah Kemerdekaan',
+        'Pertanyaan': 'Teks proklamasi kemerdekaan Indonesia dibacakan pada tanggal...',
+        'Pilihan A': '28 Oktober 1928',
+        'Pilihan B': '17 Agustus 1945',
+        'Kunci Jawaban (A/B)': 'B',
+        'Penjelasan': 'Hari Proklamasi Kemerdekaan RI diperingati setiap 17 Agustus.'
+      }
+    ];
+
+    const ws = XLSX.utils.json_to_sheet(templateRows);
+    const wb = XLSX.utils.book_new();
+    XLSX.utils.book_append_sheet(wb, ws, 'Template_Soal');
+    XLSX.writeFile(wb, 'Template_Soal_Ular_Tangga_IPS.xlsx');
+  }
+
+  importQuestionsFromExcel(file) {
+    if (typeof XLSX === 'undefined') return;
 
     const reader = new FileReader();
     reader.onload = (e) => {
       try {
-        const imported = JSON.parse(e.target.result);
-        if (Array.isArray(imported) && imported.length > 0) {
-          this.saveQuestions(imported);
-          this.renderQuestionsTable();
-          alert(`Sukses mengimpor ${imported.length} soal!`);
-        } else {
-          alert('Format JSON tidak valid atau kosong.');
+        const data = new Uint8Array(e.target.result);
+        const workbook = XLSX.read(data, { type: 'array' });
+        const firstSheetName = workbook.SheetNames[0];
+        const sheet = workbook.Sheets[firstSheetName];
+        const json = XLSX.utils.sheet_to_json(sheet);
+
+        if (!json || json.length === 0) {
+          alert('File Excel kosong atau tidak terbaca.');
+          return;
         }
+
+        const importedQuestions = [];
+        let curId = this.questions.length > 0 ? Math.max(...this.questions.map(x => x.id)) + 1 : 1;
+
+        json.forEach((row) => {
+          const qText = row['Pertanyaan'] || row['question'] || row['Soal'];
+          const optA = row['Pilihan A'] || row['optionA'] || row['Jawaban A'];
+          const optB = row['Pilihan B'] || row['optionB'] || row['Jawaban B'];
+          let correct = (row['Kunci Jawaban (A/B)'] || row['correct'] || row['Kunci'] || 'A').toString().trim().toUpperCase();
+          if (correct !== 'A' && correct !== 'B') correct = 'A';
+          const exp = row['Penjelasan'] || row['explanation'] || `Jawaban yang tepat adalah Pilihan ${correct}.`;
+          const cat = row['Kategori'] || row['category'] || 'IPS SMP';
+
+          if (qText && optA && optB) {
+            importedQuestions.push({
+              id: curId++,
+              category: cat,
+              question: qText.toString().trim(),
+              optionA: optA.toString().trim(),
+              optionB: optB.toString().trim(),
+              correct: correct,
+              explanation: exp.toString().trim()
+            });
+          }
+        });
+
+        if (importedQuestions.length === 0) {
+          alert('Tidak ada soal yang valid ditemukan dalam Excel.');
+          return;
+        }
+
+        const mode = document.getElementById('importModeSelect')?.value || 'append';
+        let finalList;
+        if (mode === 'replace') {
+          finalList = importedQuestions;
+        } else {
+          finalList = [...this.questions, ...importedQuestions];
+        }
+
+        this.saveQuestions(finalList);
+        this.renderQuestionsTable();
+        alert(`Berhasil mengimpor ${importedQuestions.length} soal dari Excel!`);
       } catch (err) {
-        alert('Gagal membaca file JSON: ' + err.message);
+        alert('Gagal membaca file Excel: ' + err.message);
       }
     };
-    reader.readAsText(file);
-    event.target.value = '';
+    reader.readAsArrayBuffer(file);
   }
 }
 
-// ======================================================================
-// INISIALISASI GAME: HANYA DIJALANKAN JIKA LISENSI RESMI TERVERIFIKASI
-// (Game TIDAK LAGI mulai otomatis saat DOMContentLoaded demi keamanan)
-// ======================================================================
-window.startSnakeGame = function() {
-  if (!window.snakeGame) {
-    window.snakeGame = new SnakeAndLaddersGame();
-    console.log('🎮 LokaMain Engine: Game Ular Tangga berhasil diaktifkan dengan lisensi resmi.');
-  }
-  return window.snakeGame;
-};
+// Jalankan Game saat DOM siap
+window.addEventListener('DOMContentLoaded', () => {
+  window.game = new SnakeAndLaddersGame();
+});

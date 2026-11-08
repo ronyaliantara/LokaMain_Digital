@@ -1,38 +1,47 @@
 /**
  * ==========================================================================
- * pose.js - MediaPipe Pose Kinesthetic Detection Engine
- * Versi Lite (@mediapipe/pose) untuk performa ringan & responsif (30-60 FPS)
+ * pose.js - MediaPipe Pose Kinesthetic Detection Engine (Dual-Screen Ready)
+ * Dioptimalkan untuk 4 Pemain dengan Dua Layar Sensor (Layar Kiri & Layar Kanan),
+ * Bebas Macet (Throttled Frame Pipeline ~18 FPS, 0% CPU saat Idle),
+ * serta Deteksi Squat (Jongkok Berulang) untuk Hukuman Ular.
  * ==========================================================================
  */
 
 class KinestheticPoseEngine {
   constructor(options = {}) {
-    // Dual-Player Screen Elements (Layar 1: P1 & Layar 2: P2)
-    this.videoElementP1 = options.videoElementP1 || document.getElementById('webcamVideoP1');
-    this.videoElementP2 = options.videoElementP2 || document.getElementById('webcamVideoP2');
-    this.canvasElementP1 = options.canvasElementP1 || document.getElementById('poseCanvasP1');
-    this.canvasElementP2 = options.canvasElementP2 || document.getElementById('poseCanvasP2');
+    // Dual Camera Viewports (Layar Kiri: P1 & P3 | Layar Kanan: P2 & P4)
+    this.videoElementLeft = options.videoElementLeft || document.getElementById('webcamVideoLeft') || document.getElementById('webcamVideoP1') || document.getElementById('webcamVideo');
+    this.videoElementRight = options.videoElementRight || document.getElementById('webcamVideoRight') || document.getElementById('webcamVideoP2') || document.getElementById('webcamVideo');
+    this.canvasElementLeft = options.canvasElementLeft || document.getElementById('poseCanvasLeft') || document.getElementById('poseCanvasP1') || document.getElementById('poseCanvas');
+    this.canvasElementRight = options.canvasElementRight || document.getElementById('poseCanvasRight') || document.getElementById('poseCanvasP2') || document.getElementById('poseCanvas');
 
-    this.videoElement = options.videoElement || this.videoElementP1;
-    this.canvasElement = options.canvasElement || this.canvasElementP1;
+    // Default pointer ke elemen aktif
+    this.videoElement = this.videoElementLeft;
+    this.canvasElement = this.canvasElementLeft;
 
-    // Pemain yang sedang aktif mengontrol gerakan (1 atau 2)
+    // Pemain aktif (1, 2, 3, atau 4)
     this.activePlayer = 1;
+    this.activeSide = 'LEFT'; // 'LEFT' (P1 & P3) atau 'RIGHT' (P2 & P4)
 
     // Mode Deteksi: 'IDLE', 'DICE_ROLL', 'QUIZ', 'SQUAT', 'CLIMB'
     this.currentMode = 'IDLE';
 
-    // State Pelacakan
+    // State Pelacakan MediaPipe
     this.pose = null;
-    this.camera = null;
+    this.stream = null;
     this.isCameraRunning = false;
+    this.isCameraEnabled = true;
+    this.isProcessing = false; // Mencegah penumpukan frame WebAssembly
+    this.lastFrameTime = 0;
+    this.minFrameInterval = 55; // ~18 FPS (sangat responsif & hemat CPU/GPU hingga 75%)
     this.landmarks = null;
 
-    // Callbacks dari game engine
+    // Callbacks ke game engine
     this.callbacks = {
       onArmsUp: null,
       onZoneHover: null,
       onZoneSelect: null,
+      onSquatRep: null,
       onSquatSuccess: null,
       onClimbStep: null,
       onClimbComplete: null,
@@ -40,42 +49,52 @@ class KinestheticPoseEngine {
       onPoseUpdate: null
     };
 
-    // Variabel Deteksi Kuis (Dwell Timer 1.5s)
+    // Deteksi Kuis (Dwell Timer 1.3 detik)
     this.activeZone = null; // 'A' | 'B' | null
     this.dwellStartTime = 0;
-    this.dwellDuration = 1500; // 1.5 detik
-    this.dwellProgress = 0; // 0.0 sampai 1.0
+    this.dwellDuration = 1300;
+    this.dwellProgress = 0;
     this.quizLocked = false;
 
-    // Variabel Deteksi Jongkok (Squat)
+    // Deteksi Jongkok (Squat) Berulang untuk Hukuman Ular
     this.baselineHipY = null;
     this.baselineNoseY = null;
-    this.squatThreshold = 0.08; // penurunan vertikal (turun = nilai y membesar)
-    this.squatTriggered = false;
+    this.squatThreshold = 0.07;
+    this.squatState = 'UP'; // 'UP' -> 'DOWN' -> 'UP' (1 rep)
+    this.squatReps = 0;
+    this.targetSquatReps = 3;
+    this.lastSquatTime = 0;
 
-    // Variabel Deteksi Memanjat (Climb 4 reps)
+    // Deteksi Memanjat Tangga (Climb 4 reps)
     this.climbCount = 0;
     this.targetClimbReps = 4;
-    this.lastClimbedArm = null; // 'left' | 'right'
+    this.lastClimbedArm = null;
     this.climbCooldown = 0;
 
-    // Debounce timer
+    // Debounce
     this.lastActionTime = 0;
 
     // Binding
     this.onResults = this.onResults.bind(this);
+    this.processLoop = this.processLoop.bind(this);
   }
 
   /**
-   * Menetapkan pemain mana yang sedang aktif mengontrol gerakan (1 atau 2)
+   * Set pemain aktif yang sedang mengontrol (1, 2, 3, atau 4)
+   * Otomatis menentukan sisi aktif:
+   * P1 (Biru) & P3 (Hijau)  -> Sisi Kiri (LEFT)
+   * P2 (Merah) & P4 (Ungu) -> Sisi Kanan (RIGHT)
    */
   setActivePlayer(playerNum) {
     this.activePlayer = playerNum;
+    this.activeSide = (playerNum === 2 || playerNum === 4) ? 'RIGHT' : 'LEFT';
+    this.videoElement = (this.activeSide === 'RIGHT') ? this.videoElementRight : this.videoElementLeft;
+    this.canvasElement = (this.activeSide === 'RIGHT') ? this.canvasElementRight : this.canvasElementLeft;
     this.syncCanvasSize();
   }
 
   /**
-   * Inisialisasi MediaPipe Pose & Kamera
+   * Inisialisasi MediaPipe Pose Lite & Jalankan Kamera
    */
   async init() {
     try {
@@ -89,9 +108,9 @@ class KinestheticPoseEngine {
         locateFile: (file) => `https://cdn.jsdelivr.net/npm/@mediapipe/pose/${file}`
       });
 
-      // Konfigurasi model Lite untuk performa 30-60 FPS
+      // Model Lite (Complexity 0) hemat daya & tidak membuat browser macet
       this.pose.setOptions({
-        modelComplexity: 0, // 0 = Lite (sangat cepat & hemat CPU/GPU)
+        modelComplexity: 0,
         smoothLandmarks: true,
         enableSegmentation: false,
         smoothSegmentation: false,
@@ -104,17 +123,21 @@ class KinestheticPoseEngine {
       await this.startCamera();
       return true;
     } catch (err) {
-      console.error('Inisialisasi MediaPipe Pose Gagal:', err);
-      this.notifyStatus(`Kamera/Pose Error: ${err.message}`, 'error');
+      console.warn('Inisialisasi Kamera/Pose Gagal:', err);
+      this.notifyStatus(`Kamera AI tidak aktif (Gunakan tombol klik/manual)`, 'warning');
       return false;
     }
   }
 
   /**
-   * Menjalankan stream kamera webcam untuk kedua layar (P1 & P2)
+   * Mengaktifkan stream kamera webcam tunggal yang diproyeksikan ke kedua layar (Kiri & Kanan)
    */
   async startCamera() {
     try {
+      if (!navigator.mediaDevices || !navigator.mediaDevices.getUserMedia) {
+        throw new Error('getUserMedia tidak didukung pada browser ini.');
+      }
+
       const stream = await navigator.mediaDevices.getUserMedia({
         video: {
           width: { ideal: 640 },
@@ -126,77 +149,123 @@ class KinestheticPoseEngine {
 
       this.stream = stream;
 
-      // Pasang stream kamera ke Layar Pemain 1
-      if (this.videoElementP1) {
-        this.videoElementP1.srcObject = stream;
-        this.videoElementP1.play().catch(() => {});
+      // Hubungkan video stream ke Layar Sensor Kiri
+      const vLeft = this.videoElementLeft || document.getElementById('webcamVideoLeft');
+      if (vLeft) {
+        vLeft.srcObject = stream;
+        await vLeft.play().catch(() => {});
       }
 
-      // Pasang stream kamera ke Layar Pemain 2
-      if (this.videoElementP2) {
-        this.videoElementP2.srcObject = stream;
-        this.videoElementP2.play().catch(() => {});
+      // Hubungkan video stream ke Layar Sensor Kanan
+      const vRight = this.videoElementRight || document.getElementById('webcamVideoRight');
+      if (vRight) {
+        vRight.srcObject = stream;
+        await vRight.play().catch(() => {});
       }
 
-      // Fallback jika single video
-      if (this.videoElement && this.videoElement !== this.videoElementP1) {
-        this.videoElement.srcObject = stream;
-        this.videoElement.play().catch(() => {});
+      // Fallback single webcam
+      const vSingle = document.getElementById('webcamVideo');
+      if (vSingle && vSingle !== vLeft && vSingle !== vRight) {
+        vSingle.srcObject = stream;
+        await vSingle.play().catch(() => {});
       }
-
-      const primaryVideo = this.videoElementP1 || this.videoElement;
-      await new Promise((resolve) => {
-        if (primaryVideo.readyState >= 1) {
-          resolve();
-        } else {
-          primaryVideo.onloadedmetadata = () => resolve();
-        }
-      });
 
       this.syncCanvasSize();
       window.addEventListener('resize', () => this.syncCanvasSize());
 
-      // Loop pengiriman frame ke MediaPipe
       this.isCameraRunning = true;
-      this.notifyStatus('Kamera Siap (Layar P1 & P2 Aktif)!', 'success');
+      this.isCameraEnabled = true;
+      this.notifyStatus('AI Kamera Dual Sensor Aktif (~18 FPS)', 'success');
 
-      const processFrame = async () => {
-        if (!this.isCameraRunning) return;
-        const currentVideo = (this.activePlayer === 2 && this.videoElementP2) ? this.videoElementP2 : primaryVideo;
-        if (currentVideo && currentVideo.readyState >= 2) {
-          try {
-            await this.pose.send({ image: currentVideo });
-          } catch (e) {
-            // tangani frame drop wajar saat switching
-          }
-        }
-        requestAnimationFrame(processFrame);
-      };
-
-      requestAnimationFrame(processFrame);
+      // Mulai loop pemrosesan frame
+      requestAnimationFrame(this.processLoop);
     } catch (error) {
-      console.warn('Gagal mengakses webcam secara langsung:', error);
-      this.notifyStatus('Izin kamera ditolak atau kamera tidak tersedia.', 'warning');
+      console.warn('Gagal mengakses kamera:', error);
+      this.isCameraRunning = false;
+      this.notifyStatus('Mode Manual / Tanpa Kamera', 'warning');
       throw error;
     }
   }
 
   /**
-   * Sesuaikan ukuran canvas dengan viewport video kedua layar
+   * Matikan atau Nyalakan Kamera (Power Saving Switch)
+   */
+  toggleCamera(forceState) {
+    const newState = forceState !== undefined ? forceState : !this.isCameraEnabled;
+    this.isCameraEnabled = newState;
+
+    if (this.stream) {
+      this.stream.getTracks().forEach(track => {
+        track.enabled = newState;
+      });
+    }
+
+    if (newState) {
+      this.notifyStatus('AI Kamera Aktif', 'success');
+      if (!this.isCameraRunning) {
+        this.isCameraRunning = true;
+        requestAnimationFrame(this.processLoop);
+      }
+    } else {
+      this.notifyStatus('Kamera Dimatikan (Mode Hemat Daya)', 'info');
+      // Bersihkan canvas kiri dan kanan
+      [this.canvasElementLeft, this.canvasElementRight].forEach(canvas => {
+        if (canvas) {
+          const ctx = canvas.getContext('2d');
+          if (ctx) ctx.clearRect(0, 0, canvas.width, canvas.height);
+        }
+      });
+    }
+
+    return this.isCameraEnabled;
+  }
+
+  /**
+   * Loop pemrosesan frame: Throttled & Non-Blocking
+   */
+  async processLoop() {
+    if (!this.isCameraRunning) return;
+
+    if (this.isCameraEnabled && this.pose) {
+      const now = performance.now();
+      if (!this.isProcessing && (now - this.lastFrameTime >= this.minFrameInterval)) {
+        const activeVideo = (this.activeSide === 'RIGHT' && this.videoElementRight) 
+          ? this.videoElementRight 
+          : (this.videoElementLeft || this.videoElement);
+
+        if (activeVideo && activeVideo.readyState >= 2 && this.currentMode !== 'IDLE') {
+          this.isProcessing = true;
+          this.lastFrameTime = now;
+          try {
+            await this.pose.send({ image: activeVideo });
+          } catch (e) {
+            // Drop frame jika terjadi switching
+          } finally {
+            this.isProcessing = false;
+          }
+        }
+      }
+    }
+
+    requestAnimationFrame(this.processLoop);
+  }
+
+  /**
+   * Sesuaikan resolusi canvas dengan video pada kedua sisi (Kiri & Kanan)
    */
   syncCanvasSize() {
     const pairs = [
-      { video: this.videoElementP1, canvas: this.canvasElementP1 },
-      { video: this.videoElementP2, canvas: this.canvasElementP2 },
-      { video: this.videoElement, canvas: this.canvasElement }
+      { video: this.videoElementLeft || document.getElementById('webcamVideoLeft'), canvas: this.canvasElementLeft || document.getElementById('poseCanvasLeft') },
+      { video: this.videoElementRight || document.getElementById('webcamVideoRight'), canvas: this.canvasElementRight || document.getElementById('poseCanvasRight') }
     ];
 
-    pairs.forEach(pair => {
-      if (pair.video && pair.canvas) {
-        const rect = pair.video.getBoundingClientRect();
-        if (rect.width > 0 && rect.height > 0) {
-          pair.canvas.width = rect.width;
-          pair.canvas.height = rect.height;
+    pairs.forEach(({ video, canvas }) => {
+      if (video && canvas) {
+        const w = video.videoWidth || video.clientWidth || 480;
+        const h = video.videoHeight || video.clientHeight || 360;
+        if (canvas.width !== w || canvas.height !== h) {
+          canvas.width = w;
+          canvas.height = h;
         }
       }
     });
@@ -212,30 +281,45 @@ class KinestheticPoseEngine {
     this.dwellStartTime = 0;
     this.dwellProgress = 0;
     this.quizLocked = false;
-    this.squatTriggered = false;
 
-    const p1A = document.getElementById('p1TargetBoxA');
-    const p1B = document.getElementById('p1TargetBoxB');
-    const p2A = document.getElementById('p2TargetBoxA');
-    const p2B = document.getElementById('p2TargetBoxB');
+    const leftA = document.getElementById('leftTargetBoxA');
+    const leftB = document.getElementById('leftTargetBoxB');
+    const rightA = document.getElementById('rightTargetBoxA');
+    const rightB = document.getElementById('rightTargetBoxB');
 
-    // Sembunyikan semua target box terlebih dahulu
-    [p1A, p1B, p2A, p2B].forEach(b => b?.classList.add('hidden', 'active-zone'));
+    // Hapus kelas aktif dari semua target box
+    [leftA, leftB, rightA, rightB].forEach(b => b?.classList.remove('active-zone'));
 
     if (mode === 'QUIZ') {
-      const activeA = this.activePlayer === 1 ? p1A : p2A;
-      const activeB = this.activePlayer === 1 ? p1B : p2B;
-      activeA?.classList.remove('hidden', 'active-zone');
-      activeB?.classList.remove('hidden', 'active-zone');
+      if (this.activeSide === 'LEFT') {
+        leftA?.classList.remove('hidden');
+        leftB?.classList.remove('hidden');
+        rightA?.classList.add('hidden');
+        rightB?.classList.add('hidden');
+      } else {
+        rightA?.classList.remove('hidden');
+        rightB?.classList.remove('hidden');
+        leftA?.classList.add('hidden');
+        leftB?.classList.add('hidden');
+      }
+    } else {
+      leftA?.classList.add('hidden');
+      leftB?.classList.add('hidden');
+      rightA?.classList.add('hidden');
+      rightB?.classList.add('hidden');
     }
 
     if (mode === 'SQUAT') {
-      // Kalibrasi baseline pinggul saat awal tantangan
+      this.squatReps = 0;
+      this.targetSquatReps = options.targetReps || 3;
+      this.squatState = 'UP';
+      this.lastSquatTime = 0;
+
       if (this.landmarks && this.landmarks[23] && this.landmarks[24]) {
         this.baselineHipY = (this.landmarks[23].y + this.landmarks[24].y) / 2;
-        this.baselineNoseY = this.landmarks[0] ? this.landmarks[0].y : null;
+        this.baselineNoseY = this.landmarks[0] ? this.landmarks[0].y : 0.25;
       } else {
-        this.baselineHipY = 0.55; // estimasi fallback
+        this.baselineHipY = 0.55;
         this.baselineNoseY = 0.25;
       }
     }
@@ -249,28 +333,21 @@ class KinestheticPoseEngine {
   }
 
   /**
-   * Tangani hasil deteksi landmark dari MediaPipe
+   * Callback hasil deteksi pose MediaPipe
    */
   onResults(results) {
-    // Tentukan canvas pemain aktif dan non-aktif
-    const activeCanvas = this.activePlayer === 1 ? (this.canvasElementP1 || this.canvasElement) : (this.canvasElementP2 || this.canvasElement);
-    const inactiveCanvas = this.activePlayer === 1 ? this.canvasElementP2 : this.canvasElementP1;
+    const cLeft = this.canvasElementLeft || document.getElementById('poseCanvasLeft');
+    const cRight = this.canvasElementRight || document.getElementById('poseCanvasRight');
 
-    // Bersihkan canvas pemain yang sedang standby
-    if (inactiveCanvas && inactiveCanvas !== activeCanvas) {
-      const inCtx = inactiveCanvas.getContext('2d');
-      if (inCtx) inCtx.clearRect(0, 0, inactiveCanvas.width, inactiveCanvas.height);
+    // Bersihkan canvas kedua layar
+    if (cLeft) {
+      const ctxL = cLeft.getContext('2d');
+      if (ctxL) ctxL.clearRect(0, 0, cLeft.width, cLeft.height);
     }
-
-    if (!activeCanvas) return;
-    const ctx = activeCanvas.getContext('2d');
-    if (!ctx) return;
-
-    const width = activeCanvas.width;
-    const height = activeCanvas.height;
-
-    // Bersihkan canvas overlay pemain aktif
-    ctx.clearRect(0, 0, width, height);
+    if (cRight) {
+      const ctxR = cRight.getContext('2d');
+      if (ctxR) ctxR.clearRect(0, 0, cRight.width, cRight.height);
+    }
 
     if (!results || !results.poseLandmarks) {
       this.landmarks = null;
@@ -286,22 +363,28 @@ class KinestheticPoseEngine {
       this.callbacks.onPoseUpdate({ detected: true, landmarks: this.landmarks });
     }
 
-    // Gambar kerangka (skeleton) pada layar pemain yang sedang aktif
-    this.drawSkeleton(ctx, this.landmarks, width, height);
+    // Gambar skeleton hanya pada LAYAR SENSOR AKTIF
+    const activeCanvas = (this.activeSide === 'RIGHT') ? cRight : cLeft;
+    if (activeCanvas && this.currentMode !== 'IDLE') {
+      const ctx = activeCanvas.getContext('2d');
+      if (ctx) {
+        this.drawSkeleton(ctx, this.landmarks, activeCanvas.width, activeCanvas.height);
 
-    // Jika sedang dalam kuis dan ada zone aktif, gambar dwell ring
-    if (this.currentMode === 'QUIZ' && this.activeZone && this.dwellProgress > 0) {
-      this.drawDwellRing(ctx, this.activeZone, this.dwellProgress, width, height);
+        // Gambar animasi dwell ring jika sedang memilih kuis
+        if (this.currentMode === 'QUIZ' && this.activeZone && this.dwellProgress > 0) {
+          this.drawDwellRing(ctx, this.activeZone, this.dwellProgress, activeCanvas.width, activeCanvas.height);
+        }
+      }
     }
 
-    // Proses logika gestur sesuai mode aktif
+    // Proses gestur kinestetik
     const now = Date.now();
     switch (this.currentMode) {
       case 'DICE_ROLL':
         this.processDiceRoll(now);
         break;
       case 'QUIZ':
-        this.processQuizChoice(now, width, height);
+        this.processQuizChoice(now);
         break;
       case 'SQUAT':
         this.processSquat(now);
@@ -315,11 +398,10 @@ class KinestheticPoseEngine {
   }
 
   /**
-   * Logika 1: Kocok Dadu (Arms Up / Angkat Tangan di atas Hidung)
-   * Kedua pergelangan tangan (wrist) berada lebih tinggi dari hidung (nose.y)
+   * Gerakan 1: Lempar Dadu (Angkat Kedua Tangan di atas Hidung)
    */
   processDiceRoll(now) {
-    if (now - this.lastActionTime < 1500) return; // cooldown
+    if (now - this.lastActionTime < 1400) return;
 
     const nose = this.landmarks[0];
     const leftWrist = this.landmarks[15];
@@ -327,14 +409,12 @@ class KinestheticPoseEngine {
 
     if (!nose || !leftWrist || !rightWrist) return;
 
-    // Validasi visibility
-    const visible = (leftWrist.visibility || 1) > 0.4 && (rightWrist.visibility || 1) > 0.4;
+    const visible = (leftWrist.visibility || 1) > 0.35 && (rightWrist.visibility || 1) > 0.35;
     if (!visible) return;
 
-    // Nilai Y: 0 adalah paling atas layar, 1 paling bawah layar.
-    // Tangan di atas hidung berarti wrist.y < nose.y
-    const isLeftArmUp = leftWrist.y < nose.y;
-    const isRightArmUp = rightWrist.y < nose.y;
+    // Y = 0 adalah puncak layar. Tangan di atas hidung = wrist.y < nose.y
+    const isLeftArmUp = leftWrist.y < (nose.y + 0.05);
+    const isRightArmUp = rightWrist.y < (nose.y + 0.05);
 
     if (isLeftArmUp && isRightArmUp) {
       this.lastActionTime = now;
@@ -345,35 +425,34 @@ class KinestheticPoseEngine {
   }
 
   /**
-   * Logika 2: Milih Jawaban Kuis (Pose Memilih Jawaban A atau B)
-   * Menggunakan KOTAK TARGET SASARAN (Box Target) terbatas dan HANYA tangan (wrist)
-   * agar kepala, hidung, atau gerakan tubuh lain tidak memicu salah pilih.
+   * Gerakan 2: Milih Jawaban Kuis (Tangan Kiri -> Kotak A, Tangan Kanan -> Kotak B)
+   * Koordinat normalized (0..1) pada mirrored canvas disesuaikan dengan box visual
    */
-  processQuizChoice(now, width, height) {
+  processQuizChoice(now) {
     if (this.quizLocked) return;
 
     const leftWrist = this.landmarks[15];
     const rightWrist = this.landmarks[16];
 
-    const p1A = document.getElementById('p1TargetBoxA');
-    const p1B = document.getElementById('p1TargetBoxB');
-    const p2A = document.getElementById('p2TargetBoxA');
-    const p2B = document.getElementById('p2TargetBoxB');
+    // Elemen target box pada layar aktif
+    const boxAEl = (this.activeSide === 'RIGHT') 
+      ? document.getElementById('rightTargetBoxA') 
+      : document.getElementById('leftTargetBoxA');
+    const boxBEl = (this.activeSide === 'RIGHT') 
+      ? document.getElementById('rightTargetBoxB') 
+      : document.getElementById('leftTargetBoxB');
 
-    const boxAEl = this.activePlayer === 1 ? p1A : p2A;
-    const boxBEl = this.activePlayer === 1 ? p1B : p2B;
+    // Area target sasaran (koordinat normalized 0..1 pada mirrored canvas)
+    // Box A: Sisi Kiri Layar (0.02 - 0.38)
+    // Box B: Sisi Kanan Layar (0.62 - 0.98)
+    const boxA = { minX: 0.02, maxX: 0.38, minY: 0.18, maxY: 0.82 };
+    const boxB = { minX: 0.62, maxX: 0.98, minY: 0.18, maxY: 0.82 };
 
-    // Koordinat Kotak Sasaran A (Sisi Kiri layar) dan B (Sisi Kanan layar)
-    // Dibatasi area vertikal dada/tangan (Y: 0.22 s.d. 0.68) dan X di pinggir
-    const boxA = { minX: 0.03, maxX: 0.28, minY: 0.22, maxY: 0.68 };
-    const boxB = { minX: 0.72, maxX: 0.97, minY: 0.22, maxY: 0.68 };
-
-    // HANYA pergelangan tangan (wrist) yang dihitung (menghindari salah deteksi kepala/badan)
     const candidates = [];
-    if (leftWrist && (leftWrist.visibility || 1) > 0.4) {
+    if (leftWrist && (leftWrist.visibility || 1) > 0.30) {
       candidates.push({ x: 1 - leftWrist.x, y: leftWrist.y });
     }
-    if (rightWrist && (rightWrist.visibility || 1) > 0.4) {
+    if (rightWrist && (rightWrist.visibility || 1) > 0.30) {
       candidates.push({ x: 1 - rightWrist.x, y: rightWrist.y });
     }
 
@@ -398,36 +477,20 @@ class KinestheticPoseEngine {
       }
 
       if (this.activeZone !== detectedZone) {
-        // Ganti zona yang dipilih, reset timer dwell
         this.activeZone = detectedZone;
         this.dwellStartTime = now;
         this.dwellProgress = 0;
         if (this.callbacks.onZoneHover) {
-          this.callbacks.onZoneHover({
-            zone: detectedZone,
-            progress: 0
-          });
+          this.callbacks.onZoneHover({ zone: detectedZone, progress: 0 });
         }
       } else {
-        // Melanjutkan dwell
         const elapsed = now - this.dwellStartTime;
         this.dwellProgress = Math.min(1.0, elapsed / this.dwellDuration);
 
-        // Gambar animasi lingkaran dwell di layar webcam pemain aktif
-        const activeCanvas = this.activePlayer === 1 ? (this.canvasElementP1 || this.canvasElement) : (this.canvasElementP2 || this.canvasElement);
-        const activeCtx = activeCanvas ? activeCanvas.getContext('2d') : this.ctx;
-        if (activeCtx) {
-          this.drawDwellRing(activeCtx, detectedZone, this.dwellProgress, width, height);
-        }
-
         if (this.callbacks.onZoneHover) {
-          this.callbacks.onZoneHover({
-            zone: detectedZone,
-            progress: this.dwellProgress
-          });
+          this.callbacks.onZoneHover({ zone: detectedZone, progress: this.dwellProgress });
         }
 
-        // Kunci pilihan jika dwell selesai 1.5 detik
         if (this.dwellProgress >= 1.0) {
           this.quizLocked = true;
           boxAEl?.classList.remove('active-zone');
@@ -438,7 +501,6 @@ class KinestheticPoseEngine {
         }
       }
     } else {
-      // Netral di tengah
       boxAEl?.classList.remove('active-zone');
       boxBEl?.classList.remove('active-zone');
       this.activeZone = null;
@@ -451,65 +513,80 @@ class KinestheticPoseEngine {
   }
 
   /**
-   * Logika 3: Tantangan Ular (Refleks Jongkok / Squat)
-   * Deteksi penurunan koordinat vertikal pinggul (hip landmark 23, 24)
+   * Gerakan 3: Hukuman Ular (Jongkok Berulang / Squat Reps)
    */
   processSquat(now) {
-    if (this.squatTriggered) return;
+    if (this.squatReps >= this.targetSquatReps) return;
+    if (now - this.lastSquatTime < 600) return; // Cooldown antar rep
 
     const leftHip = this.landmarks[23];
     const rightHip = this.landmarks[24];
     const nose = this.landmarks[0];
 
-    if (!leftHip || !rightHip) return;
+    if (!leftHip && !nose) return;
 
-    const currentHipY = (leftHip.y + rightHip.y) / 2;
-    const currentNoseY = nose ? nose.y : null;
+    let currentY = 0;
+    if (leftHip && rightHip) {
+      currentY = (leftHip.y + rightHip.y) / 2;
+    } else if (nose) {
+      currentY = nose.y;
+    }
 
-    // Nilai Y bertambah saat posisi tubuh merendah / jongkok
-    const hipDrop = currentHipY - this.baselineHipY;
-    const noseDrop = (currentNoseY && this.baselineNoseY) ? (currentNoseY - this.baselineNoseY) : 0;
+    if (!this.baselineHipY) {
+      this.baselineHipY = currentY;
+      return;
+    }
 
-    // Ambang batas penurunan pinggul atau kepala
-    if (hipDrop > this.squatThreshold || noseDrop > 0.12) {
-      this.squatTriggered = true;
-      if (this.callbacks.onSquatSuccess) {
-        this.callbacks.onSquatSuccess();
+    const drop = currentY - this.baselineHipY;
+
+    // FASE 1: Badan merendah (Jongkok)
+    if (this.squatState === 'UP' && drop > this.squatThreshold) {
+      this.squatState = 'DOWN';
+    }
+    // FASE 2: Badan kembali berdiri tegak -> Selesai 1 Repetisi!
+    else if (this.squatState === 'DOWN' && drop < (this.squatThreshold * 0.45)) {
+      this.squatState = 'UP';
+      this.squatReps++;
+      this.lastSquatTime = now;
+
+      if (this.callbacks.onSquatRep) {
+        this.callbacks.onSquatRep(this.squatReps, this.targetSquatReps);
+      }
+
+      if (this.squatReps >= this.targetSquatReps) {
+        if (this.callbacks.onSquatSuccess) {
+          this.callbacks.onSquatSuccess();
+        }
       }
     }
   }
 
   /**
-   * Logika 4: Tantangan Tangga (Gerakan Memanjat 4 Kali)
-   * Tangan kiri dan kanan bergantian naik ke atas bahu lalu turun
+   * Gerakan 4: Panjat Tangga (Tangan Kiri & Kanan Bergantian Naik)
    */
   processClimb(now) {
     if (this.climbCount >= this.targetClimbReps) return;
-    if (now - this.climbCooldown < 400) return; // cegah hitungan ganda cepat
+    if (now - this.climbCooldown < 400) return;
 
     const leftWrist = this.landmarks[15];
     const rightWrist = this.landmarks[16];
     const leftShoulder = this.landmarks[11];
     const rightShoulder = this.landmarks[12];
-    const nose = this.landmarks[0];
 
     if (!leftWrist || !rightWrist || !leftShoulder || !rightShoulder) return;
 
-    // Ketinggian referensi bahu/hidung
-    const shoulderRefY = (leftShoulder.y + rightShoulder.y) / 2;
+    const shoulderY = (leftShoulder.y + rightShoulder.y) / 2;
+    const leftUp = leftWrist.y < shoulderY;
+    const rightUp = rightWrist.y < shoulderY;
 
-    const leftHandHigh = leftWrist.y < shoulderRefY;
-    const rightHandHigh = rightWrist.y < shoulderRefY;
-
-    // Gerakan bergantian tangan kiri & kanan
-    if (leftHandHigh && !rightHandHigh && this.lastClimbedArm !== 'left') {
+    if (leftUp && !rightUp && this.lastClimbedArm !== 'left') {
       this.lastClimbedArm = 'left';
       this.climbCount++;
       this.climbCooldown = now;
       if (this.callbacks.onClimbStep) {
         this.callbacks.onClimbStep(this.climbCount, this.targetClimbReps);
       }
-    } else if (rightHandHigh && !leftHandHigh && this.lastClimbedArm !== 'right') {
+    } else if (rightUp && !leftUp && this.lastClimbedArm !== 'right') {
       this.lastClimbedArm = 'right';
       this.climbCount++;
       this.climbCooldown = now;
@@ -526,45 +603,41 @@ class KinestheticPoseEngine {
   }
 
   /**
-   * Gambar skeleton/rangka tubuh transparan bercahaya (Neon Glow)
+   * Gambar Skeleton / Rangka Tubuh bercahaya neon ramah kinerja
    */
   drawSkeleton(ctx, landmarks, width, height) {
     ctx.save();
-
-    // Sesuaikan transform dengan video yang di-mirror horizontal
     ctx.translate(width, 0);
     ctx.scale(-1, 1);
 
-    // Pasangan koneksi tulang tubuh MediaPipe
     const connections = [
-      // Bahu & Dada
-      [11, 12],
-      // Lengan Kiri
-      [11, 13], [13, 15],
-      // Lengan Kanan
+      [11, 12], [11, 13], [13, 15],
       [12, 14], [14, 16],
-      // Pinggul
-      [23, 24],
-      // Tubuh/Torso
-      [11, 23], [12, 24],
-      // Kaki Kiri
+      [23, 24], [11, 23], [12, 24],
       [23, 25], [25, 27],
-      // Kaki Kanan
       [24, 26], [26, 28]
     ];
 
-    // Gambar Garis Sambungan Tulang
-    ctx.lineWidth = 4;
+    // Warna tema skeleton sesuai pemain aktif
+    const playerColors = {
+      1: { stroke: 'rgba(59, 130, 246, 0.90)', glow: '#2563eb' }, // Biru
+      2: { stroke: 'rgba(239, 68, 68, 0.90)',  glow: '#dc2626' }, // Merah
+      3: { stroke: 'rgba(16, 185, 129, 0.90)', glow: '#059669' }, // Hijau
+      4: { stroke: 'rgba(168, 85, 247, 0.90)', glow: '#7c3aed' }  // Ungu
+    };
+    const activeColor = playerColors[this.activePlayer] || playerColors[1];
+
+    ctx.lineWidth = 3.5;
     ctx.lineCap = 'round';
     ctx.lineJoin = 'round';
-    ctx.strokeStyle = 'rgba(56, 189, 248, 0.75)'; // Electric Cyan
-    ctx.shadowColor = '#0284c7';
+    ctx.strokeStyle = activeColor.stroke;
+    ctx.shadowColor = activeColor.glow;
     ctx.shadowBlur = 8;
 
     connections.forEach(([p1, p2]) => {
       const pt1 = landmarks[p1];
       const pt2 = landmarks[p2];
-      if (pt1 && pt2 && (pt1.visibility || 1) > 0.4 && (pt2.visibility || 1) > 0.4) {
+      if (pt1 && pt2 && (pt1.visibility || 1) > 0.35 && (pt2.visibility || 1) > 0.35) {
         ctx.beginPath();
         ctx.moveTo(pt1.x * width, pt1.y * height);
         ctx.lineTo(pt2.x * width, pt2.y * height);
@@ -572,98 +645,57 @@ class KinestheticPoseEngine {
       }
     });
 
-    // Gambar Sendi (Joints)
-    landmarks.forEach((pt, index) => {
-      if (!pt || (pt.visibility || 1) < 0.4) return;
-
+    // Gambar titik sendi penting (Tangan & Pinggul)
+    const keyJoints = [15, 16, 23, 24, 0];
+    keyJoints.forEach((idx) => {
+      const pt = landmarks[idx];
+      if (!pt || (pt.visibility || 1) < 0.35) return;
       const px = pt.x * width;
       const py = pt.y * height;
 
-      // Beri warna khusus pada pergelangan tangan (wrists 15, 16)
-      if (index === 15 || index === 16) {
-        const isUp = pt.y < (landmarks[0] ? landmarks[0].y : 0.3);
-        ctx.fillStyle = isUp ? '#22c55e' : '#f59e0b';
-        ctx.shadowColor = isUp ? '#15803d' : '#d97706';
-        ctx.shadowBlur = 12;
-
-        ctx.beginPath();
-        ctx.arc(px, py, 9, 0, Math.PI * 2);
-        ctx.fill();
-
-        ctx.lineWidth = 2;
-        ctx.strokeStyle = '#ffffff';
-        ctx.stroke();
-      } else if (index === 23 || index === 24) {
-        // Pinggul (Hips)
-        ctx.fillStyle = '#ec4899'; // Pink
-        ctx.shadowColor = '#be185d';
-        ctx.shadowBlur = 8;
-        ctx.beginPath();
-        ctx.arc(px, py, 6, 0, Math.PI * 2);
-        ctx.fill();
-      } else if (index <= 10) {
-        // Wajah / Hidung
-        ctx.fillStyle = '#a855f7';
-        ctx.shadowBlur = 4;
-        ctx.beginPath();
-        ctx.arc(px, py, 4, 0, Math.PI * 2);
-        ctx.fill();
-      } else {
-        // Sendi biasa
-        ctx.fillStyle = '#38bdf8';
-        ctx.shadowBlur = 5;
-        ctx.beginPath();
-        ctx.arc(px, py, 5, 0, Math.PI * 2);
-        ctx.fill();
-      }
+      ctx.beginPath();
+      ctx.arc(px, py, idx === 15 || idx === 16 ? 9 : 5, 0, Math.PI * 2);
+      ctx.fillStyle = idx === 15 || idx === 16 ? '#22c55e' : '#ffffff';
+      ctx.shadowColor = idx === 15 || idx === 16 ? '#22c55e' : '#ffffff';
+      ctx.shadowBlur = 6;
+      ctx.fill();
     });
 
     ctx.restore();
   }
 
   /**
-   * Gambar Lingkaran Dwell Progress di Zona Pilihan (A / B)
+   * Lingkaran timer Dwell Progress
    */
   drawDwellRing(ctx, zone, progress, width, height) {
     ctx.save();
+    const centerX = zone === 'A' ? width * 0.18 : width * 0.82;
+    const centerY = height * 0.50;
+    const radius = 36;
 
-    // Posisi target pada layar mirrored
-    // Zona A = Sisi Kiri layar (15% lebar)
-    // Zona B = Sisi Kanan layar (85% lebar)
-    const centerX = zone === 'A' ? width * 0.16 : width * 0.84;
-    const centerY = height * 0.45;
-    const radius = 38;
-
-    // Background lingkaran
     ctx.beginPath();
     ctx.arc(centerX, centerY, radius, 0, Math.PI * 2);
-    ctx.fillStyle = 'rgba(15, 23, 42, 0.75)';
+    ctx.fillStyle = 'rgba(15, 23, 42, 0.85)';
     ctx.fill();
-    ctx.lineWidth = 6;
+    ctx.lineWidth = 5;
     ctx.strokeStyle = 'rgba(255, 255, 255, 0.3)';
     ctx.stroke();
 
-    // Busur progress lingkaran
     const startAngle = -Math.PI / 2;
     const endAngle = startAngle + (Math.PI * 2 * progress);
 
     ctx.beginPath();
     ctx.arc(centerX, centerY, radius, startAngle, endAngle, false);
-    ctx.lineWidth = 7;
-    ctx.strokeStyle = '#10b981'; // Emerald
-    ctx.shadowColor = '#059669';
-    ctx.shadowBlur = 12;
+    ctx.lineWidth = 6;
+    ctx.strokeStyle = '#10b981';
     ctx.lineCap = 'round';
     ctx.stroke();
 
-    // Teks di tengah
-    ctx.font = 'bold 20px Fredoka, sans-serif';
+    ctx.font = 'bold 16px Fredoka, sans-serif';
     ctx.fillStyle = '#ffffff';
     ctx.textAlign = 'center';
     ctx.textBaseline = 'middle';
-    ctx.shadowBlur = 0;
     ctx.fillText(`${Math.round(progress * 100)}%`, centerX, centerY);
-
     ctx.restore();
   }
 
@@ -674,6 +706,4 @@ class KinestheticPoseEngine {
   }
 }
 
-// Ekspor ke window global
 window.KinestheticPoseEngine = KinestheticPoseEngine;
-
