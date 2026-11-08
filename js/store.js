@@ -24,245 +24,69 @@ const DEFAULT_STORE = {
       'Halo Kak {buyerName}, terima kasih sudah memesan di {storeName}!\n\nBerikut akses game pembelajaran digital pesanan Anda:\nJudul Game: {title} ({code})\nLink Akses Game: {gameUrl}\n\nCara Pakai:\n1. Klik link di atas melalui browser HP, tablet, atau laptop.\n2. Game langsung berjalan tanpa instalasi tambahan.\n3. Simpan link ini untuk digunakan kembali kapan saja.\n\nSelamat bermain dan belajar!'
   },
   games: [
-    {
-      id: 'LM-UT',
-      code: 'SERI-UT',
-      title: "Ular Tangga Kinestetik - Bahasa Arab (As-Sa'ah)",
-      category: 'Bahasa Arab & Kinestetik (AI Pose)',
-      grade: 'SMP Kelas VIII',
-      duration: '20–30 menit',
-      device: 'Smart TV, Laptop & Proyektor',
-      price: 35000,
-      image: 'assets/games/game-1793962874784.png',
-      shortDesc:
-        "Game edukasi berbasis gerak tubuh (AI Pose) materi waktu & jam (As-Sa'ah) Bahasa Arab dengan papan ular tangga interaktif 2 pemain.",
-      howToPlay: [
-        'Hubungkan laptop ke Smart TV atau proyektor kelas dan aktifkan kamera web.',
-        'Pemain 1 dan Pemain 2 berdiri di depan kamera untuk melempar dadu dengan pose tubuh.',
-        'Jawab soal jam dan waktu Bahasa Arab di setiap petak papan untuk memenangkan permainan.'
-      ],
-      learningGoals: [
-        "Penguasaan kosakata bilangan jam (As-Sa'ah) Bahasa Arab tingkat SMP.",
-        'Pembelajaran aktif kinestetik yang melatih motorik kasar dan fokus siswa.',
-        'Meningkatkan partisipasi dan antusiasme belajar kelompok di ruang kelas.'
-      ],
-      gameUrl: 'games/ular-tangga/',
-      sampleQuestion:
-        'Apakah arti dari kalimat "السَّاعَةُ الْوَاحِدَةُ" (As-Sa\'atul Wahidah)?',
-      sampleOptions: ['Jam satu tepat', 'Jam dua tepat', 'Jam tiga tepat'],
-      sampleAnswer: 0
-    },
-    {
-      id: 'LM-A',
-      code: 'SERI-A',
-      title: 'Hitung Cepat Pasar',
-      category: 'Matematika & Logika',
-      grade: 'SD Kelas 1–4',
-      duration: '20 menit',
-      device: 'HP, Laptop & Proyektor',
-      price: 29000,
-      image: 'assets/games/game-pasar.jpg',
-      shortDesc:
-        'Latihan berhitung uang rupiah, kombinasi koin, dan kembalian belanja lewat simulasi kios mainan pasar malam.',
-      howToPlay: [
-        'Siswa melihat harga mainan tradisional yang tampil pada layar kios pasar malam.',
-        'Pilih kombinasi pecahan uang dan koin yang jumlahnya tepat sesuai target harga.',
-        'Kumpulkan tiket bintang dari setiap transaksi yang tepat sebelum waktu habis.'
-      ],
-      learningGoals: [
-        'Penjumlahan dan pengurangan bilangan bulat dalam konteks nilai mata uang rupiah.',
-        'Pengenalan kombinasi pecahan uang kertas dan logam sehari-hari.',
-        'Ketelitian berhitung cepat untuk aktivitas literasi finansial dasar.'
-      ],
-      gameUrl: 'play.html?id=LM-A',
-      sampleQuestion:
-        'Harga Gasing Kayu Rp 12.000 dan Layangan Rp 5.500. Berapa total uang pas yang harus dibayar?',
-      sampleOptions: ['Rp 16.500', 'Rp 17.500', 'Rp 18.000'],
-      sampleAnswer: 1
-    },
-    {
-      id: 'LM-B',
-      code: 'SERI-B',
-      title: 'Susun Kata Nusantara',
-      category: 'Bahasa & Budaya',
-      grade: 'TK B & SD Kelas 1–3',
-      duration: '15 menit',
-      device: 'Layar Sentuh & Laptop',
-      price: 30000,
-      image: 'assets/games/game-kata.jpg',
-      shortDesc:
-        'Permainan merangkai suku kata bahasa Indonesia dan melengkapi kalimat cerita pendek bertema keseharian.',
-      howToPlay: [
-        'Baca kalimat cerita rumpang beserta ilustrasi petunjuk di bagian atas layar.',
-        'Ketuk kepingan suku kata secara berurutan hingga membentuk kosakata yang utuh.',
-        'Buka halaman cerita berikutnya setelah tiga kalimat berhasil dilengkapi.'
-      ],
-      learningGoals: [
-        'Pemenggalan suku kata dan kelancaran membaca permulaan.',
-        'Pengayaan kosakata benda, tempat, dan aktivitas di Indonesia.',
-        'Pemahaman kalimat sederhana dalam bacaan pendek.'
-      ],
-      gameUrl: 'play.html?id=LM-B',
-      sampleQuestion:
-        'Susun suku kata berikut agar menjadi tempat kapal bersandar: BU - PE - HAN - LA',
-      sampleOptions: ['PE - LA - BU - HAN', 'LA - BU - PE - HAN', 'PE - BU - LA - HAN'],
-      sampleAnswer: 0
-    },
-    {
-      id: 'LM-C',
-      code: 'SERI-C',
-      title: 'Rantai Makanan Rimba',
-      category: 'Sains & Alam',
-      grade: 'SD Kelas 4–6',
-      duration: '25 menit',
-      device: 'Laptop, Tablet & IFP Kelas',
-      price: 35000,
-      image: 'assets/games/game-rimba.jpg',
-      shortDesc:
-        'Simulasi interaktif menyusun peran produsen, konsumen, dan pengurai pada ekosistem sawah, sungai, dan hutan.',
-      howToPlay: [
-        'Pilih satu dari tiga habitat belajar: ekosistem sawah, hutan hujan, atau pesisir laut.',
-        'Pasangkan makhluk hidup ke posisi produsen, konsumen tingkat pertama, hingga puncak.',
-        'Uji keseimbangan ekosistem dan amati apa yang terjadi bila satu populasi berkurang.'
-      ],
-      learningGoals: [
-        'Memahami alur perpindahan energi dalam rantai dan jaring-jaring makanan.',
-        'Membedakan peran organisme produsen, herbivora, karnivora, dan dekomposer.',
-        'Melatih penalaran sebab-akibat pada keseimbangan lingkungan.'
-      ],
-      gameUrl: 'play.html?id=LM-C',
-      sampleQuestion:
-        'Pada ekosistem sawah (Padi -> Belalang -> Katak -> Ular), makhluk hidup manakah yang berperan sebagai Konsumen Tingkat I?',
-      sampleOptions: ['Padi', 'Belalang', 'Katak'],
-      sampleAnswer: 1
-    },
-    {
-      id: 'LM-D',
-      code: 'SERI-D',
-      title: 'Labirin Logika Robot',
-      category: 'Matematika & Logika',
-      grade: 'SD Kelas 3–6 & SMP',
-      duration: '25 menit',
-      device: 'HP, Tablet & Laptop',
-      price: 39000,
-      image: 'assets/games/game-robot.jpg',
-      shortDesc:
-        'Pengenalan berpikir komputasional dan algoritma dasar dengan menyusun blok langkah arah untuk mengantar robot.',
-      howToPlay: [
-        'Amati peta kotak labirin dan posisi awal robot menuju titik baterai di ujung lintasan.',
-        'Susun urutan kartu instruksi Maju, Belok Kanan, Belok Kiri, dan Ulangi pada panel perintah.',
-        'Tekan tombol Jalankan untuk melihat robot bergerak mengikuti algoritma yang disusun.'
-      ],
-      learningGoals: [
-        'Dasar berpikir komputasional (urutan instruksi, pola, dan koreksi langkah).',
-        'Orientasi ruang, arah mata angin, dan koordinat petak sederhana.',
-        'Pemecahan masalah bertahap dengan jumlah langkah paling efisien.'
-      ],
-      gameUrl: 'play.html?id=LM-D',
-      sampleQuestion:
-        'Robot menghadap ke Timur. Jika diberi perintah: Maju 2 petak, lalu Belok Kanan, ke arah manakah robot menghadap sekarang?',
-      sampleOptions: ['Utara', 'Selatan', 'Barat'],
-      sampleAnswer: 1
-    },
-    {
-      id: 'LM-E',
-      code: 'SERI-E',
-      title: 'Peta Pulau Indonesia',
-      category: 'Bahasa & Budaya',
-      grade: 'SD Kelas 3–6 & SMP',
-      duration: '20 menit',
-      device: 'Proyektor Kelas & HP',
-      price: 32000,
-      image: 'assets/games/game-pulau.jpg',
-      shortDesc:
-        'Eksplorasi peta kepulauan Nusantara untuk menebak provinsi, rumah adat, alat musik, dan satwa endemik.',
-      howToPlay: [
-        'Kartu tantangan menampilkan petunjuk budaya, rumah adat, atau satwa khas daerah.',
-        'Ketuk pulau dan wilayah provinsi yang tepat pada peta interaktif Indonesia.',
-        'Mainkan mode beregu di depan kelas untuk adu cepat antar kelompok belajar.'
-      ],
-      learningGoals: [
-        'Mengenal letak geografis pulau-pulau besar dan provinsi di Indonesia.',
-        'Menghafal keragaman rumah adat, pakaian tradisional, dan flora-fauna Nusantara.',
-        'Meningkatkan kolaborasi siswa melalui kuis peta interaktif di kelas.'
-      ],
-      gameUrl: 'play.html?id=LM-E',
-      sampleQuestion:
-        'Rumah adat Betang dan satwa Orangutan berasal dari pulau manakah pada peta Indonesia?',
-      sampleOptions: ['Pulau Kalimantan', 'Pulau Sulawesi', 'Pulau Sumatera'],
-      sampleAnswer: 0
-    },
-    {
-      id: 'LM-F',
-      code: 'SERI-F',
-      title: 'Kosakata Ruang Kelas',
-      category: 'Bahasa & Budaya',
-      grade: 'TK & SD Kelas 1–4',
-      duration: '15 menit',
-      device: 'HP, Tablet & Laptop',
-      price: 25000,
-      image: 'assets/games/game-kelas.jpg',
-      shortDesc:
-        'Permainan kartu memori dan pencocokan gambar benda di sekolah dalam Bahasa Inggris dan Bahasa Indonesia.',
-      howToPlay: [
-        'Buka dua kartu tertutup pada papan kelas untuk mencari pasangan kata Inggris dan gambarnya.',
-        'Dengarkan pelafalan kosakata dan pilih arti Bahasa Indonesia yang sesuai.',
-        'Selesaikan seluruh papan kartu dengan jumlah langkah paling sedikit.'
-      ],
-      learningGoals: [
-        'Menguasai 40 kosakata Bahasa Inggris dasar bertema sekolah dan ruang kelas.',
-        'Melatih daya ingat visual serta asosiasi kata dengan benda nyata.',
-        'Membangun kepercayaan diri anak menyebutkan benda sekitar dalam Bahasa Inggris.'
-      ],
-      gameUrl: 'play.html?id=LM-F',
-      sampleQuestion:
-        'Benda di depan kelas yang digunakan guru untuk menulis disebut apa dalam Bahasa Inggris?',
-      sampleOptions: ['Bookshelf', 'Blackboard', 'Schoolbag'],
-      sampleAnswer: 1
-    }
-  ],
-  orders: [
-    {
-      id: 'ORD-104',
-      date: '2026-11-05 19:40',
-      buyerName: 'Ibu Ratna (SDN 3 Sleman)',
-      buyerPhone: '6281398765432',
-      gameId: 'LM-A',
-      gameTitle: 'Hitung Cepat Pasar',
-      amount: 29000,
-      status: 'Menunggu Link'
-    },
-    {
-      id: 'ORD-103',
-      date: '2026-11-05 18:15',
-      buyerName: 'Pak Hendra (Guru Kelas 5)',
-      buyerPhone: '6285711223344',
-      gameId: 'LM-C',
-      gameTitle: 'Rantai Makanan Rimba',
-      amount: 35000,
-      status: 'Link Terkirim'
-    },
-    {
-      id: 'ORD-102',
-      date: '2026-11-05 15:20',
-      buyerName: 'Kak Dinda (Wali Murid)',
-      buyerPhone: '6281233445566',
-      gameId: 'LM-B',
-      gameTitle: 'Susun Kata Nusantara',
-      amount: 30000,
-      status: 'Link Terkirim'
-    },
-    {
-      id: 'ORD-101',
-      date: '2026-11-05 11:05',
-      buyerName: 'Ibu Sari (SD Tunas Harapan)',
-      buyerPhone: '6282199887766',
-      gameId: 'LM-E',
-      gameTitle: 'Peta Pulau Indonesia',
-      amount: 32000,
-      status: 'Link Terkirim'
-    }
-  ]
+  {
+    "id": "LM-UT",
+    "code": "SERI-UT",
+    "title": "Ular Tangga Kinestetik - Bahasa Arab (As-Sa'ah)",
+    "category": "Bahasa Arab & Kinestetik (AI Pose)",
+    "grade": "SMP Kelas VIII",
+    "duration": "20–30 menit",
+    "device": "Smart TV, Laptop & Proyektor",
+    "price": 35000,
+    "image": "assets/games/game-1794134083691.gif",
+    "coverImage": "assets/games/game-1793962874784.png",
+    "shortDesc": "Game edukasi berbasis gerak tubuh (AI Pose) materi waktu & jam (As-Sa'ah) Bahasa Arab dengan papan ular tangga interaktif 2 pemain.",
+    "howToPlay": [
+      "Hubungkan laptop ke Smart TV atau proyektor kelas dan aktifkan kamera web.",
+      "Pemain 1 dan Pemain 2 berdiri di depan kamera untuk melempar dadu dengan pose tubuh.",
+      "Jawab soal jam dan waktu Bahasa Arab di setiap petak papan untuk memenangkan permainan."
+    ],
+    "learningGoals": [
+      "Penguasaan kosakata bilangan jam (As-Sa'ah) Bahasa Arab tingkat SMP.",
+      "Pembelajaran aktif kinestetik yang melatih motorik kasar dan fokus siswa.",
+      "Meningkatkan partisipasi dan antusiasme belajar kelompok di ruang kelas."
+    ],
+    "gameUrl": "games/ular-tangga/",
+    "sampleQuestion": "Apakah arti dari kalimat \"السَّاعَةُ الْوَاحِدَةُ\" (As-Sa'atul Wahidah)?",
+    "sampleOptions": [
+      "Jam satu tepat",
+      "Jam dua tepat",
+      "Jam tiga tepat"
+    ],
+    "sampleAnswer": 0
+  },
+  {
+    "id": "LM-EK",
+    "code": "SERI-EK",
+    "title": "Ekspedisi Nusantara - Kapal Layar Hidung",
+    "category": "IPS & Kinestetik (AI Kamera)",
+    "grade": "SMP Kelas VII–IX",
+    "duration": "20–30 menit",
+    "device": "Smart TV, Laptop & Kamera Web",
+    "price": 35000,
+    "image": "assets/games/game-pulau.jpg",
+    "shortDesc": "Game edukasi kuis IPS SMP interaktif dengan navigasi arah kapal menggunakan sensor gerakan hidung/wajah (AI Face Detection) di depan kamera.",
+    "howToPlay": [
+      "Nyalakan kamera web laptop atau hubungkan ke Smart TV kelas.",
+      "Daftarkan nama 2–4 siswa pemain untuk saling berkompetisi secara bergantian.",
+      "Gerakkan kepala dan hidung ke kiri/kanan untuk memilih jawaban A atau B yang benar."
+    ],
+    "learningGoals": [
+      "Mendalami materi sejarah, kondisi geografis, dan keragaman budaya Nusantara tingkat SMP.",
+      "Melatih motorik halus dan koordinasi fokus visual siswa secara aktif dan menyenangkan.",
+      "Mempermudah guru mengelola kuis kelas berkat fitur Bank Soal yang fleksibel."
+    ],
+    "gameUrl": "games/ekspedisi-kapal/",
+    "sampleQuestion": "Benua terbesar di dunia adalah...",
+    "sampleOptions": [
+      "Asia",
+      "Afrika"
+    ],
+    "sampleAnswer": 0,
+    "coverImage": "assets/games/game-1794142515963.png"
+  }
+],
+  orders: []
 };
 
 function loadStore() {
@@ -275,7 +99,8 @@ function loadStore() {
     // Pilih data terbaru antara file sinkronisasi (diskData) dan localStorage
     const diskTime = Number(diskData?.updatedAt || 0);
     const localTime = Number(localParsed?.updatedAt || 0);
-    const source = diskTime >= localTime && diskData ? diskData : (localParsed || diskData || DEFAULT_STORE);
+    const diskCleaned = diskData && Array.isArray(diskData.games) && Array.isArray(localParsed?.games) && diskData.games.length < localParsed.games.length;
+    const source = (diskTime >= localTime || diskCleaned) && diskData ? diskData : (localParsed || diskData || DEFAULT_STORE);
 
     return {
       updatedAt: Math.max(diskTime, localTime, 1),

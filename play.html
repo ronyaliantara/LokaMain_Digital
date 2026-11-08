@@ -312,7 +312,7 @@
           <p class="play-desc" id="play-desc">Selamat datang di ruang bermain interaktif.</p>
 
           <div class="play-image-box">
-            <img id="play-image" src="assets/games/game-pasar.jpg" width="800" height="500" alt="Layar permainan">
+            <img id="play-image" src="assets/games/game-1793962874784.png" width="800" height="500" alt="Layar permainan">
           </div>
 
           <div class="play-actions">
@@ -350,7 +350,7 @@
 
     const store = loadStore();
     const params = new URLSearchParams(window.location.search);
-    const id = params.get('id') || 'LM-A';
+    const id = params.get('id') || (store.games[0] ? store.games[0].id : 'LM-UT');
     const game = store.games.find((g) => g.id === id) || store.games[0];
 
     const QUESTION_BANKS = {
@@ -359,35 +359,10 @@
         { q: 'Bagaimana menyebut "Jam 06.30 (setengah tujuh)" dalam Bahasa Arab?', opts: ['اَلسَّاعَةُ السَّادِسَةُ وَالنِّصْفُ', 'اَلسَّاعَةُ السَّابِعَةُ وَالرُّبْعُ', 'اَلسَّاعَةُ الْخَامِسَةُ وَالثُّلُثُ'], ans: 0 },
         { q: 'Kata "وَالرُّبْعُ" (war-rub\'u) dalam penyebutan waktu bahasa Arab menunjukkan lebih berapa menit?', opts: ['Lebih 15 menit (seperempat jam)', 'Lebih 30 menit (setengah jam)', 'Lebih 20 menit (sepertiga jam)'], ans: 0 }
       ],
-      'LM-A': [
-        { q: 'Harga Gasing Kayu Rp 12.000 dan Layangan Rp 5.500. Berapa total uang pas yang harus dibayar?', opts: ['Rp 16.500', 'Rp 17.500', 'Rp 18.000'], ans: 1 },
-        { q: 'Budi membayar Rp 20.000 untuk membeli Perahu Bambu seharga Rp 14.500. Berapa uang kembaliannya?', opts: ['Rp 5.500', 'Rp 4.500', 'Rp 6.500'], ans: 0 },
-        { q: 'Kombinasi koin manakah yang berjumlah tepat Rp 13.000?', opts: ['10rb + 2rb + 500', '10rb + 2rb + 1rb', '5rb + 5rb + 2rb'], ans: 1 }
-      ],
-      'LM-B': [
-        { q: 'Susun suku kata berikut agar menjadi tempat kapal bersandar: BU - PE - HAN - LA', opts: ['PE - LA - BU - HAN', 'LA - BU - PE - HAN', 'PE - BU - LA - HAN'], ans: 0 },
-        { q: 'Susun suku kata alat musik bambu Jawa Barat: LUNG - ANG', opts: ['LUNG - ANG', 'ANG - KLUNG', 'KA - LUNG'], ans: 1 },
-        { q: 'Lengkapi kalimat: Ibu membeli sayur segar di ... tradisional.', opts: ['Pasar', 'Stasiun', 'Bandara'], ans: 0 }
-      ],
-      'LM-C': [
-        { q: 'Pada ekosistem sawah (Padi -> Belalang -> Katak -> Ular), manakah Konsumen Tingkat I?', opts: ['Padi', 'Belalang', 'Katak'], ans: 1 },
-        { q: 'Makhluk hidup yang menghasilkan makanan sendiri melalui fotosintesis disebut?', opts: ['Produsen', 'Konsumen', 'Pengurai'], ans: 0 },
-        { q: 'Jamur dan bakteri di tanah hutan berperan sebagai?', opts: ['Produsen Utama', 'Pengurai (Dekomposer)', 'Konsumen Puncak'], ans: 1 }
-      ],
-      'LM-D': [
-        { q: 'Robot menghadap ke Timur. Jika Maju 2 petak lalu Belok Kanan, ke arah manakah robot menghadap?', opts: ['Utara', 'Selatan', 'Barat'], ans: 1 },
-        { q: 'Agar robot maju 3 petak lurus tanpa rintangan, blok apakah yang paling tepat?', opts: ['Ulangi 3x (Maju 1 Petak)', 'Belok Kiri lalu Maju', 'Putar Balik 2x'], ans: 0 },
-        { q: 'Urutan langkah logis untuk menyelesaikan masalah dalam pemrograman disebut?', opts: ['Algoritma', 'Dekorasi', 'Kompilasi'], ans: 0 }
-      ],
-      'LM-E': [
-        { q: 'Rumah adat Betang dan satwa Orangutan berasal dari pulau manakah?', opts: ['Pulau Kalimantan', 'Pulau Sulawesi', 'Pulau Sumatera'], ans: 0 },
-        { q: 'Rumah Gadang dengan atap runcing menyerupai tanduk kerbau berasal dari provinsi?', opts: ['Sumatera Barat', 'Jawa Tengah', 'Bali'], ans: 0 },
-        { q: 'Burung Cenderawasih merupakan fauna endemik kebanggaan dari wilayah?', opts: ['Papua', 'Nusa Tenggara', 'Maluku Utara'], ans: 0 }
-      ],
-      'LM-F': [
-        { q: 'Benda di depan kelas yang digunakan guru untuk menulis disebut apa dalam Bahasa Inggris?', opts: ['Bookshelf', 'Blackboard', 'Schoolbag'], ans: 1 },
-        { q: 'Apakah bahasa Inggris dari Bola Dunia di sudut ruang kelas?', opts: ['Globe', 'Ruler', 'Chair'], ans: 0 },
-        { q: 'Tempat menyimpan buku-buku bacaan di perpustakaan kelas disebut?', opts: ['Pencil Case', 'Bookshelf', 'Window'], ans: 1 }
+      'LM-EK': [
+        { q: 'Benua terbesar di dunia adalah...', opts: ['Asia', 'Afrika', 'Eropa'], ans: 0 },
+        { q: 'Samudra terluas di permukaan bumi adalah...', opts: ['Samudra Pasifik', 'Samudra Atlantik', 'Samudra Hindia'], ans: 0 },
+        { q: 'Selat yang memisahkan Pulau Jawa dan Pulau Sumatra adalah...', opts: ['Selat Sunda', 'Selat Malaka', 'Selat Bali'], ans: 0 }
       ]
     };
 
