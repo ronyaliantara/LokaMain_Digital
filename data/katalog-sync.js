@@ -1,5 +1,5 @@
 window.LOKAMAIN_LIVE_DATA = {
-  "updatedAt": 1793962875813,
+  "updatedAt": 1794124002302,
   "settings": {
     "storeName": "LokaMain Digital",
     "siteSubtitle": "Pilih game pembelajaran digital, lalu klik tombol WhatsApp di bawahnya untuk memesan.",
@@ -28,7 +28,24 @@ window.LOKAMAIN_LIVE_DATA = {
       "price": 35000,
       "image": "assets/games/game-1793962874784.png",
       "shortDesc": "Game edukasi berbasis gerak tubuh (AI Pose) materi waktu & jam (As-Sa'ah) Bahasa Arab dengan papan ular tangga interaktif 2 pemain.",
-      "gameUrl": "games/ular-tangga/"
+      "howToPlay": [
+        "Hubungkan laptop ke Smart TV atau proyektor kelas dan aktifkan kamera web.",
+        "Pemain 1 dan Pemain 2 berdiri di depan kamera untuk melempar dadu dengan pose tubuh.",
+        "Jawab soal jam dan waktu Bahasa Arab di setiap petak papan untuk memenangkan permainan."
+      ],
+      "learningGoals": [
+        "Penguasaan kosakata bilangan jam (As-Sa'ah) Bahasa Arab tingkat SMP.",
+        "Pembelajaran aktif kinestetik yang melatih motorik kasar dan fokus siswa.",
+        "Meningkatkan partisipasi dan antusiasme belajar kelompok di ruang kelas."
+      ],
+      "gameUrl": "games/ular-tangga/",
+      "sampleQuestion": "Apakah arti dari kalimat \"السَّاعَةُ الْوَاحِدَةُ\" (As-Sa'atul Wahidah)?",
+      "sampleOptions": [
+        "Jam satu tepat",
+        "Jam dua tepat",
+        "Jam tiga tepat"
+      ],
+      "sampleAnswer": 0
     },
     {
       "id": "LM-A",
@@ -137,7 +154,7 @@ window.LOKAMAIN_LIVE_DATA = {
       "buyerPhone": "6281233445566",
       "gameId": "LM-B",
       "gameTitle": "Susun Kata Nusantara",
-      "amount": 25000,
+      "amount": 30000,
       "status": "Link Terkirim"
     },
     {

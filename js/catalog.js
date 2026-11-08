@@ -9,6 +9,23 @@
   let lastRenderedTime = 0;
   let currentStore = null;
 
+  function escapeHtml(str) {
+    return String(str || '')
+      .replace(/&/g, '&amp;')
+      .replace(/</g, '&lt;')
+      .replace(/>/g, '&gt;')
+      .replace(/"/g, '&quot;')
+      .replace(/'/g, '&#39;');
+  }
+
+  function sanitizeImageSrc(src) {
+    const clean = String(src || '').trim();
+    if (!clean || /^(javascript|data:text\/html)/i.test(clean)) {
+      return 'assets/games/game-pasar.jpg';
+    }
+    return clean;
+  }
+
   // Pesan WA dari pembeli setelah bayar QRIS (bukti bayar dilampirkan manual di chat)
   function buildPaidMessage(game, settings, method = 'other') {
     const methodNote = method === 'dana' ? ' (Aplikasi DANA)' : ' (Bank/E-Wallet - Nominal Otomatis)';
@@ -190,10 +207,10 @@
     const footerNote = document.getElementById('display-footer-note');
     const footerWa = document.getElementById('footer-wa-info');
 
-    const bannerPath = store.settings.logoImage || store.settings.bannerImage;
+    const bannerPath = store.settings.logoImage;
     if (siteLogo) {
       if (bannerPath) {
-        siteLogo.src = bannerPath;
+        siteLogo.src = sanitizeImageSrc(bannerPath);
         siteLogo.style.display = 'block';
         if (storeTitle) storeTitle.style.display = 'none';
       } else {
@@ -237,22 +254,25 @@
 
     grid.innerHTML = store.games
       .map((game) => {
+        const safeTitle = escapeHtml(game.title);
+        const safeDesc = escapeHtml(game.shortDesc || '');
+        const safeImage = sanitizeImageSrc(game.image);
         return `
           <article class="game-block">
             <img
-              src="${game.image}"
-              alt="${game.title}"
+              src="${safeImage}"
+              alt="${safeTitle}"
               class="game-thumb"
               loading="lazy"
             >
             <div class="game-info">
               <div>
-                <h2 class="game-name">${game.title}</h2>
+                <h2 class="game-name">${safeTitle}</h2>
                 <p class="game-price">Rp ${formatIdr(game.price)}</p>
-                <p class="game-desc">${game.shortDesc || ''}</p>
+                <p class="game-desc">${safeDesc}</p>
               </div>
 
-              <button type="button" class="btn-wa" data-order="${game.id}">
+              <button type="button" class="btn-wa" data-order="${escapeHtml(game.id)}">
                 Pesan Sekarang
               </button>
             </div>
@@ -264,6 +284,8 @@
 
   // Cek pembaruan otomatis dari file data/katalog-sync.js (berfungsi di file:// maupun localhost)
   function pollDiskSyncFile() {
+    if (document.hidden) return; // Hemat baterai & bandwidth saat tab tidak aktif
+
     const oldScript = document.getElementById('live-sync-probe');
     if (oldScript) oldScript.remove();
 
@@ -275,6 +297,9 @@
       if (diskTime !== lastRenderedTime) {
         renderPublicCatalog();
       }
+    };
+    s.onerror = () => {
+      s.remove();
     };
     document.body.appendChild(s);
   }
@@ -299,7 +324,7 @@
         .catch(() => {});
     } catch {}
 
-    setInterval(pollDiskSyncFile, 2000);
+    setInterval(pollDiskSyncFile, 3000);
 
     // Navigasi & Menu Garis 3
     const hamburgerBtn = document.getElementById('hamburger-toggle');
@@ -340,7 +365,11 @@
   });
 
   // Sinkronisasi instan via localStorage & BroadcastChannel
-  window.addEventListener('storage', renderPublicCatalog);
+  window.addEventListener('storage', (e) => {
+    if (!e.key || e.key === 'lokamain_store_v1' || e.key === 'lokamain_live_data') {
+      renderPublicCatalog();
+    }
+  });
   if ('BroadcastChannel' in window) {
     const bc = new BroadcastChannel('lokamain_sync');
     bc.onmessage = (ev) => {

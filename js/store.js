@@ -7,7 +7,7 @@ const STORAGE_KEY = 'lokamain_store_v1';
 const DEFAULT_STORE = {
   settings: {
     storeName: 'LokaMain Digital',
-    siteSubtitle: '',
+    siteSubtitle: 'Pilih game pembelajaran digital, lalu klik tombol WhatsApp di bawahnya untuk memesan.',
     logoImage: 'assets/branding/banner-lokamain.png',
     footerText: 'Hak Cipta © 2026 LokaMain Digital. Pembelajaran Game Edukasi Interaktif.',
     footerNote: 'Semua game dapat dimainkan langsung di Smart TV, HP, Tablet, dan Komputer tanpa instalasi.',
@@ -24,6 +24,34 @@ const DEFAULT_STORE = {
       'Halo Kak {buyerName}, terima kasih sudah memesan di {storeName}!\n\nBerikut akses game pembelajaran digital pesanan Anda:\nJudul Game: {title} ({code})\nLink Akses Game: {gameUrl}\n\nCara Pakai:\n1. Klik link di atas melalui browser HP, tablet, atau laptop.\n2. Game langsung berjalan tanpa instalasi tambahan.\n3. Simpan link ini untuk digunakan kembali kapan saja.\n\nSelamat bermain dan belajar!'
   },
   games: [
+    {
+      id: 'LM-UT',
+      code: 'SERI-UT',
+      title: "Ular Tangga Kinestetik - Bahasa Arab (As-Sa'ah)",
+      category: 'Bahasa Arab & Kinestetik (AI Pose)',
+      grade: 'SMP Kelas VIII',
+      duration: '20–30 menit',
+      device: 'Smart TV, Laptop & Proyektor',
+      price: 35000,
+      image: 'assets/games/game-1793962874784.png',
+      shortDesc:
+        "Game edukasi berbasis gerak tubuh (AI Pose) materi waktu & jam (As-Sa'ah) Bahasa Arab dengan papan ular tangga interaktif 2 pemain.",
+      howToPlay: [
+        'Hubungkan laptop ke Smart TV atau proyektor kelas dan aktifkan kamera web.',
+        'Pemain 1 dan Pemain 2 berdiri di depan kamera untuk melempar dadu dengan pose tubuh.',
+        'Jawab soal jam dan waktu Bahasa Arab di setiap petak papan untuk memenangkan permainan.'
+      ],
+      learningGoals: [
+        "Penguasaan kosakata bilangan jam (As-Sa'ah) Bahasa Arab tingkat SMP.",
+        'Pembelajaran aktif kinestetik yang melatih motorik kasar dan fokus siswa.',
+        'Meningkatkan partisipasi dan antusiasme belajar kelompok di ruang kelas.'
+      ],
+      gameUrl: 'games/ular-tangga/',
+      sampleQuestion:
+        'Apakah arti dari kalimat "السَّاعَةُ الْوَاحِدَةُ" (As-Sa\'atul Wahidah)?',
+      sampleOptions: ['Jam satu tepat', 'Jam dua tepat', 'Jam tiga tepat'],
+      sampleAnswer: 0
+    },
     {
       id: 'LM-A',
       code: 'SERI-A',
@@ -60,7 +88,7 @@ const DEFAULT_STORE = {
       grade: 'TK B & SD Kelas 1–3',
       duration: '15 menit',
       device: 'Layar Sentuh & Laptop',
-      price: 25000,
+      price: 30000,
       image: 'assets/games/game-kata.jpg',
       shortDesc:
         'Permainan merangkai suku kata bahasa Indonesia dan melengkapi kalimat cerita pendek bertema keseharian.',
@@ -221,7 +249,7 @@ const DEFAULT_STORE = {
       buyerPhone: '6281233445566',
       gameId: 'LM-B',
       gameTitle: 'Susun Kata Nusantara',
-      amount: 25000,
+      amount: 30000,
       status: 'Link Terkirim'
     },
     {

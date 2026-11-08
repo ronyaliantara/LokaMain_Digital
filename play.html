@@ -3,6 +3,9 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
+  <meta http-equiv="Pragma" content="no-cache">
+  <meta http-equiv="Expires" content="0">
   <title>Ruang Bermain Game Edukasi — LokaMain Digital</title>
   <link rel="stylesheet" href="css/page.css">
   <style>
@@ -312,6 +315,7 @@
           </div>
 
           <div class="play-actions">
+            <a href="#" id="play-launch-direct" class="play-btn play-btn-accent" style="display: none;">🎮 Mainkan Game Sekarang</a>
             <a href="index.html#game-grid" class="play-btn">Pilih Game Lain</a>
             <a href="#" target="_blank" rel="noopener" id="play-order-wa" class="play-btn play-btn-accent">Pesan Lisensi Penuh via WA</a>
           </div>
@@ -349,6 +353,11 @@
     const game = store.games.find((g) => g.id === id) || store.games[0];
 
     const QUESTION_BANKS = {
+      'LM-UT': [
+        { q: 'Apakah arti dari kalimat "اَلسَّاعَةُ الْوَاحِدَةُ" (As-Saa\'atul Waahidah)?', opts: ['Jam 01.00 tepat', 'Jam 02.00 tepat', 'Jam 03.00 tepat'], ans: 0 },
+        { q: 'Bagaimana menyebut "Jam 06.30 (setengah tujuh)" dalam Bahasa Arab?', opts: ['اَلسَّاعَةُ السَّادِسَةُ وَالنِّصْفُ', 'اَلسَّاعَةُ السَّابِعَةُ وَالرُّبْعُ', 'اَلسَّاعَةُ الْخَامِسَةُ وَالثُّلُثُ'], ans: 0 },
+        { q: 'Kata "وَالرُّبْعُ" (war-rub\'u) dalam penyebutan waktu bahasa Arab menunjukkan lebih berapa menit?', opts: ['Lebih 15 menit (seperempat jam)', 'Lebih 30 menit (setengah jam)', 'Lebih 20 menit (sepertiga jam)'], ans: 0 }
+      ],
       'LM-A': [
         { q: 'Harga Gasing Kayu Rp 12.000 dan Layangan Rp 5.500. Berapa total uang pas yang harus dibayar?', opts: ['Rp 16.500', 'Rp 17.500', 'Rp 18.000'], ans: 1 },
         { q: 'Budi membayar Rp 20.000 untuk membeli Perahu Bambu seharga Rp 14.500. Berapa uang kembaliannya?', opts: ['Rp 5.500', 'Rp 4.500', 'Rp 6.500'], ans: 0 },
@@ -398,6 +407,14 @@
     document.getElementById('play-desc').textContent = game.shortDesc;
     document.getElementById('play-image').src = game.image;
     document.getElementById('play-order-wa').href = buildBuyerWhatsAppUrl(game, store.settings);
+
+    const directBtn = document.getElementById('play-launch-direct');
+    if (directBtn && game.gameUrl && !game.gameUrl.startsWith('play.html')) {
+      directBtn.href = game.gameUrl;
+      directBtn.style.display = 'inline-flex';
+    } else if (directBtn) {
+      directBtn.style.display = 'none';
+    }
 
     function renderQuizStep() {
       answered = false;
@@ -463,10 +480,13 @@
           <p>${msg} Kamu menjawab benar ${score / 100} dari ${questions.length} soal.</p>
         </div>
         <div style="display: flex; gap: 10px; justify-content: center; flex-wrap: wrap;">
-          <button type="button" class="play-btn" onclick="location.reload()">Ulangi Quiz</button>
+          <button type="button" class="play-btn" id="btn-retry-quiz">Ulangi Quiz</button>
           <a href="index.html#game-grid" class="play-btn">Pilih Game Lain</a>
         </div>
       `;
+      document.getElementById('btn-retry-quiz')?.addEventListener('click', () => {
+        location.reload();
+      });
     }
 
     document.getElementById('quiz-next-btn').addEventListener('click', () => {
