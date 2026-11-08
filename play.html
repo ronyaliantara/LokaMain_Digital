@@ -120,7 +120,8 @@
       border: 1px solid var(--border);
     }
 
-    .play-image-box img {
+    .play-image-box img,
+    .play-image-box video {
       width: 100%;
       height: auto;
       display: block;
@@ -405,7 +406,16 @@
     document.getElementById('play-title').textContent = game.title;
     document.getElementById('play-meta').textContent = `${game.code} · ${game.category} · ${game.grade}`;
     document.getElementById('play-desc').textContent = game.shortDesc;
-    document.getElementById('play-image').src = game.image;
+    const isVideo = /\.(mp4|webm|mov|m4v)(\?.*)?$/i.test(game.image || '') || String(game.image || '').startsWith('data:video/');
+    const imgEl = document.getElementById('play-image');
+    if (imgEl) {
+      const parent = imgEl.parentElement;
+      if (isVideo) {
+        parent.innerHTML = `<video id="play-image" src="${game.image}" autoplay loop muted playsinline controls style="width: 100%; height: auto; display: block;"></video>`;
+      } else {
+        parent.innerHTML = `<img id="play-image" src="${game.image}" width="800" height="500" alt="Layar permainan">`;
+      }
+    }
     document.getElementById('play-order-wa').href = buildBuyerWhatsAppUrl(game, store.settings);
 
     const directBtn = document.getElementById('play-launch-direct');

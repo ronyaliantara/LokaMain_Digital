@@ -257,14 +257,13 @@
         const safeTitle = escapeHtml(game.title);
         const safeDesc = escapeHtml(game.shortDesc || '');
         const safeImage = sanitizeImageSrc(game.image);
+        const isVideo = /\.(mp4|webm|mov|m4v)(\?.*)?$/i.test(game.image || '') || String(game.image || '').startsWith('data:video/');
+        const mediaHtml = isVideo
+          ? `<video src="${safeImage}" autoplay loop muted playsinline class="game-thumb" style="object-fit: cover;"></video>`
+          : `<img src="${safeImage}" alt="${safeTitle}" class="game-thumb" loading="lazy">`;
         return `
           <article class="game-block">
-            <img
-              src="${safeImage}"
-              alt="${safeTitle}"
-              class="game-thumb"
-              loading="lazy"
-            >
+            ${mediaHtml}
             <div class="game-info">
               <div>
                 <h2 class="game-name">${safeTitle}</h2>
