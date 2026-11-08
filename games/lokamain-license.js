@@ -62,9 +62,17 @@
     var ok = await crypto.subtle.verify({ name: 'ECDSA', hash: 'SHA-256' }, key,
       b64urlToBytes(parts[1]), new TextEncoder().encode(parts[0]));
     if (!ok) throw new Error('BAD_TOKEN');
-    var payload = JSON.parse(new TextDecoder().decode(b64urlToBytes(parts[0])));
-    if (!payload || !payload.l) throw new Error('BAD_TOKEN');
-    return { licenseId: String(payload.l), buyerName: String(payload.n || 'Pembeli Resmi') };
+    var text = new TextDecoder().decode(b64urlToBytes(parts[0]));
+    if (text.charAt(0) === '{') { // format JSON versi sebelumnya
+      var payload = JSON.parse(text);
+      if (!payload || !payload.l) throw new Error('BAD_TOKEN');
+      return { licenseId: String(payload.l), buyerName: String(payload.n || 'Pembeli Resmi') };
+    }
+    var cut = text.indexOf('|');
+    var id = cut < 0 ? text : text.slice(0, cut);
+    var name = cut < 0 ? '' : text.slice(cut + 1);
+    if (!id) throw new Error('BAD_TOKEN');
+    return { licenseId: id, buyerName: name || 'Pembeli Resmi' };
   }
 
   function extractToken(text) {
@@ -179,8 +187,8 @@
     var params = new URLSearchParams(location.search);
     var fromUrl = params.get('token') || params.get('auth');
     if (fromUrl) {
-      var ok = await tryToken(fromUrl, false);
-      if (ok) { try { history.replaceState({}, document.title, location.pathname); } catch (_) {} }
+      try { history.replaceState({}, document.title, location.pathname); } catch (_) {}
+      await tryToken(fromUrl, false);
       return;
     }
     var saved = null;
