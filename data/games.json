@@ -1,5 +1,5 @@
 {
-  "updatedAt": 1794140880085,
+  "updatedAt": 1794142532437,
   "settings": {
     "storeName": "LokaMain Digital",
     "siteSubtitle": "Pilih game pembelajaran digital, lalu klik tombol WhatsApp di bawahnya untuk memesan.",
@@ -75,7 +75,8 @@
         "Asia",
         "Afrika"
       ],
-      "sampleAnswer": 0
+      "sampleAnswer": 0,
+      "coverImage": "assets/games/game-1794142515963.png"
     },
     {
       "id": "LM-A",
