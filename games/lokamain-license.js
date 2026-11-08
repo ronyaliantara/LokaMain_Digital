@@ -213,6 +213,12 @@
     badge.title = `Lisensi Resmi Terverifikasi\nPembeli: ${name || '-'}\nID: ${key || '-'}\nStatus: Sesi Aktif`;
   }
 
+  // Penentuan "siapa yang paling baru" memakai jam SERVER ntfy (bukan jam perangkat),
+  // supaya Smart TV/HP dengan jam yang meleset tetap diurutkan dengan benar.
+  let myClaimServerTime = 0;   // detik, dari jawaban ntfy saat kita mengklaim
+  let myClaimId = '';
+  const seenClaimIds = new Set();
+
   function claimActiveSession() {
     if (!licenseKey) return;
     const cleanTopic = 'lokamain_' + LOKAMAIN_SECURITY.computeHash(licenseKey.toUpperCase().trim());
@@ -228,17 +234,30 @@
       sessionStorage.setItem('lokamain_active_buyer', buyerName);
     } catch (_) {}
 
+    myClaimServerTime = Number.MAX_SAFE_INTEGER; // sementara abaikan klaim lain sampai jam server diketahui
+    myClaimId = '';
     fetch(`https://ntfy.sh/${cleanTopic}`, {
       method: 'POST',
       body: payload,
       headers: { 'Title': 'ActiveClaim' }
-    }).catch(() => {});
+    })
+      .then(res => res.json())
+      .then(info => {
+        if (info && info.time) { myClaimServerTime = info.time; myClaimId = info.id || ''; }
+        if (info && info.id) seenClaimIds.add(info.id);
+      })
+      .catch(() => { myClaimServerTime = Math.floor(Date.now() / 1000); });
   }
 
   function handleIncomingClaim(dataStr) {
     try {
-      if (!dataStr) return;
+      if (!dataStr || isSessionKicked) return;
       const data = JSON.parse(dataStr);
+      if (data.event && data.event !== 'message') return;
+      if (data.id) {
+        if (seenClaimIds.has(data.id)) return;
+        seenClaimIds.add(data.id);
+      }
       let msg = null;
       if (data.message) {
         try {
@@ -249,7 +268,12 @@
       }
       if (!msg || !msg.session) return;
       if (msg.session === currentSessionId) return;
-      if (msg.time && msg.time < sessionStartTime - 3000) return;
+
+      // Klaim lain lebih baru dari klaim kita? (waktu server; jika sama persis, urut id agar konsisten di kedua layar)
+      const theirs = Number(data.time) || 0;
+      const newer = theirs > myClaimServerTime ||
+        (theirs === myClaimServerTime && myClaimId && data.id && data.id > myClaimId);
+      if (!newer) return;
 
       onKicked(msg.device || 'Perangkat Lain');
     } catch (_) {}
@@ -261,26 +285,26 @@
     if (sseConnection) {
       try { sseConnection.close(); } catch (_) {}
     }
+    // Jalur utama: koneksi langsung (SSE). 'since' memutar ulang klaim terbaru saat tersambung kembali.
     try {
-      sseConnection = new EventSource(`https://ntfy.sh/${cleanTopic}/sse`);
+      sseConnection = new EventSource(`https://ntfy.sh/${cleanTopic}/sse?since=10m`);
       sseConnection.onmessage = (event) => handleIncomingClaim(event.data);
-      sseConnection.addEventListener('message', (event) => handleIncomingClaim(event.data));
     } catch (_) {}
 
+    // Cadangan: cek berkala dengan jeda wajar (ntfy.sh membatasi jumlah permintaan per alamat IP).
     if (pollingInterval) clearInterval(pollingInterval);
-    pollingInterval = setInterval(() => {
-      if (isSessionKicked || !licenseKey) return;
-      fetch(`https://ntfy.sh/${cleanTopic}/json?poll=1`)
+    const poll = () => {
+      if (isSessionKicked || !licenseKey || document.hidden) return;
+      fetch(`https://ntfy.sh/${cleanTopic}/json?poll=1&since=10m`, { cache: 'no-store' })
         .then(res => res.text())
         .then(text => {
           if (!text) return;
-          const lines = text.trim().split('\n');
-          for (const line of lines) {
-            if (line.trim()) handleIncomingClaim(line);
-          }
+          text.trim().split('\n').forEach(line => { if (line.trim()) handleIncomingClaim(line); });
         })
         .catch(() => {});
-    }, 3000);
+    };
+    pollingInterval = setInterval(poll, 10000);
+    document.addEventListener('visibilitychange', () => { if (!document.hidden) poll(); });
   }
 
   function onKicked(device) {
