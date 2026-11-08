@@ -1,5 +1,5 @@
 window.LOKAMAIN_LIVE_DATA = {
-  "updatedAt": 1794138458896,
+  "updatedAt": 1794138556466,
   "settings": {
     "storeName": "LokaMain Digital",
     "siteSubtitle": "Pilih game pembelajaran digital, lalu klik tombol WhatsApp di bawahnya untuk memesan.",
@@ -68,7 +68,7 @@ window.LOKAMAIN_LIVE_DATA = {
         "Melatih motorik halus dan koordinasi fokus visual siswa secara aktif dan menyenangkan.",
         "Mempermudah guru mengelola kuis kelas berkat fitur Bank Soal yang fleksibel."
       ],
-      "gameUrl": "games/ekspedisi_kapal/",
+      "gameUrl": "games/ekspedisi-kapal/",
       "sampleQuestion": "Benua terbesar di dunia adalah...",
       "sampleOptions": [
         "Asia",
