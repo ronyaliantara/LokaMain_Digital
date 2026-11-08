@@ -245,6 +245,7 @@
       .then(info => {
         if (info && info.time) { myClaimServerTime = info.time; myClaimId = info.id || ''; }
         if (info && info.id) seenClaimIds.add(info.id);
+        setTimeout(pollOnce, 800); // periksa klaim lain yang masuk selama menunggu
       })
       .catch(() => { myClaimServerTime = Math.floor(Date.now() / 1000); });
   }
@@ -254,6 +255,7 @@
       if (!dataStr || isSessionKicked) return;
       const data = JSON.parse(dataStr);
       if (data.event && data.event !== 'message') return;
+      if (myClaimServerTime === Number.MAX_SAFE_INTEGER) return; // jam server kita belum diketahui; diperiksa ulang setelah klaim terkonfirmasi
       if (data.id) {
         if (seenClaimIds.has(data.id)) return;
         seenClaimIds.add(data.id);
@@ -279,32 +281,60 @@
     } catch (_) {}
   }
 
+  // Jalur utama = koneksi langsung (SSE) yang menghemat permintaan ke ntfy.sh.
+  // Cadangan = cek ringan tiap 30 detik dan setiap layar kembali dilihat/difokuskan.
+  // Klaim yang sudah pernah diproses dibuang (seenClaimIds), jadi cek berulang aman.
+  let lastEventAt = 0;
+  let listenersBound = false;
+
+  function ntfyTopic() {
+    return 'lokamain_' + LOKAMAIN_SECURITY.computeHash(licenseKey.toUpperCase().trim());
+  }
+
+  function connectSse() {
+    if (!licenseKey) return;
+    if (sseConnection) { try { sseConnection.close(); } catch (_) {} }
+    try {
+      // 10 menit terakhir diputar ulang saat tersambung; klaim yang sudah diproses dibuang lewat seenClaimIds.
+      sseConnection = new EventSource(`https://ntfy.sh/${ntfyTopic()}/sse?since=10m`);
+      const touch = () => { lastEventAt = Date.now(); };
+      sseConnection.addEventListener('open', touch);
+      sseConnection.addEventListener('keepalive', touch);
+      sseConnection.onmessage = (event) => { touch(); handleIncomingClaim(event.data); };
+    } catch (_) {}
+  }
+
+  function pollOnce() {
+    if (isSessionKicked || !licenseKey || document.hidden) return;
+    fetch(`https://ntfy.sh/${ntfyTopic()}/json?poll=1&since=10m`, { cache: 'no-store' })
+      .then(res => res.ok ? res.text() : '')
+      .then(text => {
+        if (!text) return;
+        text.trim().split('\n').forEach(line => { if (line.trim()) handleIncomingClaim(line); });
+      })
+      .catch(() => {});
+  }
+
   function listenRemoteSessions() {
     if (!licenseKey) return;
-    const cleanTopic = 'lokamain_' + LOKAMAIN_SECURITY.computeHash(licenseKey.toUpperCase().trim());
-    if (sseConnection) {
-      try { sseConnection.close(); } catch (_) {}
-    }
-    // Jalur utama: koneksi langsung (SSE). 'since' memutar ulang klaim terbaru saat tersambung kembali.
-    try {
-      sseConnection = new EventSource(`https://ntfy.sh/${cleanTopic}/sse?since=10m`);
-      sseConnection.onmessage = (event) => handleIncomingClaim(event.data);
-    } catch (_) {}
+    lastEventAt = Date.now();
+    connectSse();
 
-    // Cadangan: cek berkala dengan jeda wajar (ntfy.sh membatasi jumlah permintaan per alamat IP).
     if (pollingInterval) clearInterval(pollingInterval);
-    const poll = () => {
-      if (isSessionKicked || !licenseKey || document.hidden) return;
-      fetch(`https://ntfy.sh/${cleanTopic}/json?poll=1&since=10m`, { cache: 'no-store' })
-        .then(res => res.text())
-        .then(text => {
-          if (!text) return;
-          text.trim().split('\n').forEach(line => { if (line.trim()) handleIncomingClaim(line); });
-        })
-        .catch(() => {});
-    };
-    pollingInterval = setInterval(poll, 10000);
-    document.addEventListener('visibilitychange', () => { if (!document.hidden) poll(); });
+    pollingInterval = setInterval(() => {
+      // Penjaga: bila koneksi langsung sepi >100 dtk (tertidur/terputus), sambungkan ulang.
+      if (Date.now() - lastEventAt > 100000) { lastEventAt = Date.now(); connectSse(); }
+      pollOnce();
+    }, 30000);
+
+    if (!listenersBound) {
+      listenersBound = true;
+      const wake = () => { if (!document.hidden) { connectSse(); pollOnce(); } };
+      document.addEventListener('visibilitychange', wake);
+      window.addEventListener('focus', wake);
+      window.addEventListener('pageshow', wake);
+      window.addEventListener('online', wake);
+    }
   }
 
   function onKicked(device) {

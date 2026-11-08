@@ -1,5 +1,5 @@
 window.LOKAMAIN_LIVE_DATA = {
-  "updatedAt": 1794156653844,
+  "updatedAt": 1794157798231,
   "settings": {
     "storeName": "LokaMain Digital",
     "siteSubtitle": "Pilih game pembelajaran digital, lalu klik tombol WhatsApp di bawahnya untuk memesan.",
@@ -28,7 +28,7 @@ window.LOKAMAIN_LIVE_DATA = {
       "price": 50000,
       "image": "assets/games/game-1794134083691.gif",
       "coverImage": "assets/games/game-1794148367677.png",
-      "shortDesc": "Game edukasi berbasis gerak tubuh (AI Pose) materi waktu & jam (As-Sa'ah) Bahasa Arab dengan papan ular tangga interaktif 2 pemain. (SOAL BISA DI UBAH)",
+      "shortDesc": "Game edukasi berbasis gerak tubuh dengan papan ular tangga interaktif 2 pemain. (SOAL BISA DI UBAH)",
       "howToPlay": [
         "Hubungkan laptop ke Smart TV atau proyektor kelas dan aktifkan kamera web.",
         "Pemain 1 dan Pemain 2 berdiri di depan kamera untuk melempar dadu dengan pose tubuh.",
