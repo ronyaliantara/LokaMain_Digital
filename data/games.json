@@ -1,5 +1,5 @@
 {
-  "updatedAt": 1794143532943,
+  "updatedAt": 1794144577286,
   "settings": {
     "storeName": "LokaMain Digital",
     "siteSubtitle": "Pilih game pembelajaran digital, lalu klik tombol WhatsApp di bawahnya untuk memesan.",
@@ -58,7 +58,7 @@
       "device": "Smart TV, Laptop & Kamera Web",
       "price": 35000,
       "image": "assets/games/game-pulau.jpg",
-      "shortDesc": "Game edukasi kuis IPS SMP interaktif dengan navigasi arah kapal menggunakan sensor gerakan hidung/wajah (AI Face Detection) di depan kamera.",
+      "shortDesc": "Game edukasi kuis IPS SMP(SOAL BISA DI UBAH) interaktif dengan navigasi arah kapal menggunakan sensor gerakan hidung/wajah (AI Face Detection) di depan kamera.",
       "howToPlay": [
         "Nyalakan kamera web laptop atau hubungkan ke Smart TV kelas.",
         "Daftarkan nama 2–4 siswa pemain untuk saling berkompetisi secara bergantian.",
@@ -79,5 +79,46 @@
       "coverImage": "assets/games/game-1794142515963.png"
     }
   ],
-  "orders": []
+  "orders": [
+    {
+      "id": "ORD-104",
+      "date": "2026-11-05 19:40",
+      "buyerName": "Ibu Ratna (SDN 3 Sleman)",
+      "buyerPhone": "6281398765432",
+      "gameId": "LM-A",
+      "gameTitle": "Hitung Cepat Pasar",
+      "amount": 29000,
+      "status": "Menunggu Link"
+    },
+    {
+      "id": "ORD-103",
+      "date": "2026-11-05 18:15",
+      "buyerName": "Pak Hendra (Guru Kelas 5)",
+      "buyerPhone": "6285711223344",
+      "gameId": "LM-C",
+      "gameTitle": "Rantai Makanan Rimba",
+      "amount": 35000,
+      "status": "Link Terkirim"
+    },
+    {
+      "id": "ORD-102",
+      "date": "2026-11-05 15:20",
+      "buyerName": "Kak Dinda (Wali Murid)",
+      "buyerPhone": "6281233445566",
+      "gameId": "LM-B",
+      "gameTitle": "Susun Kata Nusantara",
+      "amount": 30000,
+      "status": "Link Terkirim"
+    },
+    {
+      "id": "ORD-101",
+      "date": "2026-11-05 11:05",
+      "buyerName": "Ibu Sari (SD Tunas Harapan)",
+      "buyerPhone": "6282199887766",
+      "gameId": "LM-E",
+      "gameTitle": "Peta Pulau Indonesia",
+      "amount": 32000,
+      "status": "Link Terkirim"
+    }
+  ]
 }
