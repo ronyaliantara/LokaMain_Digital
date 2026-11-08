@@ -220,6 +220,67 @@ img {
   border-bottom: 1px solid var(--border);
 }
 
+/* === Wadah Media Dual-Layer (Cover Awal -> Video / GIF) === */
+.game-media-wrap {
+  position: relative;
+  width: 100%;
+  aspect-ratio: 16 / 10;
+  overflow: hidden;
+  background-color: #0b535c;
+  border-bottom: 1px solid var(--border);
+}
+
+.game-media-wrap .game-thumb {
+  width: 100%;
+  height: 100%;
+  aspect-ratio: 16 / 10;
+  object-fit: cover;
+  display: block;
+  border-bottom: none;
+}
+
+.game-media-wrap .game-cover-layer {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  z-index: 2;
+  opacity: 1;
+  transition: opacity 0.75s ease-in-out;
+  pointer-events: none;
+}
+
+.game-media-wrap .game-anim-layer {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  z-index: 1;
+}
+
+.game-media-wrap.is-playing .game-cover-layer,
+.game-media-wrap:hover .game-cover-layer {
+  opacity: 0;
+}
+
+.game-media-badge {
+  position: absolute;
+  bottom: 8px;
+  right: 8px;
+  z-index: 3;
+  background: rgba(11, 83, 92, 0.85);
+  color: #ffffff;
+  font-size: 10.5px;
+  font-weight: 700;
+  padding: 3px 8px;
+  border-radius: 4px;
+  backdrop-filter: blur(4px);
+  pointer-events: none;
+  transition: opacity 0.3s ease;
+}
+
 .game-info {
   padding: 16px;
   display: flex;

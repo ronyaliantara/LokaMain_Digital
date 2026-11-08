@@ -1,5 +1,5 @@
 {
-  "updatedAt": 1794138556466,
+  "updatedAt": 1794140880085,
   "settings": {
     "storeName": "LokaMain Digital",
     "siteSubtitle": "Pilih game pembelajaran digital, lalu klik tombol WhatsApp di bawahnya untuk memesan.",
@@ -27,6 +27,7 @@
       "device": "Smart TV, Laptop & Proyektor",
       "price": 35000,
       "image": "assets/games/game-1794134083691.gif",
+      "coverImage": "assets/games/game-1793962874784.png",
       "shortDesc": "Game edukasi berbasis gerak tubuh (AI Pose) materi waktu & jam (As-Sa'ah) Bahasa Arab dengan papan ular tangga interaktif 2 pemain.",
       "howToPlay": [
         "Hubungkan laptop ke Smart TV atau proyektor kelas dan aktifkan kamera web.",

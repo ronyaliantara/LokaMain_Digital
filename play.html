@@ -407,11 +407,13 @@
     document.getElementById('play-meta').textContent = `${game.code} · ${game.category} · ${game.grade}`;
     document.getElementById('play-desc').textContent = game.shortDesc;
     const isVideo = /\.(mp4|webm|mov|m4v)(\?.*)?$/i.test(game.image || '') || String(game.image || '').startsWith('data:video/');
+    const hasCover = Boolean(game.coverImage && String(game.coverImage).trim());
+    const posterAttr = hasCover ? ` poster="${game.coverImage}"` : '';
     const imgEl = document.getElementById('play-image');
     if (imgEl) {
       const parent = imgEl.parentElement;
       if (isVideo) {
-        parent.innerHTML = `<video id="play-image" src="${game.image}" autoplay loop muted playsinline controls style="width: 100%; height: auto; display: block;"></video>`;
+        parent.innerHTML = `<video id="play-image" src="${game.image}"${posterAttr} autoplay loop muted playsinline controls style="width: 100%; height: auto; display: block;"></video>`;
       } else {
         parent.innerHTML = `<img id="play-image" src="${game.image}" width="800" height="500" alt="Layar permainan">`;
       }

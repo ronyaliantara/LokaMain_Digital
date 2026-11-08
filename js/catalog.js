@@ -257,10 +257,31 @@
         const safeTitle = escapeHtml(game.title);
         const safeDesc = escapeHtml(game.shortDesc || '');
         const safeImage = sanitizeImageSrc(game.image);
+        const hasCover = Boolean(game.coverImage && String(game.coverImage).trim());
+        const safeCover = hasCover ? sanitizeImageSrc(game.coverImage) : '';
         const isVideo = /\.(mp4|webm|mov|m4v)(\?.*)?$/i.test(game.image || '') || String(game.image || '').startsWith('data:video/');
-        const mediaHtml = isVideo
-          ? `<video src="${safeImage}" autoplay loop muted playsinline class="game-thumb" style="object-fit: cover;"></video>`
-          : `<img src="${safeImage}" alt="${safeTitle}" class="game-thumb" loading="lazy">`;
+        const isGif = /\.(gif)(\?.*)?$/i.test(game.image || '') || String(game.image || '').startsWith('data:image/gif');
+
+        let mediaHtml = '';
+        if (hasCover && (isVideo || isGif)) {
+          // Mode Cover + Animasi: Tampilkan gambar cover di awal, lalu berganti ke video / GIF bergerak
+          const animTag = isVideo
+            ? `<video src="${safeImage}" poster="${safeCover}" autoplay loop muted playsinline class="game-thumb game-anim-layer" style="object-fit: cover;"></video>`
+            : `<img src="${safeImage}" alt="${safeTitle}" class="game-thumb game-anim-layer" loading="lazy">`;
+
+          mediaHtml = `
+            <div class="game-media-wrap" data-card-id="${escapeHtml(game.id)}">
+              <img src="${safeCover}" alt="${safeTitle}" class="game-thumb game-cover-layer" loading="lazy">
+              ${animTag}
+              <span class="game-media-badge">🎬 Cuplikan</span>
+            </div>
+          `;
+        } else if (isVideo) {
+          mediaHtml = `<video src="${safeImage}" autoplay loop muted playsinline class="game-thumb" style="object-fit: cover;"></video>`;
+        } else {
+          mediaHtml = `<img src="${safeImage}" alt="${safeTitle}" class="game-thumb" loading="lazy">`;
+        }
+
         return `
           <article class="game-block">
             ${mediaHtml}
@@ -279,6 +300,14 @@
         `;
       })
       .join('');
+
+    // Efek Transisi: Awal tampilkan Cover, lalu ~1.8 detik kemudian tayangkan Animasi / Video Cuplikan
+    const mediaWraps = grid.querySelectorAll('.game-media-wrap');
+    if (mediaWraps.length > 0) {
+      setTimeout(() => {
+        mediaWraps.forEach((wrap) => wrap.classList.add('is-playing'));
+      }, 1800);
+    }
   }
 
   // Cek pembaruan otomatis dari file data/katalog-sync.js (berfungsi di file:// maupun localhost)
