@@ -3,119 +3,88 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Balap Roket Antariksa — Kuis Rebutan 1–4 Pemain</title>
+  <title>Balap Roket Antariksa — Duel Rebutan 2 Pemain</title>
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@600;700;800;900&family=Plus+Jakarta+Sans:wght@500;600;700;800&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="quiz-core.css">
-  <link rel="stylesheet" href="style.css">
+  <link rel="stylesheet" href="style.css?v=20261110g">
 </head>
 <body>
-  <!-- Definisi grafis bersama (gradasi roket, api, planet) -->
-  <svg width="0" height="0" style="position:absolute" aria-hidden="true">
-    <defs>
-      <linearGradient id="gBody" x1="0" y1="0" x2="0" y2="1">
-        <stop offset="0" stop-color="#ffffff"/><stop offset=".55" stop-color="#dbe4f0"/><stop offset="1" stop-color="#8291a8"/>
-      </linearGradient>
-      <linearGradient id="gFlame" x1="1" y1="0" x2="0" y2="0">
-        <stop offset="0" stop-color="#fff7cc"/><stop offset=".35" stop-color="#fbbf24"/><stop offset=".75" stop-color="#f97316"/><stop offset="1" stop-color="#ef4444" stop-opacity="0"/>
-      </linearGradient>
-      <radialGradient id="gGlass" cx=".35" cy=".35" r=".7">
-        <stop offset="0" stop-color="#bae6fd"/><stop offset=".5" stop-color="#0ea5e9"/><stop offset="1" stop-color="#0c1d3d"/>
-      </radialGradient>
-      <radialGradient id="gPlanet" cx=".32" cy=".3" r=".8">
-        <stop offset="0" stop-color="#fde68a"/><stop offset=".45" stop-color="#f59e0b"/><stop offset=".8" stop-color="#b45309"/><stop offset="1" stop-color="#451a03"/>
-      </radialGradient>
-      <linearGradient id="gRing" x1="0" y1="0" x2="1" y2="0">
-        <stop offset="0" stop-color="#fef3c7" stop-opacity=".1"/><stop offset=".5" stop-color="#fde68a"/><stop offset="1" stop-color="#fef3c7" stop-opacity=".1"/>
-      </linearGradient>
-      <linearGradient id="gTail" x1="0" y1="0" x2="1" y2="0">
-        <stop offset="0" stop-color="#fff7cc"/><stop offset=".25" stop-color="#fbbf24"/><stop offset=".6" stop-color="#f97316" stop-opacity=".7"/><stop offset="1" stop-color="#ef4444" stop-opacity="0"/>
-      </linearGradient>
-      <symbol id="rocket" viewBox="0 0 130 52">
-        <path class="flame" d="M24 16 Q-6 26 24 36 Z" fill="url(#gFlame)"/>
-        <path d="M26 14 L14 2 Q30 4 46 14 Z" fill="var(--pc)" stroke="#0f172a" stroke-width="1.5" stroke-linejoin="round"/>
-        <path d="M26 38 L14 50 Q30 48 46 38 Z" fill="var(--pc)" stroke="#0f172a" stroke-width="1.5" stroke-linejoin="round"/>
-        <path d="M22 13 H84 Q114 15 126 26 Q114 37 84 39 H22 Q18 26 22 13 Z" fill="url(#gBody)" stroke="#0f172a" stroke-width="1.6"/>
-        <path d="M92 13.6 Q114 15 126 26 Q114 37 92 38.4 Q99 26 92 13.6 Z" fill="var(--pc)" stroke="#0f172a" stroke-width="1.4"/>
-        <rect x="44" y="13.2" width="7" height="25.6" fill="var(--pc)" opacity=".85"/>
-        <circle cx="72" cy="26" r="8" fill="url(#gGlass)" stroke="#0f172a" stroke-width="1.6"/>
-        <circle cx="72" cy="26" r="8" fill="none" stroke="var(--pc)" stroke-width="2.4" opacity=".9"/>
-        <path d="M67.5 22.5 Q70 20 73.5 20.5" stroke="#fff" stroke-width="1.6" fill="none" stroke-linecap="round" opacity=".8"/>
-        <path d="M24 30 H86" stroke="#0f172a" stroke-width=".8" opacity=".25"/>
-      </symbol>
-    </defs>
-  </svg>
-
-  <canvas id="sky"></canvas>
-
-  <header class="topbar">
-    <div class="brand">
-      <svg class="brand-mark" viewBox="0 0 130 52"><use href="#rocket" style="--pc:#22d3ee"/></svg>
-      <div>
-        <h1>BALAP ROKET</h1>
-        <p>Kuis rebutan antariksa</p>
+  <header class="hud">
+    <div class="pcard p1" id="pcard0" style="--pc:#38bdf8">
+      <span class="pav" id="pav0">🧑‍🚀</span>
+      <div class="pinfo">
+        <div class="pname" id="pname0">Pemain 1</div>
+        <div class="pips" id="pips0"></div>
+        <div class="pkeys" id="pkeys0">W A S D / stik 1</div>
       </div>
+      <div class="pitem" id="pitem0" title="Efek aktif"><span>—</span></div>
+      <div class="pscore" id="pscore0">0</div>
     </div>
-    <div class="round-info">
-      <div><small>RONDE</small><b id="roundNo">0</b></div>
-      <div class="sep"></div>
-      <div><small>TARGET</small><b id="targetNo">15</b></div>
-      <div class="sep"></div>
-      <div id="recBox" title="Rekor reaksi tercepat"><small>REKOR</small><b id="recNo">–</b></div>
+
+    <div class="center">
+      <div class="brand">BALAP ROKET</div>
+      <div class="qinfo"><span>SOAL <b id="qNo">0</b></span><span class="timer" id="timer">––</span><span>TARGET <b id="targetNo">5</b></span></div>
+      <nav class="tools">
+        <button class="tbtn" data-qc="sound" title="Suara"></button>
+        <button class="tbtn" data-qc="fullscreen" title="Layar penuh">⛶</button>
+        <button class="tbtn" id="btnRules" title="Peraturan">📜</button>
+        <button class="tbtn" id="btnSetup" title="Ubah pemain / pengaturan">⚙️</button>
+        <button class="tbtn wide" data-qc="teacher" title="Mode Guru">🔐 Guru</button>
+      </nav>
     </div>
-    <nav class="tools">
-      <button class="icon-btn" id="btnMusic" title="Musik"><svg viewBox="0 0 24 24"><path d="M9 18V5l12-2v13"/><circle cx="6" cy="18" r="3"/><circle cx="18" cy="16" r="3"/></svg></button>
-      <button class="icon-btn" id="btnSound" title="Suara"></button>
-      <button class="icon-btn" data-qc="fullscreen" title="Layar penuh"><svg viewBox="0 0 24 24"><path d="M4 9V4h5M15 4h5v5M20 15v5h-5M9 20H4v-5"/></svg></button>
-      <button class="icon-btn" id="btnRestart" title="Ulang / ubah pemain"><svg viewBox="0 0 24 24"><path d="M4 12a8 8 0 1 0 2.4-5.7M4 4v5h5"/></svg></button>
-      <button class="icon-btn wide" data-qc="teacher" title="Mode Guru"><svg viewBox="0 0 24 24"><path d="M12 15a3 3 0 1 0 0-6 3 3 0 0 0 0 6z"/><path d="M19.4 15a1.7 1.7 0 0 0 .3 1.8l.1.1a2 2 0 1 1-2.8 2.8l-.1-.1a1.7 1.7 0 0 0-1.8-.3 1.7 1.7 0 0 0-1 1.5V21a2 2 0 1 1-4 0v-.1a1.7 1.7 0 0 0-1.1-1.5 1.7 1.7 0 0 0-1.8.3l-.1.1a2 2 0 1 1-2.8-2.8l.1-.1a1.7 1.7 0 0 0 .3-1.8 1.7 1.7 0 0 0-1.5-1H3a2 2 0 1 1 0-4h.1a1.7 1.7 0 0 0 1.5-1.1 1.7 1.7 0 0 0-.3-1.8l-.1-.1a2 2 0 1 1 2.8-2.8l.1.1a1.7 1.7 0 0 0 1.8.3H9a1.7 1.7 0 0 0 1-1.5V3a2 2 0 1 1 4 0v.1a1.7 1.7 0 0 0 1 1.5 1.7 1.7 0 0 0 1.8-.3l.1-.1a2 2 0 1 1 2.8 2.8l-.1.1a1.7 1.7 0 0 0-.3 1.8V9a1.7 1.7 0 0 0 1.5 1H21a2 2 0 1 1 0 4h-.1a1.7 1.7 0 0 0-1.5 1z"/></svg><span>Mode Guru</span></button>
-    </nav>
+
+    <div class="pcard p2" id="pcard1" style="--pc:#f43f5e">
+      <span class="pav" id="pav1">👩‍🚀</span>
+      <div class="pinfo">
+        <div class="pname" id="pname1">Pemain 2</div>
+        <div class="pips" id="pips1"></div>
+        <div class="pkeys" id="pkeys1">Panah / stik 2</div>
+      </div>
+      <div class="pitem" id="pitem1" title="Efek aktif"><span>—</span></div>
+      <div class="pscore" id="pscore1">0</div>
+    </div>
   </header>
 
-  <main class="game">
-    <section class="track" id="track">
-      <div class="lanes" id="lanes"></div>
-      <div class="finish">
-        <svg class="planet" viewBox="0 0 120 120">
-          <ellipse cx="60" cy="62" rx="58" ry="14" fill="none" stroke="url(#gRing)" stroke-width="5" transform="rotate(-18 60 62)" opacity=".55"/>
-          <circle cx="60" cy="60" r="34" fill="url(#gPlanet)"/>
-          <path d="M30 52 Q60 44 92 56" stroke="#78350f" stroke-width="4" fill="none" opacity=".35"/>
-          <path d="M28 68 Q58 62 90 72" stroke="#78350f" stroke-width="3" fill="none" opacity=".3"/>
-          <path d="M2 66 Q60 86 118 58" fill="none" stroke="url(#gRing)" stroke-width="5" transform="rotate(-6 60 62)"/>
-        </svg>
-        <span>FINIS</span>
-      </div>
-    </section>
+  <main class="arena" id="arena">
+    <canvas id="cv"></canvas>
 
-    <section class="console">
-      <div class="qcard" id="qcard">
-        <div class="q-top">
-          <span class="q-cat" id="qCat">Siap?</span>
-          <span class="q-status" id="qStatus"></span>
-          <div class="q-timer" id="qTimer">
-            <svg viewBox="0 0 44 44"><circle cx="22" cy="22" r="19" class="t-bg"/><circle cx="22" cy="22" r="19" class="t-fg" id="tRing"/></svg>
-            <b id="tNum">–</b>
-          </div>
-        </div>
-        <div class="q-body" id="qBody">
-          <div class="q-text" id="qText">Tekan <b>MULAI RONDE</b> — semua pilot menjawab bersamaan!</div>
-          <div class="q-opts" id="qOpts"></div>
-        </div>
-        <div class="q-foot" id="qFoot">
-          <div class="q-exp" id="qExp"></div>
-          <button class="next-btn" id="btnNext">MULAI RONDE <small>Spasi</small></button>
-        </div>
-        <div class="countdown" id="countdown"></div>
+    <!-- Papan soal di atas (slow-motion saat baca, tetap tampil saat rebutan) -->
+    <div class="qstrip" id="qstrip" hidden>
+      <div class="qs-top">
+        <span class="qs-slow" id="qsSlow" hidden>🐢 SLOW-MOTION <b id="qsSlowN">10</b></span>
+        <span class="qcat" id="qsCat"></span>
+        <button class="qs-go" id="qsGo" hidden>▶ Mulai <small>Spasi</small></button>
       </div>
-      <div class="pads" id="pads"></div>
-    </section>
+      <p id="qsText"></p>
+      <div class="qs-opts" id="qsOpts"></div>
+      <div class="qans" id="qsAns" hidden></div>
+      <div class="tbar"><i id="tbar"></i></div>
+    </div>
+
+    <!-- Analog di layar: Smart TV / IFP layar sentuh -->
+    <div class="joy j0" id="joy0" style="--pc:#38bdf8" hidden>
+      <div class="joy-base"><span class="ar u">▲</span><span class="ar d">▼</span><span class="ar l">◀</span><span class="ar r">▶</span><div class="joy-knob">P1</div></div>
+    </div>
+    <div class="joy j1" id="joy1" style="--pc:#f43f5e" hidden>
+      <div class="joy-base"><span class="ar u">▲</span><span class="ar d">▼</span><span class="ar l">◀</span><span class="ar r">▶</span><div class="joy-knob">P2</div></div>
+    </div>
+
+    <!-- Pesan / hitung mundur -->
+    <div class="msg" id="msg" hidden>
+      <div class="msg-card">
+        <h2 id="msgTitle"></h2>
+        <p id="msgSub"></p>
+        <button class="msg-btn" id="msgBtn" hidden>▶ MULAI <small>Spasi</small></button>
+      </div>
+    </div>
   </main>
 
   <script src="https://cdn.jsdelivr.net/npm/xlsx@0.18.5/dist/xlsx.full.min.js" defer></script>
   <script src="questions-default.js"></script>
   <script src="quiz-core.js"></script>
-  <script src="game.js"></script>
+  <script src="game.js?v=20261110h"></script>
   <script src="../lokamain-license.js?v=20261109"></script>
 </body>
 </html>

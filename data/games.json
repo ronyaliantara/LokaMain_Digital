@@ -1,5 +1,5 @@
 {
-  "updatedAt": 1794218035138,
+  "updatedAt": 1794228040204,
   "settings": {
     "storeName": "LokaMain Digital",
     "siteSubtitle": "Pilih game pembelajaran digital, lalu klik tombol WhatsApp di bawahnya untuk memesan.",
@@ -56,18 +56,18 @@
       "id": "LM-BR",
       "code": "SERI-BR",
       "title": "Balap Roket Antariksa",
-      "category": "IPS & Kuis Rebutan (Soal Bisa Diubah)",
+      "category": "Kuis Rebutan 2 Pemain (Soal Bisa Diubah)",
       "grade": "✏️ Soal Bisa Diubah",
       "duration": "15–30 menit",
-      "device": "Smart TV / IFP, Laptop & Proyektor",
+      "device": "Smart TV / IFP (layar sentuh), Laptop & Proyektor",
       "price": 35000,
       "image": "assets/games/game-1794217725235d592.mp4",
       "coverImage": "assets/games/game-17942084489833542.jpg",
-      "shortDesc": "Balapan roket antariksa 1–4 pemain! Jawab paling cepat dan benar untuk melesat ke garis finis. Ada Hyperdrive, kotak misteri, dan ronde spesial. (SOAL BISA DI UBAH lewat Excel)",
+      "shortDesc": "Duel roket antariksa 2 pemain di satu peta (main sendiri lawan Robot)! Soal tampil dengan slow-motion untuk dibaca, lalu rebutan menabrak kotak jawaban yang benar. Ada rudal pelacak, meteor, item seru & analog di layar untuk IFP. (SOAL BISA DI UBAH lewat Excel)",
       "howToPlay": [
-        "Pilih 1–4 pemain (main sendiri ditemani roket robot).",
-        "Semua pemain menjawab soal yang sama di pad masing-masing — yang pertama benar langsung melesat maju.",
-        "Kumpulkan bintang dan kotak misteri, hindari meteor. Roket pertama di garis finis menang!"
+        "Pilih 1–2 pemain (main sendiri melawan Robot). Gerakkan roket dengan analog di layar (IFP/layar sentuh), WASD, tombol panah/remote TV, atau gamepad.",
+        "Soal muncul di papan atas dan permainan jadi slow-motion untuk membaca. Lalu 3 kotak jawaban muncul acak — tabrak yang BENAR lebih dulu untuk +1 poin.",
+        "Salah tabrak atau roket saling bertabrakan = pingsan. Ambil item: rudal pelacak, sinar beku, kemudi terbalik, hujan meteor, perisai, turbo. Pertama mencapai target poin menang!"
       ],
       "learningGoals": [
         "Mengulang materi IPS SMP dengan suasana balapan yang seru.",
