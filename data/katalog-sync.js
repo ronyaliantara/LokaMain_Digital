@@ -1,5 +1,5 @@
 window.LOKAMAIN_LIVE_DATA = {
-  "updatedAt": 1794232971314,
+  "updatedAt": 1794233225054,
   "settings": {
     "storeName": "LokaMain Digital",
     "siteSubtitle": "Pilih game pembelajaran digital, lalu klik tombol WhatsApp di bawahnya untuk memesan.",
@@ -97,7 +97,7 @@ window.LOKAMAIN_LIVE_DATA = {
       "duration": "10–20 menit",
       "device": "Smart TV / IFP, Laptop Layar Sentuh",
       "price": 40000,
-      "image": "assets/games/game-17942178098708b27.mp4",
+      "image": "assets/games/game-17942331735799805.mp4",
       "coverImage": "assets/games/game-179420844902549ee.jpg",
       "shortDesc": "Balapan lari 2 pemain dalam satu layar! Jawab soal secepatnya untuk dapat turbo, lompat dan sleding melewati rintangan, lalu lempar pisang agar lawan terpeleset. Grafis pegunungan cerah & animasi seru, tetap ringan untuk IFP. (SOAL BISA DI UBAH lewat Excel)",
       "howToPlay": [
