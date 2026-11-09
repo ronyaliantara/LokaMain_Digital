@@ -262,7 +262,8 @@
     if (/\b(SMA|SMK|MA)\b/.test(t)) out.push('SMA');
     return out;
   }
-  const levelRank = (g) => { const l = levelsOf(g); return l.length ? LEVEL_KEYS.indexOf(l[0]) : 9; };
+  // Urutan tampil: game SMP/SMA paling atas, lalu SD, lalu PAUD; yang belum diberi jenjang paling bawah.
+  const levelRank = (g) => { const l = levelsOf(g); return l.length ? LEVEL_KEYS.length - LEVEL_KEYS.indexOf(l[0]) : 9; };
 
   function renderLevelTabs(store) {
     const bar = $('level-tabs');
@@ -271,7 +272,7 @@
     if (!LEVEL_KEYS.some((k) => counts[k])) { bar.hidden = true; activeLevel = 'all'; return; }
     if (activeLevel !== 'all' && !counts[activeLevel]) activeLevel = 'all';
     const tab = (key, label, icon, n) => `<button type="button" role="tab" class="level-tab${activeLevel === key ? ' is-active' : ''}" data-level="${key}" aria-selected="${activeLevel === key}"${n === 0 ? ' disabled' : ''}>${icon ? `<span aria-hidden="true">${icon}</span>` : ''}${escapeHtml(label)}<b>${n}</b></button>`;
-    bar.innerHTML = tab('all', 'Semua', '✨', store.games.length) + LEVELS.map((l) => tab(l.key, l.label, l.icon, counts[l.key])).join('');
+    bar.innerHTML = tab('all', 'Semua', '✨', store.games.length) + [...LEVELS].reverse().map((l) => tab(l.key, l.label, l.icon, counts[l.key])).join('');
     bar.hidden = false;
   }
 
@@ -283,7 +284,7 @@
 
   function visibleGames(store) {
     const list = activeLevel === 'all' ? [...store.games] : store.games.filter((g) => levelsOf(g).includes(activeLevel));
-    // urutkan dari jenjang paling dasar, urutan admin tetap dipertahankan di dalam jenjang
+    // urutkan dari jenjang tertinggi (SMP/SMA di atas), urutan admin tetap dipertahankan di dalam jenjang
     return list.map((g, i) => ({ g, i })).sort((a, b) => levelRank(a.g) - levelRank(b.g) || a.i - b.i).map((x) => x.g);
   }
 
