@@ -1,5 +1,5 @@
 {
-  "updatedAt": 1794169439770,
+  "updatedAt": 1794208215709,
   "settings": {
     "storeName": "LokaMain Digital",
     "siteSubtitle": "Pilih game pembelajaran digital, lalu klik tombol WhatsApp di bawahnya untuk memesan.",
@@ -18,6 +18,130 @@
   },
   "games": [
     {
+      "id": "LM-HK",
+      "code": "SERI-HK",
+      "title": "Pulau Harta Karun",
+      "category": "IPS & Kuis Rebutan (Soal Bisa Diubah)",
+      "grade": "SMP Kelas VII–IX",
+      "duration": "20–40 menit",
+      "device": "Smart TV / IFP, Laptop & Proyektor",
+      "price": 40000,
+      "image": "",
+      "coverImage": "assets/games/game-1794208175000594f.jpg",
+      "shortDesc": "Kuis rebutan bajak laut 1–4 pemain. Yang pertama menjawab benar menggali petak harta di peta: koin, peti emas, beo pencuri, bom, atau Kraken! (SOAL BISA DI UBAH lewat Excel)",
+      "howToPlay": [
+        "Buka game di Smart TV/IFP atau laptop, lalu pilih jumlah kapten (1–4 pemain; main sendiri melawan Kapten Robot).",
+        "Soal tampil di atas untuk semua pemain. Jawab di pad warna masing-masing (layar sentuh) atau tombol keyboard.",
+        "Yang pertama benar memilih 1 petak harta; yang salah −10 koin dan soal langsung diganti. Koin terbanyak menjadi juara!"
+      ],
+      "learningGoals": [
+        "Menguatkan pemahaman materi IPS SMP melalui kuis yang cepat dan kompetitif.",
+        "Melatih ketelitian membaca soal, kecepatan berpikir, dan sportivitas.",
+        "Guru bebas mengganti bank soal sesuai mata pelajaran lewat impor/ekspor Excel."
+      ],
+      "gameUrl": "games/harta-karun/",
+      "sampleQuestion": "Benua terluas di dunia yang juga memiliki jumlah penduduk terbanyak adalah Benua...",
+      "sampleOptions": [
+        "Asia",
+        "Amerika",
+        "Afrika"
+      ],
+      "sampleAnswer": 0
+    },
+    {
+      "id": "LM-BR",
+      "code": "SERI-BR",
+      "title": "Balap Roket Antariksa",
+      "category": "IPS & Kuis Rebutan (Soal Bisa Diubah)",
+      "grade": "SMP Kelas VII–IX",
+      "duration": "15–30 menit",
+      "device": "Smart TV / IFP, Laptop & Proyektor",
+      "price": 35000,
+      "image": "",
+      "coverImage": "assets/games/game-1794208175038cba5.jpg",
+      "shortDesc": "Balapan roket antariksa 1–4 pemain! Jawab paling cepat dan benar untuk melesat ke garis finis. Ada Hyperdrive, kotak misteri, dan ronde spesial. (SOAL BISA DI UBAH lewat Excel)",
+      "howToPlay": [
+        "Pilih 1–4 pemain (main sendiri ditemani roket robot).",
+        "Semua pemain menjawab soal yang sama di pad masing-masing — yang pertama benar langsung melesat maju.",
+        "Kumpulkan bintang dan kotak misteri, hindari meteor. Roket pertama di garis finis menang!"
+      ],
+      "learningGoals": [
+        "Mengulang materi IPS SMP dengan suasana balapan yang seru.",
+        "Melatih fokus dan kecepatan menjawab secara sportif.",
+        "Bank soal fleksibel: guru bisa mengganti soal lewat impor/ekspor Excel."
+      ],
+      "gameUrl": "games/balap-roket/",
+      "sampleQuestion": "Samudera terluas di permukaan bumi yang menutupi sepertiga luas dunia adalah Samudera...",
+      "sampleOptions": [
+        "Pasifik",
+        "Hindia",
+        "Atlantik"
+      ],
+      "sampleAnswer": 0
+    },
+    {
+      "id": "LM-LP",
+      "code": "SERI-LP",
+      "title": "Lari Pintar",
+      "category": "IPS & Balapan 2 Pemain (Soal Bisa Diubah)",
+      "grade": "SMP Kelas VII–IX",
+      "duration": "10–20 menit",
+      "device": "Smart TV / IFP, Laptop Layar Sentuh",
+      "price": 40000,
+      "image": "",
+      "coverImage": "assets/games/game-1794208175068c006.jpg",
+      "shortDesc": "Balapan lari 2 pemain dalam satu layar! Jawab soal secepatnya untuk dapat turbo, lompat dan bungkuk melewati rintangan, lalu lempar pisang agar lawan terpeleset. (SOAL BISA DI UBAH lewat Excel)",
+      "howToPlay": [
+        "Dua pemain berdiri di depan layar: Pemain 1 di sisi kiri, Pemain 2 di sisi kanan.",
+        "Saat soal muncul, pilih jawaban dengan ◀ ▶ lalu tekan ⬆ (atau sentuh jawabannya). Benar = turbo, salah = pusing 3 detik.",
+        "Lompat dan bungkuk melewati rintangan, ambil kotak hadiah, dan capai garis finis lebih dulu!"
+      ],
+      "learningGoals": [
+        "Melatih membaca soal dengan cepat dan tepat.",
+        "Menggabungkan belajar dengan gerak dan koordinasi tangan–mata.",
+        "Soal dapat diganti guru sesuai materi lewat impor/ekspor Excel."
+      ],
+      "gameUrl": "games/super-mario/",
+      "sampleQuestion": "Daratan sempit yang menjorok masuk ke arah laut disebut...",
+      "sampleOptions": [
+        "Tanjung",
+        "Teluk",
+        "Selat"
+      ],
+      "sampleAnswer": 0
+    },
+    {
+      "id": "LM-PC",
+      "code": "SERI-PC",
+      "title": "Pilot Cerdas",
+      "category": "IPS & Kinestetik (AI Kamera)",
+      "grade": "SMP Kelas VII–IX",
+      "duration": "10–20 menit",
+      "device": "Laptop + Kamera Web, Smart TV / IFP",
+      "price": 45000,
+      "image": "",
+      "coverImage": "assets/games/game-1794208175100807d.jpg",
+      "shortDesc": "Game kamera 1 pemain: terbangkan pesawat menembus awan dengan gerak tubuh! Hidung untuk naik/turun, tangan direntangkan seperti sayap untuk belok, lalu lewati gerbang jawaban yang benar. (SOAL BISA DI UBAH lewat Excel)",
+      "howToPlay": [
+        "Nyalakan kamera web, atur tinggi badan pemain (100–200 cm), lalu berdiri di depan kamera.",
+        "Rentangkan kedua tangan untuk lepas landas; turunkan tangan kanan/kiri untuk belok, gerakkan kepala untuk naik/turun.",
+        "Terbang melewati gerbang jawaban yang benar dan hindari awan badai serta burung."
+      ],
+      "learningGoals": [
+        "Belajar materi IPS SMP sambil bergerak aktif (kinestetik).",
+        "Melatih koordinasi tubuh, keseimbangan, dan fokus.",
+        "Bisa dimainkan tanpa kamera memakai keyboard/mouse; soal bisa diganti lewat Excel."
+      ],
+      "gameUrl": "games/pilot-cerdas/",
+      "sampleQuestion": "Garis khayal yang memisahkan persebaran fauna Asiatis (barat) dengan fauna Peralihan (tengah) adalah...",
+      "sampleOptions": [
+        "Garis Wallace",
+        "Garis Weber",
+        "Garis Lydekker"
+      ],
+      "sampleAnswer": 0
+    },
+    {
       "id": "LM-UT",
       "code": "SERI-UT",
       "title": "Ular Tangga Kinestetik",
@@ -27,7 +151,7 @@
       "device": "Smart TV, Laptop & Proyektor",
       "price": 50000,
       "image": "assets/games/game-1794134083691.gif",
-      "coverImage": "assets/games/game-1794148367677.png",
+      "coverImage": "assets/games/game-17942081751362e09.jpg",
       "shortDesc": "Game edukasi berbasis gerak tubuh dengan papan ular tangga interaktif max 4 pemain. (SOAL BISA DI UBAH)",
       "howToPlay": [
         "Hubungkan laptop ke Smart TV atau proyektor kelas dan aktifkan kamera web.",
@@ -57,7 +181,7 @@
       "duration": "20–30 menit",
       "device": "Smart TV, Laptop & Kamera Web",
       "price": 35000,
-      "image": "assets/games/game-pulau.jpg",
+      "image": "",
       "shortDesc": "Game edukasi kuis IPS SMP(SOAL BISA DI UBAH) interaktif dengan navigasi arah kapal menggunakan sensor gerakan hidung/wajah (AI Face Detection) di depan kamera.",
       "howToPlay": [
         "Nyalakan kamera web laptop atau hubungkan ke Smart TV kelas.",
@@ -76,7 +200,7 @@
         "Afrika"
       ],
       "sampleAnswer": 0,
-      "coverImage": "assets/games/game-1794142515963.png"
+      "coverImage": "assets/games/game-1794208175166f581.jpg"
     }
   ],
   "orders": [
