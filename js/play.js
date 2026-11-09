@@ -59,7 +59,9 @@
   if (cover) {
     // halaman detail: GAMBAR sampul resolusi tinggi (<nama>-hd.jpg, 1600px) — layar kecil otomatis pakai versi 960px.
     // Jika versi HD belum ada (mis. game baru dari admin), pakai gambar sampul biasa.
-    const hd = /^assets\/games\/[^/?#]+\.jpe?g(\?.*)?$/i.test(cover) && !/-hd\.jpe?g/i.test(cover) ? cover.replace(/\.(jpe?g)(\?.*)?$/i, '-hd.$1$2') : '';
+    // versi HD: dari admin (coverHd) atau pola nama <cover>-hd.jpg
+    const hd = safe(game.coverHd) && game.coverHd !== cover ? safe(game.coverHd)
+      : (/^assets\/games\/[^/?#]+\.jpe?g(\?.*)?$/i.test(cover) && !/-hd\.jpe?g/i.test(cover) ? cover.replace(/\.(jpe?g)(\?.*)?$/i, '-hd.$1$2') : '');
     box.innerHTML = `<img src="${esc(hd || cover)}"${hd ? ` srcset="${esc(cover)} 960w, ${esc(hd)} 1600w" sizes="(max-width: 980px) 100vw, 640px"` : ''} width="1600" height="1000" alt="${esc(game.title)}" fetchpriority="high" decoding="async">`;
     if (hd) { const im = box.querySelector('img'); im.addEventListener('error', () => { im.removeAttribute('srcset'); im.src = cover; }, { once: true }); }
   } else if (isVideo(media)) {
