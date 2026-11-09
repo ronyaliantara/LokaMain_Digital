@@ -112,8 +112,8 @@
       cam.stream = await navigator.mediaDevices.getUserMedia({ video: { width: { ideal: 640 }, height: { ideal: 360 }, facingMode: 'user' }, audio: false });
       const v = $('cam'); v.srcObject = cam.stream; await v.play().catch(() => {});
       camState('Memuat sensor gerak…');
-      await loadScript('https://cdn.jsdelivr.net/npm/@mediapipe/pose@0.5/pose.js');
-      cam.pose = new window.Pose({ locateFile: (f) => `https://cdn.jsdelivr.net/npm/@mediapipe/pose@0.5/${f}` });
+      await loadScript('https://cdn.jsdelivr.net/npm/@mediapipe/pose@0.5.1675469404/pose.js');
+      cam.pose = new window.Pose({ locateFile: (f) => `https://cdn.jsdelivr.net/npm/@mediapipe/pose@0.5.1675469404/${f}` });
       cam.pose.setOptions({ modelComplexity: 0, smoothLandmarks: true, enableSegmentation: false, minDetectionConfidence: 0.5, minTrackingConfidence: 0.5 });
       cam.pose.onResults(onPose);
       cam.ready = true; camState('Kamera aktif ✓', 'Hidung: naik/turun • Tangan: belok');

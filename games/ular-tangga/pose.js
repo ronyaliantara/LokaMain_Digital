@@ -105,7 +105,7 @@ class KinestheticPoseEngine {
       }
 
       this.pose = new Pose({
-        locateFile: (file) => `https://cdn.jsdelivr.net/npm/@mediapipe/pose/${file}`
+        locateFile: (file) => `https://cdn.jsdelivr.net/npm/@mediapipe/pose@0.5.1675469404/${file}`
       });
 
       // Model Lite (Complexity 0) hemat daya & tidak membuat browser macet

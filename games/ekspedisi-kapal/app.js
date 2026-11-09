@@ -38,7 +38,7 @@ function applySettings() {
   const g = document.getElementById('goalTxt'); if (g) g.textContent = `(finis: ${GOAL} benar)`;
 }
 const SEEN_KEY = 'ips_ekspedisi_seen_v1';
-const FACE_CDN = 'https://cdn.jsdelivr.net/npm/@mediapipe/face_detection@0.4/';
+const FACE_CDN = 'https://cdn.jsdelivr.net/npm/@mediapipe/face_detection@0.4.1657300184/';
 const rnd = () => { try { const a = new Uint32Array(1); crypto.getRandomValues(a); return a[0] / 4294967296; } catch (e) { return Math.random(); } };
 const pick = (a) => a[Math.floor(rnd() * a.length)];
 const clamp = (v, a, b) => Math.max(a, Math.min(b, v));

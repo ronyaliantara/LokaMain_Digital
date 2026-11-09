@@ -1,5 +1,7 @@
 User-agent: *
 Allow: /
 Disallow: /aplikasi_admin/
+# halaman game terkunci lisensi: tidak perlu muncul di hasil pencarian (halaman produk = play.html)
+Disallow: /games/
 
 Sitemap: https://lokamaindigital.my.id/sitemap.xml
