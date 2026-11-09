@@ -22,7 +22,7 @@
   <meta name="twitter:card" content="summary_large_image">
 
   <link rel="preload" href="assets/fonts/poppins-Bold.woff2" as="font" type="font/woff2" crossorigin>
-  <link rel="stylesheet" href="css/page.css?v=20261110b">
+  <link rel="stylesheet" href="css/page.css?v=20261110c">
 
   <script type="application/ld+json">
   {
@@ -83,6 +83,7 @@
 
       <nav class="main-nav" id="hamburger-menu" aria-label="Menu utama">
         <a href="#katalog" class="nav-link">Katalog</a>
+        <a href="#testimoni" class="nav-link" id="nav-testimoni" hidden>Testimoni</a>
         <a href="#cara-order" class="nav-link">Cara Order</a>
         <a href="#ubah-soal" class="nav-link">Ubah Soal</a>
         <a href="#tentang" class="nav-link">Tentang</a>
@@ -138,6 +139,17 @@
           <div class="skeleton" aria-hidden="true"></div>
           <noscript><p class="empty-state">Aktifkan JavaScript di browser untuk melihat katalog game.</p></noscript>
         </div>
+      </div>
+    </section>
+
+    <!-- Testimoni & hasil uji coba (diisi dari Aplikasi Admin; tersembunyi bila belum ada video) -->
+    <section id="testimoni" class="section testi-section" aria-labelledby="testi-title" hidden>
+      <div class="container">
+        <div class="section-head">
+          <h2 id="testi-title">Testimoni &amp; hasil uji coba di kelas</h2>
+          <p>Lihat langsung bagaimana game kami dimainkan guru dan siswa di sekolah.</p>
+        </div>
+        <div class="testi-grid" id="testi-grid"></div>
       </div>
     </section>
 
@@ -395,7 +407,7 @@
   <script src="data/katalog-sync.js"></script>
   <script src="js/vendor/qrcode.js"></script>
   <script src="js/qris-helper.js"></script>
-  <script src="js/store.js?v=20261110"></script>
-  <script src="js/catalog.js?v=20261110c"></script>
+  <script src="js/store.js?v=20261110b"></script>
+  <script src="js/catalog.js?v=20261110d"></script>
 </body>
 </html>

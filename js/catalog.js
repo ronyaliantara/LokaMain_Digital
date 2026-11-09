@@ -459,6 +459,44 @@
   }
 
   // ---------------------------------------------------------------
+  // Testimoni & hasil uji coba (video diunggah dari Aplikasi Admin)
+  // Video baru dimuat saat ditekan Play (preload="none"), jadi halaman tetap ringan.
+  // ---------------------------------------------------------------
+  let lastTestiKey = '';
+  function renderTestimonials(store) {
+    const sec = $('testimoni'); const box = $('testi-grid'); const nav = $('nav-testimoni');
+    if (!sec || !box) return;
+    const items = (Array.isArray(store.testimonials) ? store.testimonials : []).filter((t) => t && t.visible !== false && safeSrc(t.video));
+    const key = JSON.stringify(items) + '|' + store.games.map((g) => g.id + g.title).join();
+    if (key === lastTestiKey) return; // tidak berubah: jangan ganggu video yang sedang diputar
+    lastTestiKey = key;
+    sec.hidden = !items.length; if (nav) nav.hidden = !items.length;
+    if (!items.length) { box.innerHTML = ''; return; }
+    box.innerHTML = items.map((t) => {
+      const g = t.gameId ? store.games.find((x) => x.id === t.gameId) : null;
+      const poster = safeSrc(t.poster);
+      return `
+        <article class="testi-card">
+          <div class="testi-media">
+            <video src="${escapeHtml(safeSrc(t.video))}"${poster ? ` poster="${escapeHtml(poster)}"` : ''} controls playsinline preload="none" aria-label="${escapeHtml(t.title || 'Video testimoni')}"></video>
+          </div>
+          <div class="testi-body">
+            <div class="testi-tags">
+              <span class="testi-kind${t.type === 'uji-coba' ? ' is-uji' : ''}">${t.type === 'uji-coba' ? 'Hasil Uji Coba' : 'Testimoni'}</span>
+              ${g ? `<a class="testi-game" href="play.html?id=${encodeURIComponent(g.id)}">🎮 ${escapeHtml(g.title)}</a>` : ''}
+            </div>
+            ${t.title ? `<h3>${escapeHtml(t.title)}</h3>` : ''}
+            ${t.caption ? `<p class="testi-quote">${escapeHtml(t.caption)}</p>` : ''}
+            ${t.name ? `<p class="testi-name">— ${escapeHtml(t.name)}</p>` : ''}
+          </div>
+        </article>`;
+    }).join('');
+    // hanya satu video berputar dalam satu waktu
+    const vids = box.querySelectorAll('video');
+    vids.forEach((v) => v.addEventListener('play', () => vids.forEach((o) => { if (o !== v) o.pause(); })));
+  }
+
+  // ---------------------------------------------------------------
   // Render utama
   // ---------------------------------------------------------------
   function renderPublicCatalog() {
@@ -514,6 +552,7 @@
     if (footerWa) footerWa.textContent = phone ? `Pesan & bantuan via WhatsApp: +${phone}` : 'Pesan & bantuan via WhatsApp';
 
     renderHero(store);
+    renderTestimonials(store);
 
     const grid = $('game-grid');
     if (!grid) return;

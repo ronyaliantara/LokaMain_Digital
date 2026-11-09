@@ -104,7 +104,9 @@ function normalizeStore(source, updatedAt) {
     // Daftar game dari data nyata dihormati apa adanya (termasuk kosong) agar produk
     // yang sudah dihapus admin tidak "hidup kembali" dari data bawaan.
     games: Array.isArray(source && source.games) ? source.games : [],
-    orders: Array.isArray(source && source.orders) ? source.orders : []
+    orders: Array.isArray(source && source.orders) ? source.orders : [],
+    // Video testimoni & hasil uji coba (dikelola dari Aplikasi Admin, tampil di web publik)
+    testimonials: Array.isArray(source && source.testimonials) ? source.testimonials : []
   };
 }
 

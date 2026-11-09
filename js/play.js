@@ -70,6 +70,25 @@
     box.hidden = true;
   }
 
+  // Video testimoni / hasil uji coba yang terkait game ini (dari Aplikasi Admin)
+  const testi = (Array.isArray(store.testimonials) ? store.testimonials : []).filter((t) => t && t.visible !== false && t.gameId === game.id && safe(t.video));
+  const tBox = $('play-testi');
+  if (tBox && testi.length) {
+    tBox.innerHTML = `<h2>${testi.some((t) => t.type === 'uji-coba') ? 'Video uji coba &amp; testimoni' : 'Video testimoni'}</h2><div class="testi-grid">` + testi.map((t) => `
+      <article class="testi-card">
+        <div class="testi-media"><video src="${esc(safe(t.video))}"${t.poster ? ` poster="${esc(safe(t.poster))}"` : ''} controls playsinline preload="none" aria-label="${esc(t.title || 'Video testimoni')}"></video></div>
+        <div class="testi-body">
+          <div class="testi-tags"><span class="testi-kind${t.type === 'uji-coba' ? ' is-uji' : ''}">${t.type === 'uji-coba' ? 'Hasil Uji Coba' : 'Testimoni'}</span></div>
+          ${t.title ? `<h3>${esc(t.title)}</h3>` : ''}
+          ${t.caption ? `<p class="testi-quote">${esc(t.caption)}</p>` : ''}
+          ${t.name ? `<p class="testi-name">— ${esc(t.name)}</p>` : ''}
+        </div>
+      </article>`).join('') + '</div>';
+    tBox.hidden = false;
+    const vids = tBox.querySelectorAll('video');
+    vids.forEach((v) => v.addEventListener('play', () => vids.forEach((o) => { if (o !== v) o.pause(); })));
+  }
+
   $('play-ask-wa').href = buildBuyerWhatsAppUrl(game, settings);
   $('play-order').addEventListener('click', () => {
     location.href = `index.html?pesan=${encodeURIComponent(game.id)}#katalog`;

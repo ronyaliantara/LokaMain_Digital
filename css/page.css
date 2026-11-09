@@ -1635,6 +1635,127 @@ a {
   }
 }
 
+/* ---------- Testimoni & hasil uji coba ---------- */
+.nav-link[hidden],
+.testi-section[hidden],
+.play-testi[hidden] {
+  display: none !important;
+}
+
+.testi-section {
+  background: var(--blue-tint);
+  border-block: 2px solid var(--ink);
+}
+
+.testi-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(290px, 1fr));
+  gap: 26px;
+}
+
+.testi-card {
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+  background: var(--card);
+  border: var(--edge);
+  border-radius: var(--radius);
+  box-shadow: 0 5px 0 var(--ink);
+}
+
+.testi-media {
+  aspect-ratio: 16 / 9;
+  background: #0d1b2e;
+  border-bottom: var(--edge);
+}
+
+.testi-media video {
+  display: block;
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
+  background: #0d1b2e;
+}
+
+.testi-body {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  padding: 16px 18px 18px;
+}
+
+.testi-tags {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+}
+
+.testi-kind,
+.testi-game {
+  padding: 3px 10px;
+  border-radius: 999px;
+  font-size: 12px;
+  font-weight: 700;
+  line-height: 1.5;
+}
+
+.testi-kind {
+  background: var(--amber);
+  border: 1.5px solid var(--ink);
+}
+
+.testi-kind.is-uji {
+  background: var(--mint);
+}
+
+.testi-game {
+  background: var(--card);
+  border: 1.5px solid var(--line);
+  color: var(--ink);
+  text-decoration: none;
+}
+
+.testi-game:hover {
+  border-color: var(--ink);
+}
+
+.testi-card h3 {
+  font-size: 1.02rem;
+  font-weight: 700;
+  line-height: 1.35;
+}
+
+.testi-quote {
+  font-size: 14.5px;
+  font-style: italic;
+  color: var(--ink-soft);
+}
+
+.testi-quote::before { content: '“'; }
+.testi-quote::after { content: '”'; }
+
+.testi-name {
+  font-size: 13.5px;
+  font-weight: 600;
+  color: var(--muted);
+}
+
+/* video uji coba di halaman detail game */
+.play-testi {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.play-testi h2 {
+  font-size: 1.02rem;
+}
+
+.play-testi .testi-grid {
+  grid-template-columns: 1fr;
+  gap: 18px;
+}
+
 /* ---------- Tutorial ubah soal (Mode Guru) ---------- */
 .kbd {
   display: inline-block;
