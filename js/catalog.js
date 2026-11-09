@@ -611,6 +611,13 @@
     const dialog = $('order-dialog');
     if (dialog) {
       $('order-close')?.addEventListener('click', () => dialog.close());
+      // tautan "Lihat tutorialnya" (ubah soal): tutup jendela pesan lalu gulir ke bagian tutorial
+      $('order-soal-link')?.addEventListener('click', (e) => {
+        e.preventDefault();
+        dialog.close();
+        const t = $('ubah-soal');
+        if (t) setTimeout(() => t.scrollIntoView({ behavior: 'smooth', block: 'start' }), 60);
+      });
       dialog.addEventListener('click', (e) => {
         if (e.target === dialog) dialog.close();
       });

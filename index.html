@@ -22,7 +22,7 @@
   <meta name="twitter:card" content="summary_large_image">
 
   <link rel="preload" href="assets/fonts/poppins-Bold.woff2" as="font" type="font/woff2" crossorigin>
-  <link rel="stylesheet" href="css/page.css?v=20261109b">
+  <link rel="stylesheet" href="css/page.css?v=20261110">
 
   <script type="application/ld+json">
   {
@@ -84,6 +84,7 @@
       <nav class="main-nav" id="hamburger-menu" aria-label="Menu utama">
         <a href="#katalog" class="nav-link">Katalog</a>
         <a href="#cara-order" class="nav-link">Cara Order</a>
+        <a href="#ubah-soal" class="nav-link">Ubah Soal</a>
         <a href="#tentang" class="nav-link">Tentang</a>
         <a href="#" class="btn btn-wa btn-sm" id="nav-wa" target="_blank" rel="noopener">
           <svg class="icon" aria-hidden="true"><use href="#i-chat"/></svg>
@@ -174,6 +175,63 @@
         </div>
       </section>
     </div>
+
+    <!-- Tutorial ubah soal -->
+    <section id="ubah-soal" class="section" aria-labelledby="soal-title">
+      <div class="container">
+        <div class="section-head">
+          <h2 id="soal-title">Ganti soal sendiri, sesuai materi Anda</h2>
+          <p>Semua game punya <strong>Mode Guru</strong>. Soal bisa diketik langsung di game atau diisi lewat Excel, tanpa perlu menghubungi admin.</p>
+        </div>
+
+        <div class="soal-grid">
+          <ol class="soal-steps">
+            <li>
+              <h3>Buka game dari link Anda</h3>
+              <p>Pakai link yang dikirim admin lewat WhatsApp, di laptop, Smart TV, atau IFP.</p>
+            </li>
+            <li>
+              <h3>Klik tombol <span class="kbd">Guru</span> di bagian atas layar</h3>
+              <p>Tulisannya <b>🔐 Guru</b>, <b>✏️ Guru</b>, atau <b>⚙️ Guru</b>, tergantung gamenya.</p>
+            </li>
+            <li>
+              <h3>Masukkan PIN <span class="kbd">1234</span></h3>
+              <p>Lalu klik <b>Buka</b>. Daftar soal (bank soal) akan tampil.</p>
+            </li>
+            <li>
+              <h3>Ubah soalnya</h3>
+              <p><b>➕ Tambah Soal</b> untuk soal baru, <b>✏️</b> untuk mengedit, <b>🗑️</b> untuk menghapus. Banyak soal sekaligus? Pakai Excel (lihat di bawah).</p>
+            </li>
+            <li>
+              <h3>Klik <span class="kbd">✕ Tutup</span> lalu mulai main</h3>
+              <p>Soal langsung tersimpan otomatis, tidak perlu menekan simpan lagi.</p>
+            </li>
+          </ol>
+
+          <figure class="soal-shot">
+            <img src="assets/tutorial/mode-guru.jpg" width="1500" height="960" loading="lazy" alt="Tampilan Mode Guru: tombol Tambah Soal, Template Excel, Ekspor Excel, Impor Excel, Soal Bawaan, dan tabel daftar soal dengan kunci jawaban">
+            <figcaption>Tampilan Mode Guru di dalam game</figcaption>
+          </figure>
+        </div>
+
+        <div class="soal-excel">
+          <h3>Isi banyak soal sekaligus lewat Excel</h3>
+          <ol>
+            <li>Di Mode Guru, klik <b>📄 Template Excel</b>. File contoh akan terunduh.</li>
+            <li>Buka di Excel, WPS, atau Google Sheets. Isi <b>satu soal per baris</b>: Kategori, Pertanyaan, Pilihan A sampai D, <b>Kunci Jawaban</b> (cukup huruf A/B/C/D), dan Penjelasan (boleh kosong).</li>
+            <li>Simpan sebagai file <b>.xlsx</b>.</li>
+            <li>Kembali ke Mode Guru, pilih <b>Impor: Ganti semua</b> (soal lama diganti) atau <b>Impor: Tambahkan</b> (soal lama tetap ada), lalu klik <b>📥 Impor Excel</b> dan pilih file tadi.</li>
+          </ol>
+        </div>
+
+        <ul class="soal-tips">
+          <li><strong>Soal tersimpan di perangkat yang dipakai.</strong> Mengubah soal di laptop tidak otomatis pindah ke IFP. Klik <b>📤 Ekspor Excel</b> di laptop, lalu <b>Impor Excel</b> di IFP.</li>
+          <li><strong>Simpan file Excel Anda</strong> sebagai cadangan. Kalau data browser dihapus, soal bisa dimasukkan lagi dalam sekali impor.</li>
+          <li><strong>Pakai template dari game yang sama.</strong> Pilihan C dan D boleh dikosongkan untuk soal 2 pilihan. Beberapa game, seperti Ekspedisi Kapal dan Ular Tangga, memang hanya memakai 2 pilihan.</li>
+          <li><strong>Fitur Excel butuh internet.</strong> Tombol <b>🔄 Soal Bawaan</b> mengembalikan soal awal dari kami.</li>
+        </ul>
+      </div>
+    </section>
 
     <!-- Tentang -->
     <section id="tentang" class="section" aria-labelledby="tentang-title">
@@ -287,6 +345,14 @@
         </div>
       </div>
 
+      <div class="order-soal-note">
+        <span class="order-soal-ic" aria-hidden="true">✏️</span>
+        <div>
+          <strong>Soal bisa Anda ganti sendiri</strong>
+          <p>Setelah link diterima, klik tombol <b>Guru</b> di game, masukkan PIN <b>1234</b>, lalu ketik soal baru atau impor dari Excel. <a href="#ubah-soal" id="order-soal-link">Lihat tutorialnya</a></p>
+        </div>
+      </div>
+
       <p id="order-no-qris" class="step-note" hidden>
         Klik tombol di bawah untuk memesan. Info pembayaran akan dikirim penjual lewat WhatsApp.
       </p>
@@ -301,6 +367,6 @@
   <script src="js/vendor/qrcode.js"></script>
   <script src="js/qris-helper.js"></script>
   <script src="js/store.js"></script>
-  <script src="js/catalog.js?v=20261109b"></script>
+  <script src="js/catalog.js?v=20261110"></script>
 </body>
 </html>
