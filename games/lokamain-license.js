@@ -167,9 +167,9 @@
           <p style="margin: 0;">Game ini hanya dapat dimainkan melalui <strong>Link Khusus Pembeli</strong> yang dikirimkan Admin ke nomor WhatsApp Anda.</p>
         </div>
         <div style="text-align: left; margin-bottom: 16px;">
-          <label style="display: block; font-size: 11.5px; font-weight: 800; color: #0f172a; margin-bottom: 6px;">Punya Token atau Kode Lisensi?</label>
+          <label style="display: block; font-size: 11.5px; font-weight: 800; color: #0f172a; margin-bottom: 6px;">Punya link dari Admin?</label>
           <div style="display: flex; gap: 8px;">
-            <input id="lokamain-gate-input" type="text" placeholder="Tempel token atau kode lisensi..." style="flex: 1; padding: 8px 10px; border: 2px solid #cbd5e1; border-radius: 8px; font-size: 12.5px; font-family: monospace;">
+            <input id="lokamain-gate-input" type="text" placeholder="Tempel link lengkap dari Admin..." style="flex: 1; padding: 8px 10px; border: 2px solid #cbd5e1; border-radius: 8px; font-size: 12.5px; font-family: monospace;">
             <button id="lokamain-gate-btn" type="button" class="lokamain-btn lokamain-btn-green">🔓 Buka</button>
           </div>
           <div id="lokamain-gate-err" style="display: none; color: #dc2626; font-size: 12px; font-weight: 700; margin-top: 6px;">
@@ -372,8 +372,9 @@
     document.getElementById('lokamain-reclaim-btn')?.addEventListener('click', resumeSession);
 
     const params = new URLSearchParams(window.location.search);
+    // Hanya TOKEN resmi (link dari Aplikasi Admin) yang membuka game.
+    // Link boleh disalin & dibuka di perangkat mana pun; pemakaian bersamaan dicegah oleh fitur anti-dobel.
     const rawToken = params.get('token') || params.get('auth');
-    const directLic = (params.get('lisensi') || params.get('license') || params.get('pin') || '').trim();
 
     if (rawToken) {
       const verified = LOKAMAIN_SECURITY.verifyAndDecodeToken(rawToken);
@@ -385,27 +386,15 @@
         grantAccess(verified.licenseId, verified.buyerName);
         return;
       }
-    } else if (directLic) {
-      const dName = (params.get('nama') || 'Pembeli Resmi').trim();
-      try {
-        window.history.replaceState({}, document.title, window.location.pathname);
-      } catch (_) {}
-      grantAccess(directLic, dName);
-      return;
     } else {
-      const cachedToken = sessionStorage.getItem('lokamain_verified_token');
+      let cachedToken = null;
+      try { cachedToken = sessionStorage.getItem('lokamain_verified_token'); } catch (_) {}
       if (cachedToken) {
         const verified = LOKAMAIN_SECURITY.verifyAndDecodeToken(cachedToken);
         if (verified) {
           grantAccess(verified.licenseId, verified.buyerName);
           return;
         }
-      }
-      const cachedKey = sessionStorage.getItem('lokamain_active_key');
-      const cachedBuyer = sessionStorage.getItem('lokamain_active_buyer');
-      if (cachedKey) {
-        grantAccess(cachedKey, cachedBuyer);
-        return;
       }
     }
 
@@ -430,12 +419,8 @@
         grantAccess(verified.licenseId, verified.buyerName);
         return;
       }
-      if (val.length >= 3) {
-        grantAccess(val, 'Pembeli Resmi');
-        return;
-      }
       if (err) {
-        err.textContent = '⚠️ Kode lisensi / token tidak valid!';
+        err.textContent = '⚠️ Link / token tidak valid. Buka game dari link resmi yang dikirim Admin.';
         err.style.display = 'block';
       }
     };
