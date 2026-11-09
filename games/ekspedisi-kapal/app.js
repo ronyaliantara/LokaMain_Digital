@@ -5,7 +5,7 @@ const PIN = '1234';
 const W = 900, H = 560, SHIP_Y = H - 95, SPEED = 125, CARD_H = 120;
 const CARD_Y0 = -900;                       // kartu jawaban mulai SANGAT jauh di atas -> waktu baca lebih lama
 const TRIGGER_Y = SHIP_Y - 24 - CARD_H;     // posisi kartu saat garis jawaban mencapai kapal
-const READY_SEC = 3;                         // jeda sebelum berlayar (soal sudah tampil)
+const READY_SEC = 5;                         // jeda sebelum berlayar (soal + pilihan jawaban sudah tampil)
 const PLAYER_DEF = [
   { icon: '🦅', color: '#f87171' }, { icon: '🐅', color: '#60a5fa' },
   { icon: '🐘', color: '#4ade80' }, { icon: '🦎', color: '#c084fc' }
@@ -364,7 +364,20 @@ class Game {
     this.state = 'READY'; this.samples = []; this.readyAt = performance.now(); this.hits = 0;
     this.curRev = this.rev[this.cur]; this.curExtra = this.extra[this.cur]; this.rev[this.cur] = false; this.extra[this.cur] = false;
     $('hudTag').textContent = `Ronde ${this.round}/${MAXR} • ${p.icon} ${p.name}`;
-    $('qText').textContent = this.q.question; show($('hud'), true);
+    $('qText').textContent = this.q.question; this.renderOpts(); show($('hud'), true);
+  }
+  // Pilihan jawaban langsung tampil di bawah soal (posisi kiri/kanan sama dengan papan di laut)
+  renderOpts() {
+    const box = $('qOpts'); box.textContent = '';
+    const rk = this.leftKey === 'A' ? 'B' : 'A';
+    [[this.leftKey, 'L'], [rk, 'R']].forEach(([k, side]) => {
+      const el = document.createElement('div'); el.className = `q-opt q-${k.toLowerCase()} q-${side.toLowerCase()}`;
+      const arrow = document.createElement('i'); arrow.textContent = side === 'L' ? '⬅️' : '➡️';
+      const b = document.createElement('b'); b.textContent = k;
+      const t = document.createElement('span'); t.textContent = k === 'A' ? this.q.optionA : this.q.optionB;
+      if (side === 'L') el.append(arrow, b, t); else el.append(b, t, arrow);
+      box.appendChild(el);
+    });
   }
   beginSail() {
     if (this.samples.length >= 3) this.cx = this.samples.reduce((a, b) => a + b, 0) / this.samples.length;

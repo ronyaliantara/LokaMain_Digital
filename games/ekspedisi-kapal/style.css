@@ -28,6 +28,12 @@ main{max-width:1250px;margin:0 auto;padding:10px}
 .dist-bar{height:9px;border:2px solid var(--ink);border-radius:8px;background:#fff;overflow:hidden}.dist-bar i{display:block;height:100%;width:0;background:#22c55e;transition:background .3s}
 .hud-tag{font-size:clamp(10px,1.4vw,13px);color:#0f766e}
 #qText{margin:2px 0 0;font-size:clamp(14px,2.4vw,24px);font-weight:800;line-height:1.25}
+.q-opts{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-top:6px}
+.q-opt{display:flex;align-items:center;gap:7px;padding:4px 10px;border:2.5px solid var(--ink);border-radius:11px;font-weight:800;font-size:clamp(12px,1.9vw,19px);line-height:1.2;box-shadow:0 2px 0 rgba(15,23,42,.35)}
+.q-opt.q-a{background:#bae6fd}.q-opt.q-b{background:#fbcfe8}
+.q-opt.q-r{justify-content:flex-end;text-align:right}
+.q-opt b{flex:none;display:grid;place-items:center;width:1.6em;height:1.6em;border-radius:50%;background:var(--ink);color:#fff}
+.q-opt i{flex:none;font-style:normal}
 .banner{position:absolute;left:50%;top:52%;transform:translate(-50%,-50%);background:#fde047;border:3px solid var(--ink);border-radius:16px;padding:8px 18px;font-size:clamp(14px,2.6vw,26px);font-weight:800;text-align:center;box-shadow:4px 4px 0 var(--ink);max-width:90%}
 .layout{display:grid;grid-template-columns:1fr 260px;gap:12px;align-items:start}
 .side{display:flex;flex-direction:column;gap:12px}
