@@ -23,7 +23,7 @@
     });
   }
   KidGame({
-    gameId: 'sd-telur-dino', level: 'sd', answerMode: 'custom', title: 'Telur Dino', tag: 'Game SD • Pancasila & PPKn',
+    gameId: 'sd-telur-dino', level: 'sd', answerMode: 'custom', title: 'Telur Dino', tag: 'Game SD • Kuis Interaktif',
     emoji: '🦕', mascot: '🥚', tagline: 'Bantu Dino memilih jalan yang benar untuk menemukan telur-telur dinosaurus!',
     howTo: [['📖', 'Baca soalnya'], ['🪧', 'Pilih papan jawaban'], ['🥚', 'Jalan benar = telur menetas']],
     defaultTarget: 8, winEmoji: '🦖', winTitle: 'SEMUA TELUR MENETAS!', winText: 'Hebat! Keluarga dino sudah lengkap.',

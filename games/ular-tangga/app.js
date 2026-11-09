@@ -511,8 +511,8 @@ const FUN_PUNISHMENTS = [
     instruction: 'Sambil jongkok 3 kali, sebutkan 3 nama pahlawan nasional kemerdekaan Indonesia!'
   },
   {
-    title: 'Yel-Yel Semangat IPS 📣',
-    instruction: 'Lakukan jongkok 3 kali lalu teriakkan: "IPS Itu Seru, Kami Generasi Cerdas!"'
+    title: 'Yel-Yel Semangat Belajar 📣',
+    instruction: 'Lakukan jongkok 3 kali lalu teriakkan: "Belajar Itu Seru, Kami Generasi Cerdas!"'
   },
   {
     title: 'Gaya Pose Patung Lucu 🗿',
@@ -1314,7 +1314,7 @@ class SnakeAndLaddersGame {
     const dwellBarA = document.getElementById('dwellBarA');
     const dwellBarB = document.getElementById('dwellBarB');
 
-    if (catBadge) catBadge.innerText = `📚 ${player.name} (${player.colorName}) • ${q.category || 'IPS SMP'}`;
+    if (catBadge) catBadge.innerText = `📚 ${player.name} (${player.colorName}) • ${q.category || 'Umum'}`;
     if (qText) qText.innerText = q.question;
     if (optAText) optAText.innerText = q.optionA;
     if (optBText) optBText.innerText = q.optionB;
@@ -2403,10 +2403,10 @@ class SnakeAndLaddersGame {
 
     // Reset ke 50 Soal Default IPS SMP
     document.getElementById('resetDefaultQuestionsBtn')?.addEventListener('click', () => {
-      if (confirm('Kembalikan semua bank soal ke 50 Soal Bawaan IPS SMP? Perubahan soal kustom Anda akan diganti.')) {
+      if (confirm('Kembalikan semua bank soal ke Soal Bawaan? Perubahan soal kustom Anda akan diganti.')) {
         this.saveQuestions(DEFAULT_QUESTIONS);
         this.renderQuestionsTable();
-        alert('Berhasil! Bank soal kembali ke 50 Soal IPS SMP Bawaan.');
+        alert('Berhasil! Bank soal kembali ke Soal Bawaan.');
       }
     });
 
@@ -2434,7 +2434,7 @@ class SnakeAndLaddersGame {
       (item.category || '').toLowerCase().includes(q)
     );
 
-    if (totalEl) totalEl.innerText = `Total Soal: ${this.questions.length} Soal IPS SMP (${filtered.length} ditampilkan)`;
+    if (totalEl) totalEl.innerText = `Total Soal: ${this.questions.length} Soal (${filtered.length} ditampilkan)`;
 
     filtered.forEach((item, idx) => {
       const tr = document.createElement('tr');
@@ -2443,7 +2443,7 @@ class SnakeAndLaddersGame {
         <td class="p-2 text-slate-400 font-mono text-center">${idx + 1}</td>
         <td class="p-2">
           <span class="px-2 py-0.5 rounded-full text-[10px] font-semibold bg-indigo-500/20 text-indigo-300 border border-indigo-400/30">
-            ${escapeHtml(item.category || 'IPS SMP')}
+            ${escapeHtml(item.category || 'Umum')}
           </span>
         </td>
         <td class="p-2 font-medium text-slate-200 max-w-xs break-words">${escapeHtml(item.question)}</td>
@@ -2544,7 +2544,7 @@ class SnakeAndLaddersGame {
       const newId = list.length > 0 ? Math.max(...list.map(x => x.id)) + 1 : 1;
       list.push({
         id: newId,
-        category: 'IPS SMP Kustom',
+        category: 'Kustom',
         question: qText,
         optionA: optA,
         optionB: optB,
@@ -2567,7 +2567,7 @@ class SnakeAndLaddersGame {
 
     const rows = this.questions.map((q, i) => ({
       'No': i + 1,
-      'Kategori': q.category || 'IPS SMP',
+      'Kategori': q.category || 'Umum',
       'Pertanyaan': q.question,
       'Pilihan A': q.optionA,
       'Pilihan B': q.optionB,
@@ -2637,7 +2637,7 @@ class SnakeAndLaddersGame {
           let correct = (row['Kunci Jawaban (A/B)'] || row['correct'] || row['Kunci'] || 'A').toString().trim().toUpperCase();
           if (correct !== 'A' && correct !== 'B') correct = 'A';
           const exp = row['Penjelasan'] || row['explanation'] || `Jawaban yang tepat adalah Pilihan ${correct}.`;
-          const cat = row['Kategori'] || row['category'] || 'IPS SMP';
+          const cat = row['Kategori'] || row['category'] || 'Umum';
 
           if (qText && optA && optB) {
             importedQuestions.push({

@@ -1,4 +1,4 @@
-/* Panjat Kelapa — SD Matematika
+/* Panjat Kelapa — SD
    MEKANIK: BALAPAN CEPAT. Mode 2 tim = REBUTAN serentak (tiap tim punya tombol sendiri,
    yang pertama benar memanjat). Jawab < 5 detik = BONUS naik 2. Mode 1 kelas = lawan waktu. */
 (function () {
@@ -20,7 +20,7 @@
     return p;
   }
   KidGame({
-    gameId: 'sd-panjat-kelapa', level: 'sd', answerMode: 'rebutan', title: 'Panjat Kelapa', tag: 'Game SD • Matematika',
+    gameId: 'sd-panjat-kelapa', level: 'sd', answerMode: 'rebutan', title: 'Panjat Kelapa', tag: 'Game SD • Kuis Interaktif',
     emoji: '🐒', mascot: '🐒', tagline: 'Balapan memanjat pohon kelapa! Jawab paling cepat — kurang dari 5 detik dapat BONUS naik 2.',
     howTo: [['⚡', 'Rebutan: tim tercepat memanjat'], ['⏱️', '< 5 detik = bonus naik 2'], ['🥥', 'Sampai puncak = menang']],
     defaultTarget: 8, teamsOption: true, winEmoji: '🥥', winTitle: 'SAMPAI DI PUNCAK!', winText: 'Hebat! Monyet berhasil memetik kelapa.',

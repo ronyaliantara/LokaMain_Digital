@@ -16,11 +16,11 @@ class GuruMixin {
         this.questions = JSON.parse(JSON.stringify(DEFAULT_QUESTIONS)); saveQuestions(); this.renderTable();
       }
     };
-    $('tplBtn').onclick = () => this.downloadExcel('template_soal_ips.xlsx', [
+    $('tplBtn').onclick = () => this.downloadExcel('template_soal.xlsx', [
       mk('Contoh: Ibu kota Indonesia adalah...', 'Jakarta', 'Surabaya', 'A'),
       mk('Contoh: 17 Agustus 1945 adalah hari...', 'Sumpah Pemuda', 'Proklamasi Kemerdekaan', 'B', 'Pada tanggal itu Soekarno-Hatta membacakan proklamasi.')
     ]);
-    $('expBtn').onclick = () => this.downloadExcel('bank_soal_ips.xlsx', this.questions.filter(isValid));
+    $('expBtn').onclick = () => this.downloadExcel('bank_soal.xlsx', this.questions.filter(isValid));
     $('impBtn').onclick = () => $('impFile').click();
     $('impFile').onchange = (e) => this.importExcel(e);
   }

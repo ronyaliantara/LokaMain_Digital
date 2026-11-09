@@ -1,5 +1,5 @@
 {
-  "updatedAt": 1794233225054,
+  "updatedAt": 1794233958751,
   "settings": {
     "storeName": "LokaMain Digital",
     "siteSubtitle": "Pilih game pembelajaran digital, lalu klik tombol WhatsApp di bawahnya untuk memesan.",
@@ -21,7 +21,7 @@
       "id": "LM-HK",
       "code": "SERI-HK",
       "title": "Pulau Harta Karun",
-      "category": "IPS & Kuis Rebutan (Soal Bisa Diubah)",
+      "category": "Kuis Rebutan (Soal Bisa Diubah)",
       "grade": "✏️ Soal Bisa Diubah",
       "duration": "20–40 menit",
       "device": "Smart TV / IFP, Laptop & Proyektor",
@@ -35,7 +35,7 @@
         "Yang pertama benar memilih 1 petak harta; yang salah −10 koin dan soal langsung diganti. Koin terbanyak menjadi juara!"
       ],
       "learningGoals": [
-        "Menguatkan pemahaman materi IPS SMP melalui kuis yang cepat dan kompetitif.",
+        "Menguatkan pemahaman materi pelajaran melalui kuis yang cepat dan kompetitif.",
         "Melatih ketelitian membaca soal, kecepatan berpikir, dan sportivitas.",
         "Guru bebas mengganti bank soal sesuai mata pelajaran lewat impor/ekspor Excel."
       ],
@@ -70,7 +70,7 @@
         "Salah tabrak atau roket saling bertabrakan = pingsan. Ambil item: rudal pelacak, sinar beku, kemudi terbalik, hujan meteor, perisai, turbo. Pertama mencapai target poin menang!"
       ],
       "learningGoals": [
-        "Mengulang materi IPS SMP dengan suasana balapan yang seru.",
+        "Mengulang materi pelajaran dengan suasana balapan yang seru.",
         "Melatih fokus dan kecepatan menjawab secara sportif.",
         "Bank soal fleksibel: guru bisa mengganti soal lewat impor/ekspor Excel."
       ],
@@ -92,7 +92,7 @@
       "id": "LM-LP",
       "code": "SERI-LP",
       "title": "Lari Pintar",
-      "category": "IPS & Balapan 2 Pemain (Soal Bisa Diubah)",
+      "category": "Balapan 2 Pemain (Soal Bisa Diubah)",
       "grade": "✏️ Soal Bisa Diubah",
       "duration": "10–20 menit",
       "device": "Smart TV / IFP, Laptop Layar Sentuh",
@@ -127,7 +127,7 @@
       "id": "LM-PC",
       "code": "SERI-PC",
       "title": "Pilot Cerdas",
-      "category": "IPS & Kinestetik (AI Kamera)",
+      "category": "Kinestetik (AI Kamera)",
       "grade": "✏️ Soal Bisa Diubah",
       "duration": "10–20 menit",
       "device": "Laptop + Kamera Web, Smart TV / IFP",
@@ -141,7 +141,7 @@
         "Terbang melewati gerbang jawaban yang benar dan hindari awan badai serta burung."
       ],
       "learningGoals": [
-        "Belajar materi IPS SMP sambil bergerak aktif (kinestetik).",
+        "Belajar materi pelajaran sambil bergerak aktif (kinestetik).",
         "Melatih koordinasi tubuh, keseimbangan, dan fokus.",
         "Bisa dimainkan tanpa kamera memakai keyboard/mouse; soal bisa diganti lewat Excel."
       ],
@@ -163,7 +163,7 @@
       "id": "LM-UT",
       "code": "SERI-UT",
       "title": "Ular Tangga Kinestetik",
-      "category": "Bahasa Arab & Kinestetik (AI Pose)",
+      "category": "Kinestetik (AI Pose)",
       "grade": "✏️ Soal Bisa Diubah",
       "duration": "20–30 menit",
       "device": "Smart TV, Laptop & Proyektor",
@@ -198,20 +198,20 @@
       "id": "LM-EK",
       "code": "SERI-EK",
       "title": "Ekspedisi Nusantara - Kapal Layar Hidung",
-      "category": "IPS & Kinestetik (AI Kamera)",
+      "category": "Kinestetik (AI Kamera)",
       "grade": "✏️ Soal Bisa Diubah",
       "duration": "20–30 menit",
       "device": "Smart TV, Laptop & Kamera Web",
       "price": 35000,
       "image": "assets/games/game-1794217860533f815.mp4",
-      "shortDesc": "Game edukasi kuis IPS SMP(SOAL BISA DI UBAH) interaktif dengan navigasi arah kapal menggunakan sensor gerakan hidung/wajah (AI Face Detection) di depan kamera.",
+      "shortDesc": "Game kuis interaktif (SOAL BISA DI UBAH) dengan navigasi arah kapal menggunakan sensor gerakan hidung/wajah (AI Face Detection) di depan kamera.",
       "howToPlay": [
         "Nyalakan kamera web laptop atau hubungkan ke Smart TV kelas.",
         "Daftarkan nama 2–4 siswa pemain untuk saling berkompetisi secara bergantian.",
         "Gerakkan kepala dan hidung ke kiri/kanan untuk memilih jawaban A atau B yang benar."
       ],
       "learningGoals": [
-        "Mendalami materi sejarah, kondisi geografis, dan keragaman budaya Nusantara tingkat SMP.",
+        "Mengulang materi pelajaran sesuai bank soal guru sambil berpetualang.",
         "Melatih motorik halus dan koordinasi fokus visual siswa secara aktif dan menyenangkan.",
         "Mempermudah guru mengelola kuis kelas berkat fitur Bank Soal yang fleksibel."
       ],
@@ -402,7 +402,7 @@
       "id": "LM-SPK",
       "code": "SERI-SPK",
       "title": "Panjat Kelapa",
-      "category": "SD • Matematika",
+      "category": "SD • Kuis Rebutan",
       "grade": "✏️ Soal Bisa Diubah",
       "duration": "15–25 menit",
       "device": "Smart TV / IFP, Laptop & Tablet (layar sentuh)",
@@ -436,8 +436,8 @@
     {
       "id": "LM-SKS",
       "code": "SERI-SKS",
-      "title": "Kapal Selam IPA",
-      "category": "SD • Ilmu Pengetahuan Alam",
+      "title": "Kapal Selam",
+      "category": "SD • Kuis Petualangan",
       "grade": "✏️ Soal Bisa Diubah",
       "duration": "15–25 menit",
       "device": "Smart TV / IFP, Laptop & Tablet (layar sentuh)",
@@ -451,7 +451,7 @@
         "Masuk gerbang benar = menyelam 10 m. Sampai dasar laut = harta!"
       ],
       "learningGoals": [
-        "Memahami materi IPA SD: makhluk hidup, tubuh manusia, bumi, energi.",
+        "Mengulang materi pelajaran dengan tantangan menyelam yang seru.",
         "Menumbuhkan rasa ingin tahu tentang alam.",
         "Soal dapat diganti guru lewat impor/ekspor Excel."
       ],
@@ -472,7 +472,7 @@
       "id": "LM-SKA",
       "code": "SERI-SKA",
       "title": "Kembang Api Kata",
-      "category": "SD • Bahasa Indonesia",
+      "category": "SD • Kuis Ketapel",
       "grade": "✏️ Soal Bisa Diubah",
       "duration": "15–25 menit",
       "device": "Smart TV / IFP, Laptop & Tablet (layar sentuh)",
@@ -507,7 +507,7 @@
       "id": "LM-STD",
       "code": "SERI-STD",
       "title": "Telur Dino",
-      "category": "SD • Pancasila & PPKn",
+      "category": "SD • Kuis Petualangan",
       "grade": "✏️ Soal Bisa Diubah",
       "duration": "15–25 menit",
       "device": "Smart TV / IFP, Laptop & Tablet (layar sentuh)",
@@ -521,8 +521,8 @@
         "Benar = telur menetas jadi bayi dino; salah = jalan buntu, coba lagi."
       ],
       "learningGoals": [
-        "Mengenal Pancasila, simbol negara, dan pengamalan sila.",
-        "Menumbuhkan sikap toleransi, gotong royong, dan cinta tanah air.",
+        "Melatih membaca soal dan memilih jawaban dengan teliti.",
+        "Menumbuhkan rasa ingin tahu dan semangat belajar.",
         "Soal dapat diganti guru lewat impor/ekspor Excel."
       ],
       "gameUrl": "games/sd-telur-dino/",
@@ -542,21 +542,21 @@
       "id": "LM-SBJ",
       "code": "SERI-SBJ",
       "title": "Basket Juara",
-      "category": "SD • IPS & Pengetahuan Umum",
+      "category": "SD • Kuis Tim",
       "grade": "✏️ Soal Bisa Diubah",
       "duration": "15–25 menit",
       "device": "Smart TV / IFP, Laptop & Tablet (layar sentuh)",
       "price": 30000,
       "image": "assets/games/game-1794217696250a077.mp4",
       "coverImage": "assets/games/game-17942109457778603.jpg",
-      "shortDesc": "Jawab soal IPS dengan benar, lalu TEMBAK bola dengan timing tepat: zona hijau 3 poin (swish!), kuning 2, merah 1. Bisa 1 kelas atau 2 tim. (SOAL BISA DI UBAH lewat Excel)",
+      "shortDesc": "Jawab soal dengan benar, lalu TEMBAK bola dengan timing tepat: zona hijau 3 poin (swish!), kuning 2, merah 1. Bisa 1 kelas atau 2 tim. (SOAL BISA DI UBAH lewat Excel)",
       "howToPlay": [
         "Pilih 1 Kelas atau 2 Tim (giliran bergantian).",
         "Jawab benar untuk mendapat kesempatan menembak.",
         "Tekan TEMBAK saat penanda di zona hijau = 3 poin!"
       ],
       "learningGoals": [
-        "Mengenal provinsi, budaya, geografi, sejarah, dan ekonomi Indonesia.",
+        "Mengulang materi pelajaran dengan suasana olahraga yang seru.",
         "Menumbuhkan kerja sama dan sportivitas lewat mode tim.",
         "Soal dapat diganti guru lewat impor/ekspor Excel."
       ],

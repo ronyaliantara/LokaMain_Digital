@@ -1,4 +1,4 @@
-/* Kembang Api Kata — SD Bahasa Indonesia
+/* Kembang Api Kata — SD
    MEKANIK: KETAPEL. Tarik ketapel ke bawah lalu lepaskan untuk menembakkan roket
    ke LAMPION jawaban yang benar (atau ketuk lampion untuk tembakan otomatis). */
 (function () {
@@ -69,7 +69,7 @@
     zone.addEventListener('pointerup', up); zone.addEventListener('pointercancel', up);
   }
   KidGame({
-    gameId: 'sd-kembang-api', level: 'sd', answerMode: 'custom', title: 'Kembang Api Kata', tag: 'Game SD • Bahasa Indonesia',
+    gameId: 'sd-kembang-api', level: 'sd', answerMode: 'custom', title: 'Kembang Api Kata', tag: 'Game SD • Kuis Interaktif',
     emoji: '🎆', mascot: '🎯', tagline: 'Tarik ketapel dan tembakkan roket kembang api ke lampion jawaban yang benar!',
     howTo: [['📖', 'Baca soalnya'], ['🎯', 'Tarik ketapel & bidik lampion'], ['🎆', 'Kena yang benar = kembang api!']],
     defaultTarget: 8, winEmoji: '🎇', winTitle: 'PESTA KEMBANG API!', winText: 'Hebat! Semua lampu kota sudah menyala.',

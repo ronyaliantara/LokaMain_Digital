@@ -1,4 +1,4 @@
-/* Kapal Selam IPA — SD
+/* Kapal Selam — SD
    MEKANIK: KEMUDIKAN KAPAL SELAM. Gerbang-gerbang jawaban datang dari kanan;
    gerakkan kapal ▲▼ (atau sentuh jalurnya) agar masuk ke gerbang jawaban yang benar. */
 (function () {
@@ -27,7 +27,7 @@
     raf = requestAnimationFrame((tt) => loop(api, tt));
   }
   KidGame({
-    gameId: 'sd-kapal-selam', level: 'sd', answerMode: 'custom', title: 'Kapal Selam IPA', tag: 'Game SD • Ilmu Pengetahuan Alam',
+    gameId: 'sd-kapal-selam', level: 'sd', answerMode: 'custom', title: 'Kapal Selam', tag: 'Game SD • Kuis Interaktif',
     emoji: '🌊', mascot: '🐋', tagline: 'Kemudikan kapal selam ke gerbang jawaban yang benar dan menyelam sampai dasar laut!',
     howTo: [['📖', 'Baca soalnya'], ['🔼🔽', 'Gerakkan kapal ke jalur jawaban'], ['🚪', 'Masuk gerbang yang benar']],
     defaultTarget: 8, winEmoji: '💎', winTitle: 'HARTA DITEMUKAN!', winText: 'Hebat! Kapal selam sampai di dasar laut.',

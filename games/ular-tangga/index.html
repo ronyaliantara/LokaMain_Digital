@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Ular Tangga Kinestetik - Edukasi IPS SMP (50 Kotak • 4 Pemain)</title>
+  <title>Ular Tangga Kinestetik - Kuis Edukasi (50 Kotak • 4 Pemain)</title>
 
   <!-- Tailwind CSS CDN -->
   <script src="https://cdn.tailwindcss.com"></script>
@@ -52,7 +52,7 @@
         <h1 class="text-sm sm:text-base md:text-lg font-bold font-fun tracking-wide text-white flex items-center gap-1.5">
           Ular Tangga Kinestetik <span class="text-xs font-sans px-2 py-0.5 rounded-full bg-emerald-500/20 text-emerald-300 border border-emerald-400/30">50 Kotak</span>
         </h1>
-        <p class="text-[10px] sm:text-[11px] text-slate-400 hidden sm:block">Edukasi IPS SMP • Dual Sensor Kanan & Kiri • 4 Pemain</p>
+        <p class="text-[10px] sm:text-[11px] text-slate-400 hidden sm:block">Kuis Edukasi • Dual Sensor Kanan & Kiri • 4 Pemain</p>
       </div>
     </div>
 
@@ -71,7 +71,7 @@
       <!-- Badge Materi -->
       <div class="px-2 py-1 rounded-lg bg-indigo-500/20 border border-indigo-400/30 text-indigo-300 text-xs font-semibold hidden md:flex items-center gap-1.5 shadow-sm">
         <span class="w-2 h-2 rounded-full bg-emerald-400 animate-pulse"></span>
-        <span>Materi: IPS Terpadu SMP</span>
+        <span>Soal bisa diubah di Mode Guru</span>
       </div>
 
       <!-- Kamera AI / Manual Toggle -->
@@ -358,7 +358,7 @@
             <div class="flex items-center gap-2">
               <span class="w-2.5 h-2.5 rounded-full bg-emerald-400 animate-pulse"></span>
               <span id="quizCategoryBadge" class="text-xs sm:text-sm font-bold font-fun px-2.5 py-1 rounded-full bg-indigo-500/20 text-indigo-300 border border-indigo-400/30 shadow-sm">
-                📚 IPS SMP: Geografi Indonesia
+                📚 Soal
               </span>
             </div>
             <span class="text-[11px] font-semibold text-amber-300 bg-amber-500/10 px-2 py-0.5 rounded-lg border border-amber-400/20">
@@ -418,7 +418,7 @@
           <!-- Penjelasan Edukatif saat Salah -->
           <div id="quizExplanationBox" class="p-3 rounded-2xl bg-amber-950/90 border-2 border-amber-400 text-white text-xs sm:text-sm shadow-lg hidden">
             <p class="font-extrabold text-amber-300 text-xs sm:text-sm mb-1 flex items-center gap-1.5">
-              <span>💡</span> Penjelasan Materi IPS:
+              <span>💡</span> Penjelasan:
             </p>
             <p id="quizExplanationText" class="text-amber-100 font-bold text-xs sm:text-sm leading-relaxed"></p>
           </div>
@@ -573,7 +573,7 @@
     <div class="bg-gradient-to-b from-indigo-900 to-slate-900 border border-amber-400/40 rounded-3xl p-6 sm:p-8 max-w-lg w-full shadow-2xl text-center">
       <div class="text-6xl mb-2 animate-bounce">🏆</div>
       <h2 id="victoryWinnerTitle" class="text-2xl font-bold font-fun text-amber-300 mb-1">HORE, PEMAIN 1 JUARA!</h2>
-      <p id="victorySubtitle" class="text-xs text-slate-300 mb-4">Berhasil mencapai Puncak Petak 50 dengan penguasaan materi IPS SMP yang luar biasa!</p>
+      <p id="victorySubtitle" class="text-xs text-slate-300 mb-4">Berhasil mencapai Puncak Petak 50 dengan penguasaan materi yang luar biasa!</p>
 
       <!-- Rekap Skor 4 Pemain -->
       <div id="victoryPlayerSummaryGrid" class="grid grid-cols-2 gap-2 sm:gap-2.5 mb-4 text-left">
@@ -620,7 +620,7 @@
       <div class="p-4 bg-slate-800/80 border-b border-white/10 flex items-center justify-between">
         <div>
           <h2 class="text-base md:text-lg font-bold font-fun text-white flex items-center gap-2">
-            ⚙️ Dashboard Mode Guru (Manajemen Bank Soal IPS SMP)
+            ⚙️ Dashboard Mode Guru (Manajemen Bank Soal)
           </h2>
           <p id="teacherTotalQuestions" class="text-xs text-slate-400">Total Soal: Memuat 50 Soal...</p>
         </div>
@@ -635,8 +635,8 @@
           <button id="addQuestionBtn" class="px-3 py-2 rounded-xl bg-emerald-600 hover:bg-emerald-500 text-white text-xs font-bold shadow-md shadow-emerald-600/20 flex items-center gap-1.5 cursor-pointer">
             ➕ Tambah Soal Baru
           </button>
-          <button id="resetDefaultQuestionsBtn" class="px-3 py-2 rounded-xl bg-rose-800/80 hover:bg-rose-700 text-rose-200 text-xs font-semibold border border-rose-500/40 flex items-center gap-1 cursor-pointer" title="Kembalikan ke 50 Soal IPS SMP Bawaan">
-            🔄 Reset 50 Soal IPS
+          <button id="resetDefaultQuestionsBtn" class="px-3 py-2 rounded-xl bg-rose-800/80 hover:bg-rose-700 text-rose-200 text-xs font-semibold border border-rose-500/40 flex items-center gap-1 cursor-pointer" title="Kembalikan ke Soal Bawaan">
+            🔄 Reset Soal Bawaan
           </button>
         </div>
 
@@ -662,7 +662,7 @@
 
       <!-- Pencarian Soal -->
       <div class="p-3 bg-slate-950/60 border-b border-white/5">
-        <input id="teacherSearchInput" type="text" placeholder="🔍 Cari soal atau kategori IPS..." class="w-full px-3 py-2 rounded-xl bg-slate-800 border border-slate-700 text-white text-xs focus:outline-none focus:border-indigo-500">
+        <input id="teacherSearchInput" type="text" placeholder="🔍 Cari soal atau kategori..." class="w-full px-3 py-2 rounded-xl bg-slate-800 border border-slate-700 text-white text-xs focus:outline-none focus:border-indigo-500">
       </div>
 
       <!-- Tabel Soal -->
@@ -694,7 +694,7 @@
   <div id="questionEditModal" class="fixed inset-0 z-50 bg-black/85 backdrop-blur-md flex items-center justify-center p-3 sm:p-4 hidden">
     <div class="bg-slate-900 border border-white/20 rounded-2xl p-5 sm:p-6 max-w-lg w-full max-h-[92vh] overflow-y-auto shadow-2xl">
       <div class="flex items-center justify-between pb-3 border-b border-white/10 mb-4">
-        <h3 id="questionEditTitle" class="text-base font-bold font-fun text-white">✏️ Formulir Soal IPS SMP</h3>
+        <h3 id="questionEditTitle" class="text-base font-bold font-fun text-white">✏️ Formulir Soal</h3>
         <span class="text-[11px] text-indigo-300 font-semibold bg-indigo-500/20 px-2.5 py-0.5 rounded-full border border-indigo-400/30">Mode Guru</span>
       </div>
 
@@ -702,8 +702,8 @@
         <input type="hidden" id="qEditId">
 
         <div>
-          <label class="block text-xs font-semibold text-slate-300 mb-1">Pertanyaan Soal IPS</label>
-          <textarea id="qEditQuestion" rows="2" required placeholder="Tuliskan pertanyaan soal IPS di sini..." class="w-full px-3 py-2 rounded-xl bg-slate-800 border border-slate-700 text-white text-xs sm:text-sm focus:outline-none focus:border-indigo-500"></textarea>
+          <label class="block text-xs font-semibold text-slate-300 mb-1">Pertanyaan Soal</label>
+          <textarea id="qEditQuestion" rows="2" required placeholder="Tuliskan pertanyaan soal di sini..." class="w-full px-3 py-2 rounded-xl bg-slate-800 border border-slate-700 text-white text-xs sm:text-sm focus:outline-none focus:border-indigo-500"></textarea>
         </div>
 
         <div class="grid grid-cols-2 gap-2.5">

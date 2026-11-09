@@ -1,4 +1,4 @@
-/* Basket Juara — SD IPS
+/* Basket Juara — SD
    MEKANIK: JAWAB lalu TEMBAK DENGAN TIMING. Jawaban benar membuka kesempatan menembak:
    tekan TEMBAK saat penanda di zona hijau = 3 poin (swish!), kuning = 2 poin, merah = 1 poin. */
 (function () {
@@ -31,8 +31,8 @@
     hoop.classList.remove('swish'); void hoop.offsetWidth; hoop.classList.add('swish'); ball.remove();
   }
   KidGame({
-    gameId: 'sd-basket-juara', level: 'sd', answerMode: 'buttons', title: 'Basket Juara', tag: 'Game SD • IPS & Pengetahuan Umum',
-    emoji: '🏀', mascot: '🏀', tagline: 'Jawab soal IPS, lalu tembak bola dengan timing yang tepat untuk skor 3 poin!',
+    gameId: 'sd-basket-juara', level: 'sd', answerMode: 'buttons', title: 'Basket Juara', tag: 'Game SD • Kuis Interaktif',
+    emoji: '🏀', mascot: '🏀', tagline: 'Jawab soal, lalu tembak bola dengan timing yang tepat untuk skor 3 poin!',
     howTo: [['✅', 'Jawab soal dengan benar'], ['🎯', 'Tembak saat penanda di hijau'], ['🏆', 'Hijau 3 • Kuning 2 • Merah 1']],
     targetLabel: 'Skor untuk menang', defaultTarget: 15, teamsOption: true, winEmoji: '🏆', winTitle: 'JUARA BASKET!', winText: 'Hebat! Tembakanmu jitu sekali.',
     hooks: {
