@@ -4,7 +4,7 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Ekspedisi Nusantara - Kapal Hidung</title>
-<link rel="stylesheet" href="style.css?v=20261109">
+<link rel="stylesheet" href="style.css?v=20261109b">
 </head>
 <body>
 <header class="top">
@@ -12,6 +12,7 @@
   <div class="top-r">
     <span id="camStatus" class="pill">Kamera…</span>
     <button id="fsBtn" class="btn bg-sky" title="Layar penuh (F)">⛶ Layar Penuh</button>
+    <button id="setBtn" class="btn bg-white" title="Ubah pemain & pengaturan">🎛️ Pengaturan</button>
     <button id="resetBtn" class="btn bg-white">🔄 Ulangi</button>
     <button id="teacherBtn" class="btn bg-pink">⚙️ Guru</button>
   </div>
@@ -50,21 +51,25 @@
       <div id="camBox" class="cambox"><video id="cam" autoplay playsinline muted></video><i id="noseDot"></i></div>
       <p id="camHint" class="muted">Kamera belum aktif</p>
     </div>
-    <div class="card side-box"><h3>🗺️ Peta Perjalanan <small>(finis: 5 benar)</small></h3>
+    <div class="card side-box"><h3>🗺️ Peta Perjalanan <small id="goalTxt">(finis: 5 benar)</small></h3>
       <div id="map" class="map"></div>
     </div>
   </aside>
 </div>
-  <p class="hint">Pilihan jawaban langsung tampil di bawah soal: ⬅️ jawaban kiri, ➡️ jawaban kanan. Baca soal selagi kapal berlayar, geser <b>kepala ke kiri / kanan</b> untuk menghindari rintangan, lalu menepi ke jawaban yang benar sebelum melewati <b>garis jawaban</b> 🏁. Tanpa kamera: gerakkan mouse atau tombol ← →.</p>
+  <p class="hint">Pilihan jawaban tampil di bawah soal. Mode <b>Jebakan</b>: A/B bisa di kiri atau kanan dan papan bisa bertukar — lihat papan di laut! Ubah semua di 🎛️ Pengaturan. Baca soal selagi kapal berlayar, geser <b>kepala ke kiri / kanan</b> untuk menghindari rintangan, lalu menepi ke jawaban yang benar sebelum melewati <b>garis jawaban</b> 🏁. Tanpa kamera: gerakkan mouse atau tombol ← →.</p>
 </main>
 
 <!-- Mulai -->
 <div id="startModal" class="modal">
-  <div class="card modal-in">
+  <div class="card modal-in wide">
     <h2>🧭 Siapa yang ikut?</h2>
     <p class="muted">Isi nama pemain. Kosongkan jika tidak ikut (minimal 2 pemain). Pemain bergantian berlayar di depan kamera.</p>
     <div id="nameInputs" class="names"></div>
-    <p class="muted">Game selesai saat ada yang <b>benar 5 kali</b> (semua pemain dapat giliran sama), maksimal 10 ronde. Juara = paling banyak benar; siswa terbaik = skor tertinggi.</p>
+    <details class="sets-box" open>
+      <summary>⚙️ Pengaturan Permainan</summary>
+      <div id="setGrid" class="sets"></div>
+    </details>
+    <p class="muted">Game selesai saat ada yang mencapai <b>target benar</b> (semua pemain dapat giliran sama) atau ronde habis. Juara = paling banyak benar; siswa terbaik = skor tertinggi.</p>
     <p id="startErr" class="err hidden">Minimal 2 pemain.</p>
     <button id="startBtn" class="btn bg-teal big">🚀 Mulai Ekspedisi</button>
   </div>
@@ -117,7 +122,7 @@
   </div>
 </div>
 
-<script src="app.js?v=20261109"></script>
+<script src="app.js?v=20261109b"></script>
 <script src="guru.js"></script>
   <script src="../lokamain-license.js"></script>
 </body>

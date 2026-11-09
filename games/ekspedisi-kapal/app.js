@@ -5,12 +5,38 @@ const PIN = '1234';
 const W = 900, H = 560, SHIP_Y = H - 95, SPEED = 125, CARD_H = 120;
 const CARD_Y0 = -900;                       // kartu jawaban mulai SANGAT jauh di atas -> waktu baca lebih lama
 const TRIGGER_Y = SHIP_Y - 24 - CARD_H;     // posisi kartu saat garis jawaban mencapai kapal
-const READY_SEC = 5;                         // jeda sebelum berlayar (soal + pilihan jawaban sudah tampil)
+let READY_SEC = 5;                           // jeda sebelum berlayar (soal + pilihan jawaban sudah tampil) — dari pengaturan
+const SWAP_SEC = 2.6;                        // mode jebakan: papan bertukar saat garis jawaban tinggal 2,6 detik
 const PLAYER_DEF = [
   { icon: '🦅', color: '#f87171' }, { icon: '🐅', color: '#60a5fa' },
   { icon: '🐘', color: '#4ade80' }, { icon: '🦎', color: '#c084fc' }
 ];
-const GOAL = 5, MAXR = 10;
+let GOAL = 5, MAXR = 10;
+
+// ---------- Pengaturan permainan (disimpan di perangkat) ----------
+const SET_KEY = 'ips_ekspedisi_setting_v1';
+const SETTINGS_DEF = [
+  { key: 'speed', label: '⛵ Kecepatan kapal', value: 125, options: [[70, 'Sangat pelan'], [95, 'Pelan'], [125, 'Sedang'], [160, 'Cepat']] },
+  { key: 'read', label: '📖 Waktu baca sebelum berlayar', value: 5, options: [[3, '3 detik'], [5, '5 detik'], [8, '8 detik'], [12, '12 detik']] },
+  { key: 'trap', label: '🔀 Posisi jawaban A / B', value: 'trap', options: [['fixed', 'Tetap (A kiri, B kanan)'], ['random', 'Acak (diberi tahu arahnya)'], ['trap', 'Jebakan (acak + bisa tukar)']] },
+  { key: 'opts', label: '📝 Pilihan di kotak soal', value: 'show', options: [['show', 'Tampilkan'], ['hide', 'Sembunyikan (lebih sulit)']] },
+  { key: 'goal', label: '🏁 Finis setelah benar', value: 5, options: [[3, '3 kali'], [5, '5 kali'], [7, '7 kali'], [10, '10 kali']] },
+  { key: 'rounds', label: '🔁 Maksimal ronde', value: 10, options: [[5, '5 ronde'], [10, '10 ronde'], [15, '15 ronde'], [20, '20 ronde']] },
+  { key: 'obst', label: '🪨 Rintangan di laut', value: 'normal', options: [['none', 'Tidak ada'], ['few', 'Sedikit'], ['normal', 'Normal'], ['many', 'Banyak']] },
+  { key: 'punish', label: '💥 Hukuman jika salah', value: 'all', options: [['all', 'Semua (termasuk jongkok)'], ['nosquat', 'Tanpa jongkok'], ['off', 'Tanpa hukuman']] },
+  { key: 'sound', label: '🔊 Suara', value: 'on', options: [['on', 'Nyala'], ['off', 'Mati']] }
+];
+function loadSettings() {
+  let s = {}; try { s = JSON.parse(localStorage.getItem(SET_KEY)) || {}; } catch (e) {}
+  const out = {};
+  SETTINGS_DEF.forEach((d) => { const v = s[d.key]; out[d.key] = d.options.some((o) => String(o[0]) === String(v)) ? (typeof d.value === 'number' ? Number(v) : v) : d.value; });
+  return out;
+}
+let CFG = loadSettings();
+function applySettings() {
+  GOAL = CFG.goal; MAXR = CFG.rounds; READY_SEC = CFG.read;
+  const g = document.getElementById('goalTxt'); if (g) g.textContent = `(finis: ${GOAL} benar)`;
+}
 const SEEN_KEY = 'ips_ekspedisi_seen_v1';
 const FACE_CDN = 'https://cdn.jsdelivr.net/npm/@mediapipe/face_detection@0.4/';
 const rnd = () => { try { const a = new Uint32Array(1); crypto.getRandomValues(a); return a[0] / 4294967296; } catch (e) { return Math.random(); } };
@@ -84,6 +110,7 @@ function loadQuestions() {
 }
 function saveQuestions() { try { localStorage.setItem(STORE_KEY, JSON.stringify(game.questions)); } catch (e) {} }
 function beep(freqs) {
+  if (CFG.sound === 'off') return;
   try {
     const ctx = beep.ctx || (beep.ctx = new (window.AudioContext || window.webkitAudioContext)());
     freqs.forEach((f, i) => {
@@ -175,9 +202,25 @@ class Game {
       inp.value = `Pemain ${i + 1}`; inp.maxLength = 14; inp.id = 'nm' + i; inp.style.background = d.color;
       $('nameInputs').appendChild(inp);
     });
+    const grid = $('setGrid'); grid.innerHTML = '';
+    SETTINGS_DEF.forEach((d) => {
+      const lab = document.createElement('label'); lab.className = 'set';
+      const sp = document.createElement('span'); sp.textContent = d.label;
+      const sel = document.createElement('select'); sel.id = 'set_' + d.key;
+      d.options.forEach(([v, l]) => { const o = document.createElement('option'); o.value = v; o.textContent = l; if (String(v) === String(CFG[d.key])) o.selected = true; sel.appendChild(o); });
+      lab.append(sp, sel); grid.appendChild(lab);
+    });
+    applySettings();
   }
+  readSettings() {
+    SETTINGS_DEF.forEach((d) => { const v = $('set_' + d.key).value; CFG[d.key] = typeof d.value === 'number' ? Number(v) : v; });
+    try { localStorage.setItem(SET_KEY, JSON.stringify(CFG)); } catch (e) {}
+    applySettings();
+  }
+  openSettings() { this.pause(); show($('winModal'), false); show($('startModal'), true); }
   bindUI() {
     $('startBtn').onclick = () => { this.begin(); };
+    $('setBtn').onclick = () => this.openSettings();
     this.bindFullscreen();
     $('resetBtn').onclick = () => this.restart();
     $('playAgainBtn').onclick = () => { show($('winModal'), false); this.restart(); };
@@ -211,6 +254,7 @@ class Game {
     const list = [];
     PLAYER_DEF.forEach((d, i) => { const n = $('nm' + i).value.trim(); if (n) list.push({ ...d, name: n }); });
     if (list.length < 2) { show($('startErr'), true); return; }
+    show($('startErr'), false); this.readSettings();
     this.players = list; this.total = 50;
     show($('startModal'), false);
     beep([440]);
@@ -246,6 +290,7 @@ class Game {
   }
   // posisi jawaban benar kiri/kanan: acak, tapi tidak lebih dari 2x berturut-turut di sisi yang sama
   pickSide() {
+    if (CFG.trap === 'fixed') return 'A';
     const s = this.sides, n = s.length; let side = rnd() < 0.5 ? 'A' : 'B';
     if (n >= 2 && s[n - 1] === s[n - 2] && s[n - 1] === side) side = side === 'A' ? 'B' : 'A';
     s.push(side); return side;
@@ -317,7 +362,7 @@ class Game {
       const gap = lead - r;
       row.innerHTML = '<b><span></span><span></span></b><div class="track"></div><small></small>';
       const sp = row.querySelectorAll('b span'); sp[0].textContent = `${p.icon} ${p.name}`; sp[1].textContent = `${r}/${GOAL}`;
-      const tr = row.querySelector('.track');
+      const tr = row.querySelector('.track'); tr.style.gridTemplateColumns = `repeat(${GOAL + 1},1fr)`;
       for (let i = 0; i <= GOAL; i++) {
         const c = document.createElement('div'); c.className = 'cell' + (i < r ? ' done' : '') + (i === GOAL ? ' fin' : '') + (i === r ? ' here' : '');
         c.textContent = i === r ? p.icon : i === GOAL ? '🏁' : ''; tr.appendChild(c);
@@ -367,17 +412,21 @@ class Game {
     $('qText').textContent = this.q.question; this.renderOpts(); show($('hud'), true);
   }
   // Pilihan jawaban langsung tampil di bawah soal (posisi kiri/kanan sama dengan papan di laut)
+  // Mode jebakan: hanya A & B tanpa panah — posisi kiri/kanan harus dilihat dari papan di laut.
   renderOpts() {
-    const box = $('qOpts'); box.textContent = '';
-    const rk = this.leftKey === 'A' ? 'B' : 'A';
-    [[this.leftKey, 'L'], [rk, 'R']].forEach(([k, side]) => {
-      const el = document.createElement('div'); el.className = `q-opt q-${k.toLowerCase()} q-${side.toLowerCase()}`;
-      const arrow = document.createElement('i'); arrow.textContent = side === 'L' ? '⬅️' : '➡️';
+    const box = $('qOpts'); box.textContent = ''; show(box, CFG.opts !== 'hide');
+    const trap = CFG.trap === 'trap';
+    const lk = this.cards ? this.cards.L.key : this.leftKey, rk = lk === 'A' ? 'B' : 'A';
+    const list = trap ? [['A', ''], ['B', '']] : [[lk, 'L'], [rk, 'R']];
+    list.forEach(([k, side]) => {
+      const el = document.createElement('div'); el.className = `q-opt q-${k.toLowerCase()}` + (side ? ` q-${side.toLowerCase()}` : '');
       const b = document.createElement('b'); b.textContent = k;
       const t = document.createElement('span'); t.textContent = k === 'A' ? this.q.optionA : this.q.optionB;
-      if (side === 'L') el.append(arrow, b, t); else el.append(b, t, arrow);
+      if (!side) el.append(b, t);
+      else { const arrow = document.createElement('i'); arrow.textContent = side === 'L' ? '⬅️' : '➡️'; if (side === 'L') el.append(arrow, b, t); else el.append(b, t, arrow); }
       box.appendChild(el);
     });
+    if (trap) { const n = document.createElement('div'); n.className = 'q-trap'; n.textContent = '🔀 Jebakan! A/B bisa di kiri atau kanan — lihat papan di laut'; box.appendChild(n); }
   }
   beginSail() {
     if (this.samples.length >= 3) this.cx = this.samples.reduce((a, b) => a + b, 0) / this.samples.length;
@@ -403,7 +452,8 @@ class Game {
       return c;
     };
     const rk = this.leftKey === 'A' ? 'B' : 'A';
-    this.cards = { y: CARD_Y0, L: { key: this.leftKey, c: mkCard(this.leftKey, this.leftKey === 'A' ? '#bae6fd' : '#fbcfe8') }, R: { key: rk, c: mkCard(rk, rk === 'A' ? '#bae6fd' : '#fbcfe8') } };
+    this.cards = { y: CARD_Y0, L: { key: this.leftKey, c: mkCard(this.leftKey, this.leftKey === 'A' ? '#bae6fd' : '#fbcfe8') }, R: { key: rk, c: mkCard(rk, rk === 'A' ? '#bae6fd' : '#fbcfe8') },
+      willSwap: CFG.trap === 'trap' && rnd() < 0.45, swapped: false, anim: 0 };
     this.objs = this.buildObstacles(!!this.curExtra);
     this.state = 'SAIL'; this.sailAt = performance.now(); this.banner('📖 Baca soalnya, hindari rintangan!', '#fde047');
   }
@@ -412,9 +462,11 @@ class Game {
   // jadi selalu ada celah. Zona dekat kartu jawaban dikosongkan supaya pemain bisa memilih sisi dengan tenang.
   buildObstacles(extra) {
     const lanes = 6, laneW = W / lanes, out = []; let sharks = 0;
-    const topLimit = CARD_Y0 + CARD_H + 140;
+    const topLimit = CARD_Y0 + CARD_H + 140, lvl = CFG.obst;
+    if (lvl === 'none' && !extra) return out;
     for (let y = -70; y > topLimit; y -= 92) {
-      let n = 1 + (rnd() < 0.7 ? 1 : 0) + (extra ? 1 : 0); n = Math.min(3, n);
+      let n = lvl === 'none' ? 0 : lvl === 'few' ? (rnd() < 0.55 ? 1 : 0) : lvl === 'many' ? 2 + (rnd() < 0.5 ? 1 : 0) : 1 + (rnd() < 0.7 ? 1 : 0);
+      n = Math.min(3, n + (extra ? 1 : 0));
       const free = shuffle([0, 1, 2, 3, 4, 5]).slice(0, n);
       for (const ln of free) {
         let def = pick(OBST); if (def.id === 'shark' && sharks >= 2) def = OBST[0]; if (def.id === 'shark') sharks++;
@@ -440,6 +492,7 @@ class Game {
     this.shipX += (tx - this.shipX) * Math.min(1, dt * 12);
   }
   update(dt, now) {
+    const SPEED = CFG.speed;   // kecepatan kapal dari pengaturan
     for (const d of this.dashes) { d.y += SPEED * dt; if (d.y > H) { d.y = -20; d.x = Math.random() * W; } }
     this.scroll += SPEED * dt;
     for (const s of this.isles) { s.y += SPEED * dt * 0.9; if (s.y > H + 40) { s.y = -140 - Math.random() * 260; s.v = Math.floor(Math.random() * 3); s.x = Math.random() < 0.5 ? 5 + Math.random() * 50 : W - 155 - Math.random() * 40; } }
@@ -472,6 +525,13 @@ class Game {
       }
       this.objs = this.objs.filter((o) => o.y < H + 80);
       this.cards.y += SPEED * dt;
+      const ck = this.cards;
+      if (ck.willSwap && !ck.swapped && (TRIGGER_Y - ck.y) / SPEED <= SWAP_SEC) {
+        ck.swapped = true; [ck.L, ck.R] = [ck.R, ck.L]; ck.anim = 1; beep([760, 520, 760]);
+        this.banner('🔀 JEBAKAN! Papan bertukar tempat!', '#f9a8d4');
+        this.later(() => { if (this.state === 'SAIL' && $('banner').textContent.startsWith('🔀')) this.banner('', null); }, 1500);
+      }
+      if (ck.anim > 0) ck.anim = Math.max(0, ck.anim - dt / 0.45);
       const prog = clamp((this.cards.y - CARD_Y0) / (TRIGGER_Y - CARD_Y0), 0, 1);
       $('distBar').style.width = (prog * 100).toFixed(1) + '%'; $('distBar').style.background = prog > 0.82 ? '#ef4444' : prog > 0.6 ? '#f59e0b' : '#22c55e';
       const secLeft = Math.max(0, (TRIGGER_Y - this.cards.y) / SPEED); $('distTxt').textContent = secLeft > 0.4 ? `⛵ Garis jawaban ${Math.ceil(secLeft)} dtk lagi` : '🚩 PILIH SEKARANG!';
@@ -493,8 +553,14 @@ class Game {
       this.later(() => { if (this.right[k] >= GOAL) this.goalHit = true; this.nextTurn(); }, 1700);
     } else {
       this.ans[k]++; this.renderPlayers(); beep([220]); this.shake = 0.6;
-      this.panel({ tag: '😵 KURANG TEPAT', bg: '#fca5a5', icon: '❌', title: 'Kena hukuman!', text: ex });
-      this.later(() => this.runPunish(k, pick(PUNISH)), 1900);
+      const pool = CFG.punish === 'nosquat' ? PUNISH.filter((t) => t.kind !== 'squat') : PUNISH;
+      if (CFG.punish === 'off') {
+        this.panel({ tag: '😵 KURANG TEPAT', bg: '#fca5a5', icon: '❌', title: 'Belum tepat!', text: ex });
+        this.later(() => this.nextTurn(), 2600);
+      } else {
+        this.panel({ tag: '😵 KURANG TEPAT', bg: '#fca5a5', icon: '❌', title: 'Kena hukuman!', text: ex });
+        this.later(() => this.runPunish(k, pick(pool)), 1900);
+      }
     }
   }
   runPunish(p, task) {
@@ -595,7 +661,8 @@ class Game {
         if (picked || good) { c.save(); c.lineWidth = 7; c.strokeStyle = good ? '#16a34a' : '#dc2626'; c.strokeRect(x + 1, y + 1, 418, CARD_H - 10); c.restore(); }
       }
     };
-    one(ck.L, 10); one(ck.R, 460);
+    const a = ck.anim ? ck.anim * ck.anim * (3 - 2 * ck.anim) : 0;   // animasi papan bertukar
+    one(ck.L, 10 + 450 * a); one(ck.R, 460 - 450 * a);
     // garis jawaban: tali berpelampung + pita kotak-kotak, dan pembatas tengah
     const ly = y + CARD_H - 2;
     c.save();
