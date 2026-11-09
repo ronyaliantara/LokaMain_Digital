@@ -1,0 +1,31 @@
+/* Panjat Kelapa */
+:root { --kg-a: #16a34a; }
+.sky { position: absolute; inset: 0; background: linear-gradient(#38bdf8, #bae6fd 55%, #fef9c3); }
+.sun { position: absolute; left: 8%; top: 10%; font-size: 13vh; animation: kgSpin 30s linear infinite; }
+.cloud { position: absolute; left: 0; font-size: 10vh; animation: kgDrift 55s linear infinite; }
+.sea { position: absolute; left: 0; right: 0; bottom: 36%; height: 16%; background: linear-gradient(#0ea5e9, #0284c7); overflow: hidden; }
+.sea i { position: absolute; inset: 0; background: radial-gradient(14px 5px at 50% 0, rgba(255, 255, 255, .7) 60%, transparent 62%) 0 20% / 60px 30px; animation: waves 6s linear infinite; }
+@keyframes waves { to { background-position: 600px 20%; } }
+.sand { position: absolute; left: 0; right: 0; bottom: 0; height: 37%; background: linear-gradient(#fde68a, #f5c451); }
+.boat { position: absolute; bottom: 44%; font-size: 8vh; animation: boatGo 40s linear infinite; }
+@keyframes boatGo { from { left: 105%; } to { left: -12%; } }
+.palm { position: absolute; bottom: 35%; width: 0; height: 44vh; }
+.trunk { position: absolute; left: 0; bottom: 0; width: 7vh; height: 100%; transform: translateX(-50%) skewX(-3deg); border-radius: 3vh 3vh 1vh 1vh;
+  background: repeating-linear-gradient(#a16207 0 3.4vh, #854d0e 3.4vh 4vh); box-shadow: inset -1.2vh 0 0 rgba(0, 0, 0, .15); }
+.track { position: absolute; left: 50%; bottom: 0; top: 0; }
+.crown { position: absolute; left: 0; top: -4vh; width: 0; height: 0; }
+.crown i { position: absolute; left: -2vh; top: 0; width: 22vh; height: 5vh; border-radius: 0 100% 0 100%; background: linear-gradient(#22c55e, #15803d); transform-origin: 2vh 2.5vh; }
+.crown i:nth-child(1) { transform: rotate(-20deg); } .crown i:nth-child(2) { transform: rotate(20deg); } .crown i:nth-child(3) { transform: rotate(60deg) scale(.8); }
+.crown i:nth-child(4) { transform: rotate(160deg); } .crown i:nth-child(5) { transform: rotate(200deg); } .crown i:nth-child(6) { transform: rotate(120deg) scale(.8); } .crown i:nth-child(7) { transform: rotate(-90deg) scale(.6); }
+.crown { animation: kgSway 4s ease-in-out infinite; }
+.nuts { position: absolute; left: 0; top: -2vh; transform: translateX(-50%); font-size: 5vh; white-space: nowrap; z-index: 2; }
+.flag { position: absolute; left: 0; top: -14vh; width: .6vh; height: 8vh; background: #78350f; }
+.flag::after { content: ''; position: absolute; left: .6vh; top: 0; width: 6vh; height: 4vh; background: var(--tc); clip-path: polygon(0 0, 100% 50%, 0 100%); animation: kgSway 1.2s ease-in-out infinite; transform-origin: 0 50%; }
+.monkey { position: absolute; left: 0; transform: translateX(-50%); transition: bottom .8s cubic-bezier(.3, 1.4, .5, 1); display: flex; flex-direction: column; align-items: center; z-index: 3; }
+.monkey span { font-size: 10vh; line-height: 1; filter: drop-shadow(0 4px 0 rgba(0, 0, 0, .15)); }
+.monkey b { margin-top: -.6vh; padding: .2vh 1.4vh; border-radius: 99px; font-size: 2.2vh; color: #fff; background: var(--tc); white-space: nowrap; box-shadow: 0 3px 0 rgba(0, 0, 0, .2); }
+.monkey.now span { animation: kgBob 1s ease-in-out infinite; }
+.monkey.climb span { animation: climbHop .8s ease-out; }
+@keyframes climbHop { 30% { transform: translateY(-3vh) rotate(-10deg); } 60% { transform: translateY(0) rotate(10deg); } }
+.crab { position: absolute; bottom: 38%; font-size: 6vh; animation: crabWalk 9s ease-in-out infinite alternate; }
+@keyframes crabWalk { from { left: 4%; } to { left: 90%; } }

@@ -1,0 +1,30 @@
+/* Bank soal bawaan — Panjat Kelapa (SD Matematika). Jawaban benar = pilihan A (tampilan diacak otomatis).
+   Guru bisa mengganti soal lewat tombol ✏️ Guru (impor/ekspor Excel). */
+window.DEFAULT_QUESTIONS = [
+  ['Penjumlahan', '7 + 8 = …', ['15', '14', '16', '13']],
+  ['Pengurangan', '12 − 5 = …', ['7', '6', '8', '17']],
+  ['Perkalian', '6 × 4 = …', ['24', '20', '28', '10']],
+  ['Pembagian', '36 : 6 = …', ['6', '5', '7', '8']],
+  ['Penjumlahan', '25 + 37 = …', ['62', '52', '63', '61']],
+  ['Pengurangan', '90 − 45 = …', ['45', '55', '35', '50']],
+  ['Perkalian', '9 × 8 = …', ['72', '64', '81', '63']],
+  ['Pembagian', '56 : 7 = …', ['8', '7', '9', '6']],
+  ['Operasi Hitung', '3 × 5 + 2 = …', ['17', '21', '16', '15']],
+  ['Bilangan', 'Bilangan GENAP di bawah ini adalah …', ['14', '15', '17', '21']],
+  ['Bilangan', 'Bilangan GANJIL di bawah ini adalah …', ['21', '18', '30', '12']],
+  ['Bilangan', 'Lambang bilangan "dua ratus lima" adalah …', ['205', '250', '25', '2.005']],
+  ['Bilangan', 'Pada bilangan 345, angka 4 menempati nilai …', ['Puluhan', 'Ratusan', 'Satuan', 'Ribuan']],
+  ['Pecahan', 'Setengah dari 20 adalah …', ['10', '5', '2', '15']],
+  ['Bangun Datar', 'Bangun datar yang memiliki 3 sisi adalah …', ['Segitiga', 'Persegi', 'Lingkaran', 'Trapesium']],
+  ['Bangun Datar', 'Persegi memiliki … sisi yang sama panjang.', ['4', '3', '5', '6']],
+  ['Bangun Datar', 'Keliling persegi dengan sisi 5 cm adalah …', ['20 cm', '25 cm', '10 cm', '15 cm']],
+  ['Bangun Datar', 'Luas persegi panjang 6 cm × 4 cm adalah …', ['24 cm²', '20 cm²', '10 cm²', '48 cm²']],
+  ['Satuan', '1 meter = … cm', ['100', '10', '1.000', '50']],
+  ['Satuan', '1 jam = … menit', ['60', '100', '30', '24']],
+  ['Satuan', '1 lusin = … buah', ['12', '10', '20', '24']],
+  ['Soal Cerita', 'Ibu membeli 3 kantong, tiap kantong berisi 4 jeruk. Jumlah jeruk ada …', ['12', '7', '15', '10']],
+  ['Soal Cerita', 'Ani punya 20 kelereng, 8 diberikan kepada adik. Sisa kelereng Ani …', ['12', '28', '13', '11']],
+  ['KPK & FPB', 'KPK dari 4 dan 6 adalah …', ['12', '24', '2', '10']],
+  ['KPK & FPB', 'FPB dari 12 dan 18 adalah …', ['6', '3', '36', '2']],
+  ['Waktu', 'Jam 🕒 menunjukkan pukul …', ['03.00', '12.15', '09.00', '06.00']]
+].map((r, i) => ({ id: i + 1, category: r[0], question: r[1], optionA: r[2][0], optionB: r[2][1], optionC: r[2][2] || '', optionD: r[2][3] || '', correct: 'A', explanation: r[3] || '' }));

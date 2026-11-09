@@ -1,0 +1,314 @@
+/* ==========================================================================
+   quiz-core.css — Komponen bersama (pop-up soal, setup, Mode Guru)
+   Warna & font diatur oleh tiap game lewat variabel --qc-*
+   ========================================================================== */
+:root {
+  --qc-font-head: 'Fredoka', system-ui, sans-serif;
+  --qc-font-body: 'Nunito', system-ui, sans-serif;
+  --qc-backdrop: rgba(5, 8, 22, 0.78);
+  --qc-card: #111827;
+  --qc-card2: #1f2937;
+  --qc-text: #f8fafc;
+  --qc-muted: #94a3b8;
+  --qc-accent: #6366f1;
+  --qc-accent2: #ec4899;
+  --qc-accent-text: #ffffff;
+  --qc-border: rgba(255, 255, 255, 0.12);
+  --qc-radius: 22px;
+  --qc-good: #10b981;
+  --qc-bad: #ef4444;
+  --qc-opt-bg: #ffffff;
+  --qc-opt-text: #0f172a;
+}
+
+.qc-overlay {
+  position: fixed; inset: 0; z-index: 1000;
+  display: flex; align-items: center; justify-content: center;
+  padding: 16px;
+  background: var(--qc-backdrop);
+  backdrop-filter: blur(6px); -webkit-backdrop-filter: blur(6px);
+  opacity: 0; transition: opacity .2s ease;
+  font-family: var(--qc-font-body);
+  color: var(--qc-text);
+}
+.qc-overlay.show { opacity: 1; }
+.qc-card {
+  position: relative;
+  width: min(640px, 100%);
+  max-height: calc(100vh - 32px); overflow-y: auto;
+  background: var(--qc-card);
+  border: 2px solid var(--qc-border);
+  border-radius: var(--qc-radius);
+  padding: 22px;
+  box-shadow: 0 30px 80px rgba(0, 0, 0, .55);
+  transform: translateY(16px) scale(.96);
+  transition: transform .25s cubic-bezier(.2, .9, .3, 1.3);
+}
+.qc-overlay.show .qc-card { transform: none; }
+
+.qc-title { font-family: var(--qc-font-head); font-size: 1.5rem; margin: 4px 0 8px; text-align: center; line-height: 1.2; }
+.qc-muted { color: var(--qc-muted); font-size: .92rem; line-height: 1.5; }
+.qc-muted.small, .small { font-size: .78rem; }
+.qc-err { color: var(--qc-bad); font-weight: 700; font-size: .85rem; margin: 6px 0 0; }
+.qc-modal .qc-card { width: min(480px, 100%); text-align: center; }
+.qc-modal-icon { font-size: 3.4rem; line-height: 1; margin-bottom: 4px; animation: qcBounce 1.4s ease-in-out infinite; }
+.qc-modal-body { margin: 6px 0 4px; }
+@keyframes qcBounce { 0%, 100% { transform: translateY(0); } 50% { transform: translateY(-8px); } }
+
+/* ------------------------------ Tombol ------------------------------ */
+.qc-btn {
+  font-family: var(--qc-font-head); font-weight: 700; font-size: .95rem;
+  border: 2px solid var(--qc-border); background: var(--qc-card2); color: var(--qc-text);
+  padding: 10px 18px; border-radius: 14px; cursor: pointer;
+  transition: transform .12s, filter .12s, box-shadow .12s;
+  display: inline-flex; align-items: center; justify-content: center; gap: 6px;
+}
+.qc-btn:hover { filter: brightness(1.15); transform: translateY(-1px); }
+.qc-btn:active { transform: translateY(1px) scale(.98); }
+.qc-btn:disabled { opacity: .5; cursor: default; transform: none; }
+.qc-btn.primary { background: linear-gradient(135deg, var(--qc-accent), var(--qc-accent2)); color: var(--qc-accent-text); border-color: transparent; box-shadow: 0 6px 18px rgba(0, 0, 0, .3); }
+.qc-btn.success { background: var(--qc-good); color: #fff; border-color: transparent; }
+.qc-btn.danger { background: var(--qc-bad); color: #fff; border-color: transparent; }
+.qc-btn.small { padding: 5px 10px; font-size: .8rem; border-radius: 10px; }
+.qc-btn.big { font-size: 1.15rem; padding: 14px 28px; }
+.qc-actions { display: flex; flex-wrap: wrap; gap: 10px; justify-content: center; margin-top: 16px; }
+
+.qc-input {
+  width: 100%; font: inherit; color: var(--qc-text);
+  background: var(--qc-card2); border: 2px solid var(--qc-border);
+  border-radius: 12px; padding: 9px 12px; outline: none;
+}
+.qc-input:focus { border-color: var(--qc-accent); }
+select.qc-input { cursor: pointer; }
+select.qc-input option { color: #0f172a; background: #fff; }
+
+.qc-chip {
+  display: inline-flex; align-items: center; gap: 6px;
+  padding: 4px 12px; border-radius: 999px;
+  background: var(--pc); color: #fff; font-family: var(--qc-font-head); font-weight: 700;
+  box-shadow: 0 3px 0 rgba(0, 0, 0, .25);
+}
+
+/* ------------------------------ Pop-up Soal ------------------------------ */
+.qc-ask .qc-card { width: min(780px, 100%); padding: 20px 22px 18px; }
+.qc-ask-head { display: flex; flex-wrap: wrap; align-items: center; gap: 8px; margin-bottom: 10px; }
+.qc-cat { font-size: .82rem; font-weight: 700; padding: 4px 10px; border-radius: 999px; background: var(--qc-card2); border: 1px solid var(--qc-border); color: var(--qc-muted); }
+.qc-badge { font-size: .82rem; font-weight: 800; padding: 4px 10px; border-radius: 999px; background: #facc15; color: #422006; }
+.qc-time { margin-left: auto; font-family: var(--qc-font-head); font-size: 1.2rem; font-weight: 700; padding: 2px 12px; border-radius: 12px; background: var(--qc-card2); }
+.qc-timebar { height: 8px; border-radius: 99px; background: var(--qc-card2); overflow: hidden; margin-bottom: 14px; }
+.qc-timebar i { display: block; height: 100%; width: 100%; background: linear-gradient(90deg, var(--qc-good), #facc15); border-radius: 99px; transition: width .1s linear; }
+.qc-ask.hurry .qc-timebar i { background: var(--qc-bad); }
+.qc-ask.hurry .qc-time { background: var(--qc-bad); color: #fff; animation: qcPulse .5s infinite alternate; }
+@keyframes qcPulse { to { transform: scale(1.12); } }
+.qc-question {
+  font-family: var(--qc-font-head); font-size: clamp(1.15rem, 2.6vw, 1.65rem); font-weight: 700; line-height: 1.35;
+  text-align: center; padding: 18px 14px; margin-bottom: 14px;
+  background: var(--qc-card2); border-radius: 18px; border: 1px solid var(--qc-border);
+}
+.qc-options { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
+.qc-options.n3 .qc-opt:last-child { grid-column: span 2; }
+.qc-opt {
+  display: flex; align-items: center; gap: 12px; text-align: left;
+  font: inherit; font-weight: 800; font-size: clamp(.95rem, 2vw, 1.15rem);
+  background: var(--qc-opt-bg); color: var(--qc-opt-text);
+  border: 3px solid transparent; border-radius: 18px; padding: 14px 16px; cursor: pointer;
+  box-shadow: 0 5px 0 rgba(0, 0, 0, .25); transition: transform .12s, box-shadow .12s, opacity .2s;
+}
+.qc-opt b {
+  flex: 0 0 auto; width: 40px; height: 40px; border-radius: 12px; display: grid; place-items: center;
+  font-family: var(--qc-font-head); font-size: 1.2rem; color: #fff; background: #3b82f6;
+}
+.qc-opt[data-k="B"] b { background: #a855f7; }
+.qc-opt[data-k="C"] b { background: #f59e0b; }
+.qc-opt[data-k="D"] b { background: #14b8a6; }
+.qc-opt:not(:disabled):hover { transform: translateY(-3px); box-shadow: 0 8px 0 rgba(0, 0, 0, .25); border-color: var(--qc-accent); }
+.qc-opt.right { border-color: var(--qc-good); background: #dcfce7; animation: qcPop .4s; }
+.qc-opt.right b { background: var(--qc-good); }
+.qc-opt.wrong { border-color: var(--qc-bad); background: #fee2e2; animation: qcShake .4s; }
+.qc-opt.wrong b { background: var(--qc-bad); }
+.qc-opt.dim { opacity: .45; }
+.qc-opt:disabled { cursor: default; }
+@keyframes qcPop { 50% { transform: scale(1.05); } }
+@keyframes qcShake { 20%, 60% { transform: translateX(-8px); } 40%, 80% { transform: translateX(8px); } }
+.qc-hint { text-align: center; font-size: .78rem; color: var(--qc-muted); margin: 12px 0 0; }
+.qc-feedback { margin-top: 14px; padding: 14px; border-radius: 18px; background: var(--qc-card2); text-align: center; animation: qcIn .3s; }
+.qc-feedback .qc-btn { margin-top: 10px; }
+.qc-fb-title { font-family: var(--qc-font-head); font-size: 1.6rem; font-weight: 700; }
+.is-correct .qc-fb-title { color: var(--qc-good); }
+.is-wrong .qc-fb-title { color: var(--qc-bad); }
+.qc-fb-key { margin-top: 4px; font-size: .95rem; }
+.qc-fb-exp { margin-top: 8px; font-size: .9rem; color: var(--qc-muted); line-height: 1.5; }
+@keyframes qcIn { from { opacity: 0; transform: translateY(8px); } }
+
+/* ------------------------------ Hukuman ------------------------------ */
+.qc-punish .qc-card { border-color: var(--qc-bad); }
+.qc-punish .qc-title { color: var(--qc-bad); }
+.qc-punish-sub { color: var(--qc-muted); font-size: .9rem; margin: 10px 0 6px; }
+.qc-punish-box {
+  margin-top: 10px; padding: 16px; border-radius: 16px; font-size: 1.08rem; font-weight: 700; line-height: 1.5;
+  background: var(--qc-card2); border: 2px dashed var(--qc-bad);
+}
+.qc-countdown { display: flex; align-items: center; justify-content: center; gap: 12px; margin-top: 12px; }
+.qc-cd-num { font-family: var(--qc-font-head); font-size: 2.4rem; font-weight: 700; min-width: 64px; }
+
+/* ------------------------------ Pilih target ------------------------------ */
+.qc-choose-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(130px, 1fr)); gap: 10px; margin-top: 10px; }
+.qc-choose-btn {
+  font-family: var(--qc-font-head); font-weight: 700; font-size: 1rem; color: #fff;
+  background: var(--pc); border: 3px solid rgba(255, 255, 255, .35); border-radius: 16px; padding: 14px 8px;
+  cursor: pointer; display: flex; flex-direction: column; align-items: center; gap: 4px; transition: transform .12s;
+}
+.qc-choose-btn span { font-size: 2rem; }
+.qc-choose-btn:hover { transform: translateY(-3px) scale(1.03); }
+
+/* ------------------------------ Juara ------------------------------ */
+.qc-winner .qc-card { width: min(520px, 100%); }
+.qc-rank { list-style: none; padding: 0; margin: 12px 0 0; display: grid; gap: 8px; }
+.qc-rank li {
+  display: flex; align-items: center; gap: 10px; padding: 10px 14px; border-radius: 14px;
+  background: var(--qc-card2); border-left: 6px solid var(--pc); text-align: left;
+}
+.qc-rank li:first-child { transform: scale(1.03); box-shadow: 0 0 0 2px #facc15; }
+.qc-medal { font-size: 1.5rem; }
+.qc-rank-av { font-size: 1.5rem; }
+.qc-rank-name { flex: 1; font-weight: 800; }
+.qc-rank b { font-family: var(--qc-font-head); font-size: 1.15rem; }
+
+/* ------------------------------ Setup ------------------------------ */
+.qc-setup .qc-card { width: min(920px, 100%); text-align: center; padding: 24px; }
+.qc-setup-logo { font-size: 4rem; line-height: 1; animation: qcBounce 2s ease-in-out infinite; }
+.qc-setup-title { font-family: var(--qc-font-head); font-size: clamp(1.8rem, 5vw, 2.8rem); margin: 6px 0 2px; line-height: 1.1; }
+.qc-setup-sub { color: var(--qc-muted); margin: 0 0 16px; }
+.qc-setup-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 14px; text-align: left; }
+.qc-panel { background: var(--qc-card2); border: 1px solid var(--qc-border); border-radius: 18px; padding: 14px; }
+.qc-panel h3 { font-family: var(--qc-font-head); margin: 0 0 10px; font-size: 1.05rem; }
+.qc-seg { display: flex; gap: 6px; margin-bottom: 10px; flex-wrap: wrap; }
+.qc-seg button {
+  flex: 1; font-family: var(--qc-font-head); font-weight: 700; font-size: .9rem; padding: 8px 4px; border-radius: 12px;
+  border: 2px solid var(--qc-border); background: transparent; color: var(--qc-text); cursor: pointer; min-width: 70px;
+}
+.qc-seg button.on { background: linear-gradient(135deg, var(--qc-accent), var(--qc-accent2)); color: var(--qc-accent-text); border-color: transparent; }
+.qc-players { display: grid; gap: 8px; }
+.qc-prow { display: flex; align-items: center; gap: 8px; padding: 6px; border-radius: 14px; border: 2px solid var(--pc); background: rgba(0, 0, 0, .08); }
+.qc-av { font-size: 1.6rem; width: 46px; height: 46px; border-radius: 12px; border: none; background: var(--pc); cursor: pointer; flex: 0 0 auto; }
+.qc-av:hover { transform: rotate(-8deg) scale(1.08); }
+.qc-pnum { font-family: var(--qc-font-head); font-weight: 700; color: var(--pc); padding-right: 6px; }
+.qc-settings { display: grid; gap: 8px; }
+.qc-set { display: grid; grid-template-columns: 1fr 1.1fr; align-items: center; gap: 8px; font-size: .9rem; font-weight: 700; }
+.qc-rules { margin-top: 12px; font-size: .86rem; line-height: 1.5; }
+.qc-rules summary { cursor: pointer; font-weight: 800; font-family: var(--qc-font-head); }
+.qc-rules ul { margin: 6px 0 0; padding-left: 18px; }
+.qc-rules li { margin: 3px 0; }
+
+/* ------------------------------ Mode Guru ------------------------------ */
+.qc-teacher .qc-card { width: min(1100px, 100%); padding: 18px; }
+.qc-t-head { display: flex; justify-content: space-between; align-items: flex-start; gap: 10px; }
+.qc-t-head .qc-title { text-align: left; margin: 0; }
+.qc-t-head .qc-muted { margin: 2px 0 0; }
+.qc-t-tools { display: flex; flex-wrap: wrap; gap: 8px; margin: 12px 0; }
+.qc-t-tools select { width: auto; }
+.qc-t-search { margin-bottom: 10px; }
+.qc-t-table { max-height: 52vh; overflow: auto; border-radius: 14px; border: 1px solid var(--qc-border); }
+.qc-t-table table { width: 100%; border-collapse: collapse; font-size: .84rem; }
+.qc-t-table th { position: sticky; top: 0; background: var(--qc-card2); text-align: left; padding: 8px; font-size: .75rem; text-transform: uppercase; color: var(--qc-muted); z-index: 1; }
+.qc-t-table td { padding: 8px; border-top: 1px solid var(--qc-border); vertical-align: top; }
+.qc-t-table .c { text-align: center; }
+.qc-t-table .nowrap { white-space: nowrap; }
+.qc-t-opts div { margin: 1px 0; }
+.qc-t-opts .ok { color: var(--qc-good); font-weight: 800; }
+.qc-tag { display: inline-block; font-size: .72rem; padding: 2px 8px; border-radius: 99px; background: var(--qc-card2); border: 1px solid var(--qc-border); }
+.qc-key { display: inline-grid; place-items: center; width: 28px; height: 28px; border-radius: 8px; background: var(--qc-good); color: #fff; }
+.qc-edit .qc-card { text-align: left; width: min(620px, 100%); }
+.qc-form { display: grid; gap: 10px; }
+.qc-form label { display: grid; gap: 4px; font-size: .85rem; font-weight: 700; }
+.qc-form label i { font-weight: 400; color: var(--qc-muted); }
+.qc-form-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
+.qc-form-key { display: flex; align-items: center; gap: 14px; flex-wrap: wrap; font-weight: 800; font-size: .9rem; padding: 10px; border-radius: 12px; background: var(--qc-card2); }
+.qc-form .qc-radio { display: inline-flex; align-items: center; gap: 4px; cursor: pointer; }
+.qc-pin-input { text-align: center; font-size: 1.4rem; letter-spacing: .4em; margin-top: 8px; }
+
+/* ------------------------------ Toast & konfeti ------------------------------ */
+.qc-toasts { position: fixed; top: 14px; left: 50%; transform: translateX(-50%); z-index: 2000; display: grid; gap: 8px; pointer-events: none; width: min(92vw, 520px); }
+.qc-toast {
+  font-family: var(--qc-font-head); font-weight: 600; text-align: center; padding: 10px 16px; border-radius: 14px;
+  background: var(--qc-card); color: var(--qc-text); border: 2px solid var(--qc-border); box-shadow: 0 10px 30px rgba(0, 0, 0, .4);
+  animation: qcIn .25s; transition: opacity .3s, transform .3s;
+}
+.qc-toast.good { border-color: var(--qc-good); }
+.qc-toast.bad { border-color: var(--qc-bad); }
+.qc-toast.out { opacity: 0; transform: translateY(-10px); }
+.qc-confetti { position: fixed; inset: 0; z-index: 3000; pointer-events: none; }
+
+/* ------------------------------ Lapisan efek (FX) ------------------------------ */
+.qc-fx { position: fixed; inset: 0; z-index: 1800; pointer-events: none; overflow: hidden; }
+.qc-p { position: absolute; line-height: 1; will-change: transform, opacity; }
+.qc-ring { position: absolute; border: 10px solid #fff; border-radius: 50%; transform: translate(-50%, -50%); box-shadow: 0 0 20px currentColor; }
+.qc-flash { position: absolute; inset: 0; }
+.qc-ftext { position: absolute; font-family: var(--qc-font-head); font-weight: 900; white-space: nowrap; text-shadow: 0 3px 0 rgba(0, 0, 0, .4), 0 0 18px currentColor; }
+.qc-announce { position: absolute; inset: 0; display: flex; align-items: center; justify-content: center; }
+.qc-ann-band {
+  min-width: min(760px, 92vw); padding: 14px 60px; text-align: center; color: #fff;
+  background: linear-gradient(90deg, transparent, var(--ac) 10%, var(--ac) 90%, transparent);
+  box-shadow: 0 0 0 3px rgba(255, 255, 255, .25) inset, 0 16px 40px rgba(0, 0, 0, .45);
+}
+.qc-ann-main { font-family: var(--qc-font-head); font-size: clamp(1.5rem, 5vw, 3.1rem); font-weight: 900; line-height: 1.15; transform: skewX(12deg); text-shadow: 0 4px 0 rgba(0, 0, 0, .3); }
+.qc-ann-sub { transform: skewX(12deg); font-weight: 800; font-size: clamp(.85rem, 2vw, 1.1rem); opacity: .95; margin-top: 2px; }
+
+/* Animasi pop-up soal */
+.qc-ask .qc-question { animation: qcQIn .5s cubic-bezier(.2, .9, .3, 1.3) .05s backwards; }
+@keyframes qcQIn { from { opacity: 0; transform: scale(.85) translateY(-10px); } }
+.qc-opt { animation: qcOptIn .45s cubic-bezier(.2, .9, .3, 1.4) backwards; animation-delay: calc(var(--i, 0) * 90ms + 180ms); }
+@keyframes qcOptIn { from { opacity: 0; transform: translateY(26px) scale(.9); } }
+.qc-opt b { transition: transform .2s; }
+.qc-opt:not(:disabled):hover b { transform: rotate(-10deg) scale(1.12); }
+.qc-fb-title { animation: qcStamp .5s cubic-bezier(.2, .9, .3, 1.6); display: inline-block; }
+@keyframes qcStamp { from { transform: scale(2.4) rotate(-10deg); opacity: 0; } }
+.qc-ask .qc-card.is-correct { animation: qcGlowGood 1.2s ease-out; }
+@keyframes qcGlowGood { 0% { box-shadow: 0 0 0 0 rgba(34, 197, 94, .9), 0 30px 80px rgba(0, 0, 0, .55); } 100% { box-shadow: 0 0 0 26px rgba(34, 197, 94, 0), 0 30px 80px rgba(0, 0, 0, .55); } }
+.qc-ask .qc-time b { display: inline-block; min-width: 1.4em; text-align: center; }
+
+/* Tombol utama berkilau */
+.qc-btn.primary { position: relative; overflow: hidden; }
+.qc-btn.primary::after { content: ''; position: absolute; top: 0; left: -60%; width: 40%; height: 100%; background: linear-gradient(100deg, transparent, rgba(255, 255, 255, .5), transparent); transform: skewX(-20deg); animation: qcShine 3s ease-in-out infinite; pointer-events: none; }
+@keyframes qcShine { 0%, 55% { left: -60%; } 100% { left: 130%; } }
+
+/* Hukuman: kartu "dibanting" masuk */
+.qc-punish.show .qc-card { animation: qcSlam .55s cubic-bezier(.2, .9, .3, 1.5); }
+@keyframes qcSlam { from { transform: scale(1.7) rotate(-7deg); opacity: 0; } }
+.qc-punish .qc-modal-icon { animation: qcWobble .7s ease-in-out infinite; }
+@keyframes qcWobble { 0%, 100% { transform: rotate(-12deg) scale(1); } 50% { transform: rotate(12deg) scale(1.15); } }
+.qc-punish-box { animation: qcPulseBorder 1.4s ease-in-out infinite; }
+@keyframes qcPulseBorder { 50% { box-shadow: 0 0 0 4px rgba(239, 68, 68, .25); } }
+
+/* Juara */
+.qc-winner .qc-modal-icon { font-size: 4.6rem; animation: qcTrophy 1.6s cubic-bezier(.2, .9, .3, 1.4) both, qcBounce 1.4s 1.6s ease-in-out infinite; }
+@keyframes qcTrophy { from { transform: scale(0) rotate(-200deg); } 70% { transform: scale(1.3) rotate(15deg); } }
+.qc-rank li { animation: qcRankIn .55s cubic-bezier(.2, .9, .3, 1.3) backwards; animation-delay: calc(var(--i, 0) * 180ms + 400ms); }
+@keyframes qcRankIn { from { opacity: 0; transform: translateX(-60px) scale(.8); } }
+.qc-rank li:first-child .qc-medal { display: inline-block; animation: qcBounce 1s ease-in-out infinite; }
+
+/* Pilih target */
+.qc-choose-btn { animation: qcOptIn .4s cubic-bezier(.2, .9, .3, 1.4) backwards; }
+.qc-choose-btn:nth-child(2) { animation-delay: .08s; } .qc-choose-btn:nth-child(3) { animation-delay: .16s; }
+.qc-choose-btn span { transition: transform .2s; }
+.qc-choose-btn:hover span { transform: scale(1.25) rotate(-8deg); }
+
+/* Layar setup: emoji melayang di latar */
+.qc-floaters { position: absolute; inset: 0; overflow: hidden; pointer-events: none; }
+.qc-floaters svg { width: 2.4em; height: 1em; }
+.qc-floaters span { position: absolute; bottom: -80px; opacity: .45; animation: qcRise linear infinite; filter: drop-shadow(0 4px 6px rgba(0, 0, 0, .25)); }
+@keyframes qcRise { to { transform: translateY(-125vh) rotate(360deg); } }
+.qc-setup.show .qc-card { animation: qcSetupIn .7s cubic-bezier(.2, .9, .3, 1.3); }
+@keyframes qcSetupIn { from { opacity: 0; transform: translateY(40px) scale(.9); } }
+.qc-prow { animation: qcOptIn .35s cubic-bezier(.2, .9, .3, 1.4) backwards; }
+.qc-av { transition: transform .2s; }
+
+@media (max-width: 720px) {
+  .qc-setup-grid, .qc-form-grid { grid-template-columns: 1fr; }
+  .qc-options { grid-template-columns: 1fr; }
+  .qc-options.n3 .qc-opt:last-child { grid-column: auto; }
+  .qc-card { padding: 16px; }
+}
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after { animation-duration: .001ms !important; animation-iteration-count: 1 !important; transition-duration: .001ms !important; }
+}

@@ -1,0 +1,33 @@
+/* Kapal Selam IPA */
+:root { --kg-a: #0369a1; }
+body.kg-body { background: #075985; }
+.ocean { position: absolute; inset: 0; background: linear-gradient(#38bdf8, #0284c7 45%, #075985); }
+.world { position: absolute; left: 0; right: 0; top: 0; transition: transform 1.1s cubic-bezier(.45, .05, .3, 1); }
+.surface { position: absolute; left: 0; right: 0; top: 0; height: 16vh; background: linear-gradient(#bae6fd, rgba(186, 230, 253, 0)); }
+.surface i { position: absolute; left: 0; right: 0; top: 0; height: 3vh; background: radial-gradient(18px 8px at 50% 100%, transparent 70%, rgba(255, 255, 255, .8) 72%) 0 0 / 60px 3vh; animation: surf 5s linear infinite; }
+@keyframes surf { to { background-position: 600px 0; } }
+.life { position: absolute; font-size: 8vh; animation: lifeSwim 7s ease-in-out infinite alternate; }
+.life.r { animation-name: lifeSwimR; }
+@keyframes lifeSwim { from { transform: translateX(0) scaleX(-1); } to { transform: translateX(12vw) scaleX(-1); } }
+@keyframes lifeSwimR { from { transform: translateX(0); } to { transform: translateX(-12vw); } }
+.depth-mark { position: absolute; right: 1.5%; padding: .2vh 1.2vh; border-radius: 99px; font-size: 2.2vh; font-weight: 700; color: #e0f2fe; background: rgba(0, 0, 0, .25); }
+.weed { position: absolute; font-size: 9vh; transform-origin: 50% 100%; animation: kgSway 3s ease-in-out infinite; }
+.seabed { position: absolute; left: 0; right: 0; height: 40vh; background: radial-gradient(ellipse at 50% 0, #fcd34d, #b45309 140%); border-radius: 50% 50% 0 0 / 6vh 6vh 0 0; text-align: center; }
+.seabed .chest { position: absolute; left: 50%; top: -6vh; transform: translateX(-50%); font-size: 11vh; }
+.seabed .gem { position: absolute; left: 50%; top: -14vh; transform: translateX(-50%); font-size: 6vh; opacity: .7; }
+.seabed .gem.shine { opacity: 1; animation: gemShine 1s ease-in-out infinite; filter: drop-shadow(0 0 2vh #67e8f9); }
+@keyframes gemShine { 50% { transform: translateX(-50%) scale(1.4) rotate(12deg); } }
+.dark { position: absolute; inset: 0; background: #020617; opacity: 0; transition: opacity 1.2s; pointer-events: none; }
+.bubble { position: absolute; bottom: 30%; width: 1.6vh; height: 1.6vh; border-radius: 50%; border: 2px solid rgba(255, 255, 255, .7); animation: kgRise linear infinite; }
+.sub { position: absolute; left: calc(50% - 17vh); top: 24%; width: 34vh; height: 15vh; z-index: 2; animation: kgFloat 3s ease-in-out infinite; }
+.sub .hull { position: absolute; inset: 3vh 0 0; border-radius: 8vh; background: linear-gradient(#fde047, #f59e0b); box-shadow: inset 0 -1.6vh 0 rgba(0, 0, 0, .15), 0 0 0 .5vh #b45309; display: flex; align-items: center; justify-content: center; gap: 2.4vh; }
+.sub .hull b { width: 5vh; height: 5vh; border-radius: 50%; background: radial-gradient(circle at 35% 35%, #e0f2fe, #38bdf8); box-shadow: 0 0 0 .7vh #b45309; }
+.sub .tower { position: absolute; left: 38%; top: -1vh; width: 9vh; height: 6vh; border-radius: 1.4vh 1.4vh 0 0; background: #f59e0b; box-shadow: 0 0 0 .5vh #b45309; }
+.sub .peri { position: absolute; left: 60%; top: -5vh; width: 1vh; height: 5vh; background: #92400e; }
+.sub .peri::after { content: ''; position: absolute; left: 0; top: 0; width: 3vh; height: 1.2vh; background: #92400e; }
+.sub .prop { position: absolute; left: -4vh; top: 7vh; width: 4vh; height: 8vh; border-radius: 2vh; background: #64748b; animation: prop .3s linear infinite; }
+@keyframes prop { 50% { transform: scaleY(.2); } }
+.sub .trail { position: absolute; left: -10vh; top: 9vh; width: 6vh; height: 4vh; background: radial-gradient(circle, rgba(255, 255, 255, .6) 0 20%, transparent 22%) 0 0 / 2vh 2vh; animation: trail .8s linear infinite; }
+@keyframes trail { to { transform: translateX(-4vh); opacity: 0; } }
+.meter { position: absolute; left: 1.4%; top: 12vh; z-index: 3; padding: .8vh 1.8vh; border-radius: 1.6vh; font-weight: 700; font-size: 2.6vh; color: #fff; background: rgba(2, 6, 23, .45); }
+.meter b { color: #fde047; }

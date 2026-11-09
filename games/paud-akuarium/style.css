@@ -1,0 +1,15 @@
+/* Akuarium Hewan */
+:root { --kg-a: #0891b2; }
+body.kg-body { background: #0e7490; }
+.water { position: absolute; inset: 0; background: linear-gradient(#67e8f9, #22b8cf 40%, #0e7490 85%); }
+.rays { position: absolute; inset: 0; opacity: .35; background: repeating-linear-gradient(105deg, rgba(255, 255, 255, .5) 0 4%, transparent 4% 12%); -webkit-mask: linear-gradient(#000, transparent 70%); mask: linear-gradient(#000, transparent 70%); animation: rays 8s ease-in-out infinite alternate; }
+@keyframes rays { to { transform: translateX(4%); } }
+.sand { position: absolute; left: 0; right: 0; bottom: 0; height: 40%; background: radial-gradient(ellipse at 50% 0, #fde68a, #f59e0b 120%); border-radius: 50% 50% 0 0 / 8vh 8vh 0 0; }
+.weed { position: absolute; bottom: 36%; font-size: 11vh; transform-origin: 50% 100%; animation: kgSway 3s ease-in-out infinite; }
+.shell { position: absolute; right: 12%; bottom: 37%; font-size: 6vh; }
+.bubble { position: absolute; bottom: 30%; border-radius: 50%; border: 2px solid rgba(255, 255, 255, .8); background: radial-gradient(circle at 30% 30%, rgba(255, 255, 255, .8), rgba(255, 255, 255, .1) 60%); animation: kgRise linear infinite; }
+.bubble.big { width: 3vh; height: 3vh; animation: kgRise 2.4s ease-in forwards; }
+.tank { position: absolute; inset: 0; }
+.swim { position: absolute; left: 0; animation: swimX linear infinite; }
+.swim span { display: inline-block; font-size: 9vh; animation: kgFloat 2.6s ease-in-out infinite; }
+@keyframes swimX { 0% { transform: translateX(-12vw) scaleX(-1); } 49% { transform: translateX(98vw) scaleX(-1); } 50% { transform: translateX(98vw) scaleX(1); } 100% { transform: translateX(-12vw) scaleX(1); } }

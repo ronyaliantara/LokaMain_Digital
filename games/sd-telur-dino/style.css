@@ -1,0 +1,29 @@
+/* Telur Dino */
+:root { --kg-a: #15803d; }
+.sky { position: absolute; inset: 0; background: linear-gradient(#fb923c, #fdba74 35%, #fef3c7 70%); }
+.sun { position: absolute; left: 12%; top: 14%; width: 14vh; height: 14vh; border-radius: 50%; background: radial-gradient(circle, #fff7ae, #fbbf24 60%, rgba(251, 191, 36, 0) 72%); animation: kgFloat 6s ease-in-out infinite; }
+.volcano { position: absolute; right: 6%; bottom: 40%; width: 44vh; height: 34vh; }
+.volcano .cone { position: absolute; inset: 0; background: linear-gradient(#78350f, #451a03); clip-path: polygon(38% 0, 62% 0, 100% 100%, 0 100%); }
+.volcano .lava { position: absolute; left: 38%; right: 38%; top: 0; height: 30%; background: linear-gradient(#f97316, transparent); }
+.smoke { position: absolute; left: 50%; top: -6vh; width: 9vh; height: 9vh; margin-left: -4.5vh; border-radius: 50%; background: rgba(120, 113, 108, .55); animation: smoke 4.5s ease-out infinite; }
+.smoke.s2 { animation-delay: 1.5s; } .smoke.s3 { animation-delay: 3s; }
+@keyframes smoke { 0% { transform: translateY(0) scale(.5); opacity: .8; } 100% { transform: translate(6vh, -24vh) scale(2); opacity: 0; } }
+.hill { position: absolute; left: -10%; right: -10%; bottom: 36%; height: 22%; border-radius: 50% 50% 0 0; background: #65a30d; }
+.ground { position: absolute; left: 0; right: 0; bottom: 0; height: 40%; background: linear-gradient(#84cc16, #4d7c0f); }
+.plant { position: absolute; bottom: 38%; font-size: 12vh; transform-origin: 50% 100%; animation: kgSway 3.4s ease-in-out infinite; }
+.ptero { position: absolute; top: 16%; font-size: 7vh; animation: ptero 18s linear infinite; }
+@keyframes ptero { from { left: -10%; } to { left: 110%; } }
+.nest { position: absolute; left: 50%; bottom: 38%; width: 30vh; height: 30vh; margin-left: -15vh; }
+.twigs { position: absolute; left: 0; right: 0; bottom: 0; height: 9vh; border-radius: 50%; background: repeating-linear-gradient(35deg, #92400e 0 1vh, #b45309 1vh 2vh), #92400e; box-shadow: inset 0 -1.4vh 0 rgba(0, 0, 0, .2); z-index: 2; }
+.egg { position: absolute; left: 50%; bottom: 4vh; width: 15vh; height: 19vh; margin-left: -7.5vh; border-radius: 50% 50% 46% 46% / 58% 58% 42% 42%; background: radial-gradient(circle at 35% 28%, #fff, var(--c) 55%), var(--c);
+  box-shadow: inset -1.4vh -1.6vh 0 rgba(0, 0, 0, .08); z-index: 1; transform-origin: 50% 100%; }
+.egg::before { content: ''; position: absolute; inset: 0; border-radius: inherit; background: radial-gradient(circle at 70% 60%, rgba(22, 163, 74, .35) 0 6%, transparent 7%), radial-gradient(circle at 30% 70%, rgba(22, 163, 74, .35) 0 5%, transparent 6%), radial-gradient(circle at 60% 25%, rgba(22, 163, 74, .3) 0 4%, transparent 5%); }
+.egg svg { position: absolute; inset: 0; width: 100%; height: 100%; }
+.egg .k { fill: none; stroke: #57534e; stroke-width: 3; stroke-linecap: round; stroke-linejoin: round; opacity: 0; transition: opacity .3s; }
+.egg[data-c="1"] .k1, .egg[data-c="2"] .k1, .egg[data-c="2"] .k2, .egg[data-c="3"] .k { opacity: 1; }
+.egg.open { animation: eggOpen .5s forwards; }
+@keyframes eggOpen { to { transform: scale(1.15); opacity: 0; } }
+.baby { position: absolute; left: 50%; bottom: 6vh; font-size: 14vh; z-index: 3; }
+.herd { position: absolute; left: 0; right: 0; bottom: 37%; height: 12vh; }
+.walker { position: absolute; bottom: 0; font-size: 9vh; animation: walk 16s linear infinite; }
+@keyframes walk { 0% { left: -8%; transform: scaleX(-1); } 49% { left: 100%; transform: scaleX(-1); } 50% { left: 100%; transform: scaleX(1); } 100% { left: -8%; transform: scaleX(1); } }

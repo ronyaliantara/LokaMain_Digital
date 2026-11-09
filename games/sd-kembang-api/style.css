@@ -1,0 +1,19 @@
+/* Kembang Api Kata */
+:root { --kg-a: #7c3aed; }
+body.kg-body { background: #0b1026; }
+.night { position: absolute; inset: 0; background: radial-gradient(ellipse at 50% 120%, #4c1d95, transparent 60%), linear-gradient(#0b1026, #1e1b4b 60%, #312e81); }
+.star { position: absolute; width: var(--s); height: var(--s); border-radius: 50%; background: #fff; animation: twinkle 2.4s ease-in-out infinite; }
+@keyframes twinkle { 50% { opacity: .2; transform: scale(.6); } }
+.moon { position: absolute; right: 8%; top: 10%; font-size: 12vh; filter: drop-shadow(0 0 3vh rgba(253, 224, 71, .6)); animation: kgFloat 6s ease-in-out infinite; }
+.shoot { position: absolute; left: 10%; top: 12%; width: 16vh; height: .4vh; background: linear-gradient(90deg, transparent, #fff); border-radius: 99px; transform: rotate(-20deg); animation: shoot 7s ease-in infinite; opacity: 0; }
+@keyframes shoot { 0%, 80% { opacity: 0; transform: translate(0, 0) rotate(-20deg); } 85% { opacity: 1; } 100% { opacity: 0; transform: translate(40vw, -14vh) rotate(-20deg); } }
+.city { position: absolute; left: 0; right: 0; bottom: 30%; display: flex; align-items: flex-end; justify-content: space-between; padding: 0 1%; }
+.bld { position: relative; width: var(--w); background: linear-gradient(#1f2937, #111827); border-radius: .8vh .8vh 0 0; display: grid; grid-template-columns: 1fr 1fr; align-content: start; gap: 1.6vh 1.2vh; padding: 1.8vh 1.2vh; box-shadow: inset 0 0 0 2px rgba(255, 255, 255, .05); }
+.win { display: block; height: 3vh; border-radius: .4vh; background: #374151; transition: background .4s, box-shadow .4s; }
+.win.on { background: #fde047; box-shadow: 0 0 1.6vh rgba(253, 224, 71, .8); }
+.ground { position: absolute; left: 0; right: 0; bottom: 0; height: 31%; background: linear-gradient(#111827, #030712); }
+.rocket { position: absolute; width: .8vh; height: 3vh; margin-left: -.4vh; border-radius: 99px; background: linear-gradient(var(--c), transparent); box-shadow: 0 0 1.4vh var(--c); }
+.spark { position: absolute; width: 1.2vh; height: 1.2vh; margin: -.6vh 0 0 -.6vh; border-radius: 50%; background: var(--c); box-shadow: 0 0 1vh var(--c); animation: spark 1.4s cubic-bezier(.1, .7, .3, 1) forwards; }
+@keyframes spark { 0% { transform: translate(0, 0) scale(1); opacity: 1; } 70% { opacity: 1; } 100% { transform: translate(var(--dx), calc(var(--dy) + 6vh)) scale(.3); opacity: 0; } }
+.flash { position: absolute; width: 22vh; height: 22vh; margin: -11vh 0 0 -11vh; border-radius: 50%; background: radial-gradient(circle, var(--c), transparent 60%); opacity: .6; animation: flash .7s ease-out forwards; }
+@keyframes flash { to { transform: scale(1.6); opacity: 0; } }

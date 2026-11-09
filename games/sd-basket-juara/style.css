@@ -1,0 +1,29 @@
+/* Basket Juara */
+:root { --kg-a: #ea580c; }
+.wall { position: absolute; inset: 0; background: linear-gradient(#1e3a8a, #1e40af 55%, #312e81); }
+.crowd { position: absolute; left: 0; right: 0; top: 12%; height: 26%; opacity: .45;
+  background: radial-gradient(circle at 50% 35%, #fde68a 0 24%, transparent 26%) 0 0 / 5vh 6vh, radial-gradient(circle at 50% 35%, #fca5a5 0 24%, transparent 26%) 2.5vh 3vh / 5vh 6vh; animation: crowd 1.2s steps(2) infinite; }
+@keyframes crowd { 50% { transform: translateY(-.6vh); } }
+.lights { position: absolute; left: 0; right: 0; top: 0; display: flex; justify-content: space-around; }
+.lights i { width: 12vh; height: 3vh; border-radius: 0 0 2vh 2vh; background: #fef9c3; box-shadow: 0 0 6vh 2vh rgba(254, 249, 195, .5); }
+.floor { position: absolute; left: 0; right: 0; bottom: 0; height: 44%; background: repeating-linear-gradient(90deg, #d97706 0 7vh, #c2690a 7vh 14vh); }
+.floor .line { position: absolute; left: 0; right: 0; top: 0; height: .6vh; background: #fff; }
+.floor .circle { position: absolute; left: 50%; top: -6vh; width: 30vh; height: 12vh; margin-left: -15vh; border: .6vh solid #fff; border-radius: 50%; clip-path: inset(50% 0 0 0); }
+.hoop { position: absolute; left: 50%; top: 14%; transform: translateX(-50%); width: 26vh; height: 30vh; z-index: 2; }
+.hoop .board { position: absolute; left: 0; right: 0; top: 0; height: 16vh; border-radius: 1vh; background: rgba(255, 255, 255, .92); box-shadow: 0 0 0 .6vh #ef4444; }
+.hoop .board i { position: absolute; left: 50%; bottom: 1.4vh; width: 9vh; height: 6vh; margin-left: -4.5vh; border: .5vh solid #ef4444; }
+.hoop .rim { position: absolute; left: 50%; top: 15vh; width: 13vh; height: 2vh; margin-left: -6.5vh; border-radius: 50%; border: .8vh solid #f97316; z-index: 3; }
+.hoop .net { position: absolute; left: 50%; top: 16.4vh; width: 11vh; height: 9vh; margin-left: -5.5vh; clip-path: polygon(0 0, 100% 0, 80% 100%, 20% 100%);
+  background: repeating-linear-gradient(60deg, transparent 0 1.2vh, #fff 1.2vh 1.5vh), repeating-linear-gradient(-60deg, transparent 0 1.2vh, #fff 1.2vh 1.5vh); transform-origin: 50% 0; }
+.hoop.swish .net { animation: swish .5s ease-out; }
+@keyframes swish { 40% { transform: scaleY(1.35) scaleX(.85); } }
+.score { position: absolute; right: 2%; top: 12vh; z-index: 3; display: flex; align-items: center; gap: 1vh; padding: 1vh 2.4vh; border-radius: 2vh; background: #111827; box-shadow: 0 0 0 .5vh #374151; }
+.score small { color: #9ca3af; font-weight: 700; font-size: 2vh; }
+.score span { min-width: 6vh; text-align: center; font-size: 6vh; font-weight: 700; color: var(--tc); text-shadow: 0 0 2vh var(--tc); font-variant-numeric: tabular-nums; }
+.score em { color: #fff; font-style: normal; font-size: 5vh; }
+.score span.bump { animation: kgPop .5s; }
+.player { position: absolute; bottom: 39%; transform: translateX(-50%); display: flex; flex-direction: column; align-items: center; z-index: 2; }
+.player span { font-size: 13vh; line-height: 1; filter: drop-shadow(0 .6vh 0 rgba(0, 0, 0, .2)); }
+.player b { padding: .2vh 1.4vh; border-radius: 99px; color: #fff; background: var(--tc); font-size: 2.2vh; white-space: nowrap; }
+.player.now span { animation: kgBob .9s ease-in-out infinite; }
+.ball { position: absolute; left: 0; top: 0; z-index: 4; font-size: 7vh; margin: -3.5vh 0 0 -3.5vh; }

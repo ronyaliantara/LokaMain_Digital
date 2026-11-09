@@ -1,5 +1,5 @@
 window.LOKAMAIN_LIVE_DATA = {
-  "updatedAt": 1794208752925,
+  "updatedAt": 1794210945785,
   "settings": {
     "storeName": "LokaMain Digital",
     "siteSubtitle": "Pilih game pembelajaran digital, lalu klik tombol WhatsApp di bawahnya untuk memesan.",
@@ -201,6 +201,321 @@ window.LOKAMAIN_LIVE_DATA = {
       ],
       "sampleAnswer": 0,
       "coverImage": "assets/games/game-1794208449172b320.jpg"
+    },
+    {
+      "id": "LM-PKB",
+      "code": "SERI-PKB",
+      "title": "Kebun Buah Ceria",
+      "category": "PAUD • Mengenal Buah & Warna",
+      "grade": "✏️ Soal Bisa Diubah",
+      "duration": "10–15 menit",
+      "device": "Smart TV / IFP, Laptop & Tablet (layar sentuh)",
+      "price": 25000,
+      "image": "",
+      "coverImage": "assets/games/game-17942109454878d06.jpg",
+      "shortDesc": "Game PAUD bergambar: pilih buah yang benar, petik dari pohon, dan isi keranjang sampai penuh! Soal dibacakan otomatis. (SOAL BISA DI UBAH lewat Excel)",
+      "howToPlay": [
+        "Buka game di Smart TV/IFP atau laptop, pilih jumlah soal, lalu tekan MAIN.",
+        "Soal dibacakan otomatis — anak cukup menyentuh gambar/jawaban yang benar.",
+        "Setiap jawaban benar, buah terbang ke keranjang. Keranjang penuh = menang!"
+      ],
+      "learningGoals": [
+        "Mengenal nama dan warna buah-buahan.",
+        "Melatih fokus dan koordinasi mata–tangan anak usia dini.",
+        "Guru bisa mengganti soal (boleh pakai emoji sebagai gambar) lewat Excel."
+      ],
+      "gameUrl": "games/paud-kebun-buah/",
+      "sampleQuestion": "Mana buah PISANG?",
+      "sampleOptions": [
+        "🍌",
+        "🍎",
+        "🍇"
+      ],
+      "sampleAnswer": 0
+    },
+    {
+      "id": "LM-PHH",
+      "code": "SERI-PHH",
+      "title": "Hitung Hewan",
+      "category": "PAUD • Berhitung 1–10",
+      "grade": "✏️ Soal Bisa Diubah",
+      "duration": "10–15 menit",
+      "device": "Smart TV / IFP, Laptop & Tablet (layar sentuh)",
+      "price": 25000,
+      "image": "",
+      "coverImage": "assets/games/game-1794210945519b233.jpg",
+      "shortDesc": "Belajar berhitung di peternakan! Hitung ayam, sapi, dan domba — setiap jawaban benar, satu hewan baru datang ke kandang. (SOAL BISA DI UBAH lewat Excel)",
+      "howToPlay": [
+        "Buka game di Smart TV/IFP atau laptop, pilih jumlah soal, lalu tekan MAIN.",
+        "Soal dibacakan otomatis — anak cukup menyentuh gambar/jawaban yang benar.",
+        "Hewan baru datang dengan nomor urut. Peternakan ramai = menang!"
+      ],
+      "learningGoals": [
+        "Mengenal angka dan berhitung 1–10.",
+        "Mengenal konsep banyak–sedikit dan penjumlahan sederhana.",
+        "Soal dapat diganti guru lewat impor/ekspor Excel."
+      ],
+      "gameUrl": "games/paud-hitung-hewan/",
+      "sampleQuestion": "Ada berapa ayam? 🐔🐔🐔",
+      "sampleOptions": [
+        "3",
+        "2",
+        "4"
+      ],
+      "sampleAnswer": 0
+    },
+    {
+      "id": "LM-PBH",
+      "code": "SERI-PBH",
+      "title": "Balon Huruf",
+      "category": "PAUD • Mengenal Huruf",
+      "grade": "✏️ Soal Bisa Diubah",
+      "duration": "10–15 menit",
+      "device": "Smart TV / IFP, Laptop & Tablet (layar sentuh)",
+      "price": 25000,
+      "image": "",
+      "coverImage": "assets/games/game-179421094554863b9.jpg",
+      "shortDesc": "Mengenal huruf dengan balon warna-warni! Pilih balon huruf yang benar, lalu lihat balon terbang dan hurufnya terkumpul di langit. (SOAL BISA DI UBAH lewat Excel)",
+      "howToPlay": [
+        "Buka game di Smart TV/IFP atau laptop, pilih jumlah soal, lalu tekan MAIN.",
+        "Soal dibacakan otomatis — anak cukup menyentuh gambar/jawaban yang benar.",
+        "Huruf yang benar terkumpul di langit. Semua balon terbang = menang!"
+      ],
+      "learningGoals": [
+        "Mengenal huruf kapital dan huruf awal kata.",
+        "Melatih kesiapan membaca anak usia dini.",
+        "Soal dapat diganti guru lewat impor/ekspor Excel."
+      ],
+      "gameUrl": "games/paud-balon-huruf/",
+      "sampleQuestion": "Huruf awal dari KUCING 🐱 adalah…",
+      "sampleOptions": [
+        "K",
+        "M",
+        "B"
+      ],
+      "sampleAnswer": 0
+    },
+    {
+      "id": "LM-PKW",
+      "code": "SERI-PKW",
+      "title": "Kereta Warna",
+      "category": "PAUD • Warna & Bentuk",
+      "grade": "✏️ Soal Bisa Diubah",
+      "duration": "10–15 menit",
+      "device": "Smart TV / IFP, Laptop & Tablet (layar sentuh)",
+      "price": 25000,
+      "image": "",
+      "coverImage": "assets/games/game-1794210945580e4c8.jpg",
+      "shortDesc": "Tut tut tut! Setiap jawaban benar menambah gerbong kereta berisi penumpang hewan lucu. Belajar mengenal warna dan bentuk. (SOAL BISA DI UBAH lewat Excel)",
+      "howToPlay": [
+        "Buka game di Smart TV/IFP atau laptop, pilih jumlah soal, lalu tekan MAIN.",
+        "Soal dibacakan otomatis — anak cukup menyentuh gambar/jawaban yang benar.",
+        "Gerbong bertambah setiap jawaban benar. Kereta berangkat = menang!"
+      ],
+      "learningGoals": [
+        "Mengenal warna dasar dan bentuk geometri sederhana.",
+        "Melatih daya amat dan membedakan objek.",
+        "Soal dapat diganti guru lewat impor/ekspor Excel."
+      ],
+      "gameUrl": "games/paud-kereta-warna/",
+      "sampleQuestion": "Mana yang berwarna MERAH?",
+      "sampleOptions": [
+        "🔴",
+        "🔵",
+        "🟢"
+      ],
+      "sampleAnswer": 0
+    },
+    {
+      "id": "LM-PAK",
+      "code": "SERI-PAK",
+      "title": "Akuarium Hewan",
+      "category": "PAUD • Mengenal Hewan",
+      "grade": "✏️ Soal Bisa Diubah",
+      "duration": "10–15 menit",
+      "device": "Smart TV / IFP, Laptop & Tablet (layar sentuh)",
+      "price": 25000,
+      "image": "",
+      "coverImage": "assets/games/game-1794210945616e3ac.jpg",
+      "shortDesc": "Kenali hewan-hewan lucu: suaranya, makanannya, dan tempat hidupnya. Setiap jawaban benar, teman baru berenang masuk akuarium! (SOAL BISA DI UBAH lewat Excel)",
+      "howToPlay": [
+        "Buka game di Smart TV/IFP atau laptop, pilih jumlah soal, lalu tekan MAIN.",
+        "Soal dibacakan otomatis — anak cukup menyentuh gambar/jawaban yang benar.",
+        "Hewan laut baru masuk akuarium setiap jawaban benar. Akuarium penuh = menang!"
+      ],
+      "learningGoals": [
+        "Mengenal nama, suara, dan ciri hewan.",
+        "Menumbuhkan rasa sayang pada makhluk hidup.",
+        "Soal dapat diganti guru lewat impor/ekspor Excel."
+      ],
+      "gameUrl": "games/paud-akuarium/",
+      "sampleQuestion": "Hewan apa yang bersuara \"MOO\"?",
+      "sampleOptions": [
+        "🐄",
+        "🐔",
+        "🐶"
+      ],
+      "sampleAnswer": 0
+    },
+    {
+      "id": "LM-SPK",
+      "code": "SERI-SPK",
+      "title": "Panjat Kelapa",
+      "category": "SD • Matematika",
+      "grade": "✏️ Soal Bisa Diubah",
+      "duration": "15–25 menit",
+      "device": "Smart TV / IFP, Laptop & Tablet (layar sentuh)",
+      "price": 30000,
+      "image": "",
+      "coverImage": "assets/games/game-179421094564790c3.jpg",
+      "shortDesc": "Jawab soal matematika dan bantu monyet memanjat pohon kelapa! Bisa dimainkan 1 kelas atau 2 tim (Merah vs Biru) — tim yang sampai puncak duluan menang. (SOAL BISA DI UBAH lewat Excel)",
+      "howToPlay": [
+        "Pilih jumlah poin dan mode 1 Kelas atau 2 Tim, lalu tekan MAIN.",
+        "Sentuh jawaban yang benar. Salah? Coba lagi (mode kelas) atau kesempatan pindah ke tim lawan (mode 2 tim).",
+        "Monyet naik setiap jawaban benar. Sampai puncak dan petik kelapa = menang!"
+      ],
+      "learningGoals": [
+        "Melatih operasi hitung, bilangan, bangun datar, dan satuan.",
+        "Menumbuhkan kerja sama dan sportivitas lewat mode tim.",
+        "Soal dapat diganti guru lewat impor/ekspor Excel."
+      ],
+      "gameUrl": "games/sd-panjat-kelapa/",
+      "sampleQuestion": "7 + 8 = …",
+      "sampleOptions": [
+        "15",
+        "14",
+        "16",
+        "13"
+      ],
+      "sampleAnswer": 0
+    },
+    {
+      "id": "LM-SKS",
+      "code": "SERI-SKS",
+      "title": "Kapal Selam IPA",
+      "category": "SD • Ilmu Pengetahuan Alam",
+      "grade": "✏️ Soal Bisa Diubah",
+      "duration": "15–25 menit",
+      "device": "Smart TV / IFP, Laptop & Tablet (layar sentuh)",
+      "price": 30000,
+      "image": "",
+      "coverImage": "assets/games/game-17942109456814e29.jpg",
+      "shortDesc": "Setiap jawaban IPA yang benar membuat kapal selam menyelam lebih dalam, bertemu makhluk laut, dan akhirnya menemukan harta di dasar laut! (SOAL BISA DI UBAH lewat Excel)",
+      "howToPlay": [
+        "Pilih jumlah soal, lalu tekan MAIN.",
+        "Sentuh jawaban yang benar. Salah? Coba lagi sampai benar.",
+        "Kapal selam menyelam 10 m setiap jawaban benar. Sampai dasar laut = menang!"
+      ],
+      "learningGoals": [
+        "Memahami materi IPA SD: makhluk hidup, tubuh manusia, bumi, energi.",
+        "Menumbuhkan rasa ingin tahu tentang alam.",
+        "Soal dapat diganti guru lewat impor/ekspor Excel."
+      ],
+      "gameUrl": "games/sd-kapal-selam/",
+      "sampleQuestion": "Tumbuhan membuat makanannya sendiri melalui proses …",
+      "sampleOptions": [
+        "Fotosintesis",
+        "Respirasi",
+        "Penguapan",
+        "Pengembunan"
+      ],
+      "sampleAnswer": 0
+    },
+    {
+      "id": "LM-SKA",
+      "code": "SERI-SKA",
+      "title": "Kembang Api Kata",
+      "category": "SD • Bahasa Indonesia",
+      "grade": "✏️ Soal Bisa Diubah",
+      "duration": "15–25 menit",
+      "device": "Smart TV / IFP, Laptop & Tablet (layar sentuh)",
+      "price": 30000,
+      "image": "",
+      "coverImage": "assets/games/game-1794210945715ccb1.jpg",
+      "shortDesc": "Jawab soal Bahasa Indonesia untuk meluncurkan kembang api warna-warni dan menyalakan lampu kota di malam hari. (SOAL BISA DI UBAH lewat Excel)",
+      "howToPlay": [
+        "Pilih jumlah soal, lalu tekan MAIN.",
+        "Sentuh jawaban yang benar. Salah? Coba lagi sampai benar.",
+        "Setiap jawaban benar meluncurkan kembang api. Semua lampu kota menyala = menang!"
+      ],
+      "learningGoals": [
+        "Memahami sinonim, antonim, kata baku, tanda baca, dan kalimat.",
+        "Memperkaya kosakata dan pemahaman peribahasa.",
+        "Soal dapat diganti guru lewat impor/ekspor Excel."
+      ],
+      "gameUrl": "games/sd-kembang-api/",
+      "sampleQuestion": "Persamaan kata (sinonim) \"pandai\" adalah …",
+      "sampleOptions": [
+        "Pintar",
+        "Bodoh",
+        "Malas",
+        "Lambat"
+      ],
+      "sampleAnswer": 0
+    },
+    {
+      "id": "LM-STD",
+      "code": "SERI-STD",
+      "title": "Telur Dino",
+      "category": "SD • Pancasila & PPKn",
+      "grade": "✏️ Soal Bisa Diubah",
+      "duration": "15–25 menit",
+      "device": "Smart TV / IFP, Laptop & Tablet (layar sentuh)",
+      "price": 30000,
+      "image": "",
+      "coverImage": "assets/games/game-179421094574504ba.jpg",
+      "shortDesc": "Jawab soal Pancasila untuk meretakkan telur dinosaurus dan lihat bayi dino menetas satu per satu! (SOAL BISA DI UBAH lewat Excel)",
+      "howToPlay": [
+        "Pilih jumlah soal, lalu tekan MAIN.",
+        "Sentuh jawaban yang benar. Salah? Coba lagi sampai benar.",
+        "Telur retak setiap jawaban benar lalu menetas jadi bayi dino. Semua menetas = menang!"
+      ],
+      "learningGoals": [
+        "Mengenal Pancasila, simbol negara, dan pengamalan sila.",
+        "Menumbuhkan sikap toleransi, gotong royong, dan cinta tanah air.",
+        "Soal dapat diganti guru lewat impor/ekspor Excel."
+      ],
+      "gameUrl": "games/sd-telur-dino/",
+      "sampleQuestion": "Lambang sila pertama Pancasila adalah …",
+      "sampleOptions": [
+        "Bintang",
+        "Rantai",
+        "Pohon beringin",
+        "Kepala banteng"
+      ],
+      "sampleAnswer": 0
+    },
+    {
+      "id": "LM-SBJ",
+      "code": "SERI-SBJ",
+      "title": "Basket Juara",
+      "category": "SD • IPS & Pengetahuan Umum",
+      "grade": "✏️ Soal Bisa Diubah",
+      "duration": "15–25 menit",
+      "device": "Smart TV / IFP, Laptop & Tablet (layar sentuh)",
+      "price": 30000,
+      "image": "",
+      "coverImage": "assets/games/game-17942109457778603.jpg",
+      "shortDesc": "Setiap jawaban IPS yang benar, bola masuk ring! Main 1 kelas atau 2 tim (Merah vs Biru) dengan papan skor. (SOAL BISA DI UBAH lewat Excel)",
+      "howToPlay": [
+        "Pilih jumlah poin dan mode 1 Kelas atau 2 Tim, lalu tekan MAIN.",
+        "Sentuh jawaban yang benar. Salah? Coba lagi (mode kelas) atau kesempatan pindah ke tim lawan (mode 2 tim).",
+        "Bola masuk ring dan skor bertambah. Tim yang mencapai target lebih dulu menang!"
+      ],
+      "learningGoals": [
+        "Mengenal provinsi, budaya, geografi, sejarah, dan ekonomi Indonesia.",
+        "Menumbuhkan kerja sama dan sportivitas lewat mode tim.",
+        "Soal dapat diganti guru lewat impor/ekspor Excel."
+      ],
+      "gameUrl": "games/sd-basket-juara/",
+      "sampleQuestion": "Ibu kota provinsi Jawa Barat adalah …",
+      "sampleOptions": [
+        "Bandung",
+        "Semarang",
+        "Surabaya",
+        "Serang"
+      ],
+      "sampleAnswer": 0
     }
   ],
   "orders": [
