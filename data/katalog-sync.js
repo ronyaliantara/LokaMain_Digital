@@ -1,5 +1,5 @@
 window.LOKAMAIN_LIVE_DATA = {
-  "updatedAt": 1794228298782,
+  "updatedAt": 1794230621325,
   "settings": {
     "storeName": "LokaMain Digital",
     "siteSubtitle": "Pilih game pembelajaran digital, lalu klik tombol WhatsApp di bawahnya untuk memesan.",
@@ -8,10 +8,10 @@ window.LOKAMAIN_LIVE_DATA = {
     "footerNote": "Semua game dapat dimainkan langsung di Smart TV, HP, Tablet, dan Komputer tanpa instalasi.",
     "sellerName": "Admin LokaMain",
     "whatsappNumber": "6287881258019",
-    "qrisImage": "assets/qris/qris-1793952371588.jpeg",
-    "qrisName": "LokaMain_Store",
+    "qrisImage": "",
+    "qrisName": "",
     "qrisCity": "",
-    "qrisRawPayload": "00020101021126570011ID.DANA.WWW011893600915303673559102090367355910303UMI51440014ID.CO.QRIS.WWW0215ID10266330641950303UMI5204737253033605802ID5924LokaMain_Store, Komputer6006Gresik6105611556304DF5E",
+    "qrisRawPayload": "",
     "qrisDynamicEnabled": true,
     "buyerTemplate": "Halo {sellerName}, saya ingin memesan game pembelajaran digital:\n\nJudul Game: {title}\nKode Tiket: {code}\nHarga: Rp {price}\n\nMohon info pembayaran untuk mendapatkan link gamenya. Terima kasih!",
     "sellerTemplate": "Halo Kak {buyerName}, terima kasih sudah memesan di {storeName}!\n\nBerikut akses game pembelajaran digital pesanan Anda:\nJudul Game: {title} ({code})\nLink Akses Game: {gameUrl}\n\nCara Pakai:\n1. Klik link di atas melalui browser HP, tablet, atau laptop.\n2. Game langsung berjalan tanpa instalasi tambahan.\n3. Simpan link ini untuk digunakan kembali kapan saja.\n\nSelamat bermain dan belajar!"
