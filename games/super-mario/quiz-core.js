@@ -452,9 +452,24 @@
     });
   }
 
+  // Pustaka Excel (±300 KB) baru dimuat saat Mode Guru dibuka — game jadi lebih ringan untuk pemain.
+  let xlsxP = null;
+  function ensureXLSX() {
+    if (window.XLSX) return Promise.resolve(true);
+    if (!xlsxP) {
+      xlsxP = new Promise((res) => {
+        const s = document.createElement('script'); s.src = 'https://cdn.jsdelivr.net/npm/xlsx@0.18.5/dist/xlsx.full.min.js';
+        s.onload = () => res(true); s.onerror = () => { xlsxP = null; res(false); }; document.head.appendChild(s);
+      });
+    }
+    return xlsxP;
+  }
+  QC.ensureXLSX = ensureXLSX;
+
   QC.openTeacher = async function () {
     const ok = await pinPrompt();
     if (ok !== true) return;
+    ensureXLSX(); // mulai unduh di latar belakang
     await dashboard();
   };
 
@@ -498,13 +513,14 @@
       o.querySelector('[data-close]').onclick = close;
       o._onKey = (e) => { if (e.key === 'Escape') close(); };
       o.querySelector('[data-add]').onclick = async () => { await editForm(-1); render(); };
-      o.querySelector('[data-template]').onclick = () => downloadTemplate();
-      o.querySelector('[data-export]').onclick = () => { writeBook(toRows(QC.questions), `Bank_Soal_${QC.cfg.gameId}`, 'Bank_Soal'); QC.toast('📤 File bank soal diunduh', 'good'); };
+      o.querySelector('[data-template]').onclick = async () => { await ensureXLSX(); downloadTemplate(); };
+      o.querySelector('[data-export]').onclick = async () => { await ensureXLSX(); writeBook(toRows(QC.questions), `Bank_Soal_${QC.cfg.gameId}`, 'Bank_Soal'); QC.toast('📤 File bank soal diunduh', 'good'); };
       const file = o.querySelector('[data-file]');
       o.querySelector('[data-import]').onclick = () => file.click();
       file.onchange = async () => {
         const f = file.files[0]; file.value = ''; if (!f) return;
         try {
+          await ensureXLSX();
           const rows = await readFile(f);
           const list = rows.map(rowToQ).filter(Boolean);
           if (!list.length) throw new Error('Tidak ada soal valid. Pastikan ada kolom Pertanyaan, Pilihan A, Pilihan B.');

@@ -488,6 +488,19 @@ const SNAKES = [
   { start: 49, end: 30, color: '#ef4444', name: 'Naga Api Trap' }
 ];
 
+// Pustaka Excel (SheetJS ±300 KB) baru dimuat saat guru memakai fitur Excel — game lebih ringan untuk pemain.
+let __xlsxP = null;
+function loadXLSXLib() {
+  if (typeof XLSX !== 'undefined') return Promise.resolve(true);
+  if (!__xlsxP) {
+    __xlsxP = new Promise((res) => {
+      const s = document.createElement('script'); s.src = 'https://cdn.jsdelivr.net/npm/xlsx@0.18.5/dist/xlsx.full.min.js';
+      s.onload = () => res(true); s.onerror = () => { __xlsxP = null; res(false); }; document.head.appendChild(s);
+    });
+  }
+  return __xlsxP;
+}
+
 // Daftar 10 Hukuman Seru & Edukatif IPS saat terkena ular (Jongkok + Tantangan Seru)
 const FUN_PUNISHMENTS = [
   {
@@ -2559,11 +2572,8 @@ class SnakeAndLaddersGame {
     alert('Soal berhasil disimpan!');
   }
 
-  exportQuestionsToExcel() {
-    if (typeof XLSX === 'undefined') {
-      alert('Pustaka SheetJS Excel belum siap.');
-      return;
-    }
+  async exportQuestionsToExcel() {
+    if (!(await loadXLSXLib())) { alert('Pustaka Excel belum termuat. Sambungkan internet lalu coba lagi.'); return; }
 
     const rows = this.questions.map((q, i) => ({
       'No': i + 1,
@@ -2577,12 +2587,12 @@ class SnakeAndLaddersGame {
 
     const ws = XLSX.utils.json_to_sheet(rows);
     const wb = XLSX.utils.book_new();
-    XLSX.utils.book_append_sheet(wb, ws, 'Soal_IPS_SMP');
-    XLSX.writeFile(wb, 'Bank_Soal_Ular_Tangga_IPS_SMP.xlsx');
+    XLSX.utils.book_append_sheet(wb, ws, 'Bank_Soal');
+    XLSX.writeFile(wb, 'Bank_Soal_Ular_Tangga.xlsx');
   }
 
-  downloadExcelTemplate() {
-    if (typeof XLSX === 'undefined') return;
+  async downloadExcelTemplate() {
+    if (!(await loadXLSXLib())) { alert('Pustaka Excel belum termuat. Sambungkan internet lalu coba lagi.'); return; }
     const templateRows = [
       {
         'No': 1,
@@ -2607,11 +2617,11 @@ class SnakeAndLaddersGame {
     const ws = XLSX.utils.json_to_sheet(templateRows);
     const wb = XLSX.utils.book_new();
     XLSX.utils.book_append_sheet(wb, ws, 'Template_Soal');
-    XLSX.writeFile(wb, 'Template_Soal_Ular_Tangga_IPS.xlsx');
+    XLSX.writeFile(wb, 'Template_Soal_Ular_Tangga.xlsx');
   }
 
-  importQuestionsFromExcel(file) {
-    if (typeof XLSX === 'undefined') return;
+  async importQuestionsFromExcel(file) {
+    if (!(await loadXLSXLib())) { alert('Pustaka Excel belum termuat. Sambungkan internet lalu coba lagi.'); return; }
 
     const reader = new FileReader();
     reader.onload = (e) => {

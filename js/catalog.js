@@ -40,6 +40,8 @@
   }
 
   const isVideoSrc = (s) => /\.(mp4|webm|mov|m4v)(\?.*)?$/i.test(s || '') || String(s || '').startsWith('data:video/');
+  // nama video pratinjau kecil untuk kartu: assets/games/abc.mp4 -> assets/games/abc-kecil.mp4
+  const smallVideo = (s) => (/^assets\/games\/[^/?#]+\.mp4(\?.*)?$/i.test(s || '') && !/-kecil\.mp4/i.test(s) ? String(s).replace(/\.mp4(\?.*)?$/i, '-kecil.mp4$1') : s);
   const isGifSrc = (s) => /\.gif(\?.*)?$/i.test(s || '') || String(s || '').startsWith('data:image/gif');
 
   function shortPrice(price) {
@@ -207,7 +209,7 @@
 
     if (cover && animated && !reducedMotion) {
       const layer = video
-        ? `<video class="game-thumb game-anim-layer" data-src="${escapeHtml(media)}" muted loop playsinline preload="none" aria-hidden="true" tabindex="-1"></video>`
+        ? `<video class="game-thumb game-anim-layer" data-src="${escapeHtml(smallVideo(media))}" data-full="${escapeHtml(media)}" muted loop playsinline preload="none" aria-hidden="true" tabindex="-1"></video>`
         : `<img class="game-thumb game-anim-layer" data-src="${escapeHtml(media)}" alt="" aria-hidden="true" decoding="async">`;
       return `
         <div class="game-media-wrap" data-anim="${video ? 'video' : 'gif'}">
@@ -226,7 +228,7 @@
     if (video) {
       return `
         <div class="game-media-wrap" data-anim="video">
-          <video class="game-thumb game-anim-layer" data-src="${escapeHtml(media)}" muted loop playsinline preload="metadata" aria-label="${title}"></video>
+          <video class="game-thumb game-anim-layer" data-src="${escapeHtml(smallVideo(media))}" data-full="${escapeHtml(media)}" muted loop playsinline preload="metadata" aria-label="${title}"></video>
         </div>`;
     }
     return '<div class="game-media-wrap" aria-hidden="true"></div>';
@@ -331,10 +333,18 @@
   }
 
   // Animasi (video/GIF) hanya dimuat dan diputar saat kartu terlihat di layar.
+  // Hemat data: kartu memakai video pratinjau versi KECIL (<nama>-kecil.mp4, ±200 KB),
+  // video HD tetap dipakai di halaman detail. Di HP paling banyak 2 video berputar bersamaan,
+  // dan saat mode hemat data / jaringan lambat video tidak diputar otomatis (cukup gambar sampul).
+  const conn = navigator.connection || {};
+  const saveData = Boolean(conn.saveData) || /(^|-)2g$/.test(conn.effectiveType || '');
+  const maxPlaying = () => (window.matchMedia('(max-width: 760px)').matches ? 2 : 4);
+  const playing = [];
   function setupMedia(grid) {
     if (mediaObserver) mediaObserver.disconnect();
+    playing.length = 0;
     const wraps = grid.querySelectorAll('.game-media-wrap[data-anim]');
-    if (!wraps.length) return;
+    if (!wraps.length || saveData) return;
 
     if (!('IntersectionObserver' in window)) {
       wraps.forEach(activateMedia);
@@ -349,9 +359,10 @@
           activateMedia(wrap);
         } else if (layer.tagName === 'VIDEO' && layer.src) {
           layer.pause();
+          const i = playing.indexOf(wrap); if (i >= 0) playing.splice(i, 1);
         }
       });
-    }, { rootMargin: '120px', threshold: 0.25 });
+    }, { rootMargin: '0px', threshold: 0.5 });
     wraps.forEach((w) => mediaObserver.observe(w));
   }
 
@@ -359,9 +370,19 @@
     const layer = wrap.querySelector('.game-anim-layer');
     if (!layer) return;
     const hasCover = Boolean(wrap.querySelector('img.game-thumb:not(.game-anim-layer)'));
-    if (!layer.getAttribute('src') && layer.dataset.src) layer.setAttribute('src', layer.dataset.src);
+    if (!layer.getAttribute('src') && layer.dataset.src) {
+      // versi kecil belum ada (mis. game baru dari admin)? pakai video aslinya
+      if (layer.dataset.full && layer.dataset.full !== layer.dataset.src) {
+        layer.addEventListener('error', () => { layer.setAttribute('src', layer.dataset.full); if (playing.includes(wrap)) layer.play().catch(() => {}); }, { once: true });
+      }
+      layer.setAttribute('src', layer.dataset.src);
+    }
 
     if (layer.tagName === 'VIDEO') {
+      if (!playing.includes(wrap)) {
+        playing.push(wrap);
+        while (playing.length > maxPlaying()) { const old = playing.shift(); const v = old.querySelector('video.game-anim-layer'); if (v) v.pause(); }
+      }
       layer.play().then(() => wrap.classList.add('is-playing')).catch(() => {});
     } else {
       layer.addEventListener('load', () => wrap.classList.add('is-playing'), { once: true });
