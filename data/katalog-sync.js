@@ -1,5 +1,5 @@
 window.LOKAMAIN_LIVE_DATA = {
-  "updatedAt": 1794214253140,
+  "updatedAt": 1794214722340,
   "settings": {
     "storeName": "LokaMain Digital",
     "siteSubtitle": "Pilih game pembelajaran digital, lalu klik tombol WhatsApp di bawahnya untuk memesan.",
@@ -46,7 +46,11 @@ window.LOKAMAIN_LIVE_DATA = {
         "Amerika",
         "Afrika"
       ],
-      "sampleAnswer": 0
+      "sampleAnswer": 0,
+      "levels": [
+        "SMP",
+        "SMA"
+      ]
     },
     {
       "id": "LM-BR",
@@ -77,7 +81,12 @@ window.LOKAMAIN_LIVE_DATA = {
         "Hindia",
         "Atlantik"
       ],
-      "sampleAnswer": 0
+      "sampleAnswer": 0,
+      "levels": [
+        "SD",
+        "SMP",
+        "SMA"
+      ]
     },
     {
       "id": "LM-LP",
@@ -108,7 +117,11 @@ window.LOKAMAIN_LIVE_DATA = {
         "Teluk",
         "Selat"
       ],
-      "sampleAnswer": 0
+      "sampleAnswer": 0,
+      "levels": [
+        "SD",
+        "SMP"
+      ]
     },
     {
       "id": "LM-PC",
@@ -139,7 +152,12 @@ window.LOKAMAIN_LIVE_DATA = {
         "Garis Weber",
         "Garis Lydekker"
       ],
-      "sampleAnswer": 0
+      "sampleAnswer": 0,
+      "levels": [
+        "SD",
+        "SMP",
+        "SMA"
+      ]
     },
     {
       "id": "LM-UT",
@@ -170,7 +188,11 @@ window.LOKAMAIN_LIVE_DATA = {
         "Jam dua tepat",
         "Jam tiga tepat"
       ],
-      "sampleAnswer": 0
+      "sampleAnswer": 0,
+      "levels": [
+        "SMP",
+        "SMA"
+      ]
     },
     {
       "id": "LM-EK",
@@ -200,7 +222,11 @@ window.LOKAMAIN_LIVE_DATA = {
         "Afrika"
       ],
       "sampleAnswer": 0,
-      "coverImage": "assets/games/game-1794208449172b320.jpg"
+      "coverImage": "assets/games/game-1794208449172b320.jpg",
+      "levels": [
+        "SMP",
+        "SMA"
+      ]
     },
     {
       "id": "LM-PKB",
@@ -231,7 +257,10 @@ window.LOKAMAIN_LIVE_DATA = {
         "🍎",
         "🍇"
       ],
-      "sampleAnswer": 0
+      "sampleAnswer": 0,
+      "levels": [
+        "PAUD"
+      ]
     },
     {
       "id": "LM-PHH",
@@ -262,7 +291,10 @@ window.LOKAMAIN_LIVE_DATA = {
         "2",
         "4"
       ],
-      "sampleAnswer": 0
+      "sampleAnswer": 0,
+      "levels": [
+        "PAUD"
+      ]
     },
     {
       "id": "LM-PBH",
@@ -293,7 +325,10 @@ window.LOKAMAIN_LIVE_DATA = {
         "M",
         "B"
       ],
-      "sampleAnswer": 0
+      "sampleAnswer": 0,
+      "levels": [
+        "PAUD"
+      ]
     },
     {
       "id": "LM-PKW",
@@ -324,7 +359,10 @@ window.LOKAMAIN_LIVE_DATA = {
         "🔵",
         "🟢"
       ],
-      "sampleAnswer": 0
+      "sampleAnswer": 0,
+      "levels": [
+        "PAUD"
+      ]
     },
     {
       "id": "LM-PAK",
@@ -355,7 +393,10 @@ window.LOKAMAIN_LIVE_DATA = {
         "🐔",
         "🐶"
       ],
-      "sampleAnswer": 0
+      "sampleAnswer": 0,
+      "levels": [
+        "PAUD"
+      ]
     },
     {
       "id": "LM-SPK",
@@ -387,7 +428,10 @@ window.LOKAMAIN_LIVE_DATA = {
         "16",
         "13"
       ],
-      "sampleAnswer": 0
+      "sampleAnswer": 0,
+      "levels": [
+        "SD"
+      ]
     },
     {
       "id": "LM-SKS",
@@ -419,7 +463,10 @@ window.LOKAMAIN_LIVE_DATA = {
         "Penguapan",
         "Pengembunan"
       ],
-      "sampleAnswer": 0
+      "sampleAnswer": 0,
+      "levels": [
+        "SD"
+      ]
     },
     {
       "id": "LM-SKA",
@@ -451,7 +498,10 @@ window.LOKAMAIN_LIVE_DATA = {
         "Malas",
         "Lambat"
       ],
-      "sampleAnswer": 0
+      "sampleAnswer": 0,
+      "levels": [
+        "SD"
+      ]
     },
     {
       "id": "LM-STD",
@@ -483,7 +533,10 @@ window.LOKAMAIN_LIVE_DATA = {
         "Pohon beringin",
         "Kepala banteng"
       ],
-      "sampleAnswer": 0
+      "sampleAnswer": 0,
+      "levels": [
+        "SD"
+      ]
     },
     {
       "id": "LM-SBJ",
@@ -515,7 +568,10 @@ window.LOKAMAIN_LIVE_DATA = {
         "Surabaya",
         "Serang"
       ],
-      "sampleAnswer": 0
+      "sampleAnswer": 0,
+      "levels": [
+        "SD"
+      ]
     }
   ],
   "orders": [

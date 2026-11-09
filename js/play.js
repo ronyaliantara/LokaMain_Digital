@@ -48,7 +48,9 @@
   $('play-title').textContent = game.title;
   $('play-desc').textContent = game.shortDesc || '';
 
-  const tags = [game.category, game.grade, game.duration, game.device].filter(Boolean);
+  const LV = { PAUD: 'PAUD / TK', SD: 'SD', SMP: 'SMP', SMA: 'SMA / SMK' };
+  const lv = Array.isArray(game.levels) ? game.levels.filter((k) => LV[k]).map((k) => LV[k]).join(' • ') : '';
+  const tags = [lv && `Jenjang: ${lv}`, game.category, game.grade, game.duration, game.device].filter(Boolean);
   $('play-tags').innerHTML = tags.map((t) => `<span class="tag">${esc(t)}</span>`).join('');
 
   const media = safe(game.image), cover = safe(game.coverImage);

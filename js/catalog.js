@@ -232,6 +232,72 @@
     return '<div class="game-media-wrap" aria-hidden="true"></div>';
   }
 
+  // ---------------------------------------------------------------
+  // Jenjang (PAUD / SD / SMP / SMA) — filter otomatis
+  // ---------------------------------------------------------------
+  const LEVELS = [
+    { key: 'PAUD', label: 'PAUD / TK', icon: '🧒' },
+    { key: 'SD', label: 'SD', icon: '🎒' },
+    { key: 'SMP', label: 'SMP', icon: '🎓' },
+    { key: 'SMA', label: 'SMA / SMK', icon: '🏫' }
+  ];
+  const LEVEL_KEYS = LEVELS.map((l) => l.key);
+  let activeLevel = 'all';
+  try {
+    const h = (location.hash || '').replace('#', '').toUpperCase();
+    if (LEVEL_KEYS.includes(h)) activeLevel = h;
+    else activeLevel = sessionStorage.getItem('lokamain_level') || 'all';
+  } catch (_) { /* abaikan */ }
+
+  // Ambil dari kolom "levels" (diisi di aplikasi admin). Jika kosong, tebak otomatis dari teks.
+  function levelsOf(game) {
+    if (Array.isArray(game.levels) && game.levels.length) {
+      return LEVEL_KEYS.filter((k) => game.levels.map((x) => String(x).toUpperCase()).includes(k));
+    }
+    const t = `${game.category || ''} ${game.grade || ''} ${game.title || ''} ${game.shortDesc || ''}`.toUpperCase();
+    const out = [];
+    if (/\b(PAUD|TK|RA)\b/.test(t)) out.push('PAUD');
+    if (/\b(SD|MI)\b/.test(t)) out.push('SD');
+    if (/\b(SMP|MTS)\b/.test(t)) out.push('SMP');
+    if (/\b(SMA|SMK|MA)\b/.test(t)) out.push('SMA');
+    return out;
+  }
+  const levelRank = (g) => { const l = levelsOf(g); return l.length ? LEVEL_KEYS.indexOf(l[0]) : 9; };
+
+  function renderLevelTabs(store) {
+    const bar = $('level-tabs');
+    if (!bar) return;
+    const counts = Object.fromEntries(LEVEL_KEYS.map((k) => [k, store.games.filter((g) => levelsOf(g).includes(k)).length]));
+    if (!LEVEL_KEYS.some((k) => counts[k])) { bar.hidden = true; activeLevel = 'all'; return; }
+    if (activeLevel !== 'all' && !counts[activeLevel]) activeLevel = 'all';
+    const tab = (key, label, icon, n) => `<button type="button" role="tab" class="level-tab${activeLevel === key ? ' is-active' : ''}" data-level="${key}" aria-selected="${activeLevel === key}"${n === 0 ? ' disabled' : ''}>${icon ? `<span aria-hidden="true">${icon}</span>` : ''}${escapeHtml(label)}<b>${n}</b></button>`;
+    bar.innerHTML = tab('all', 'Semua', '✨', store.games.length) + LEVELS.map((l) => tab(l.key, l.label, l.icon, counts[l.key])).join('');
+    bar.hidden = false;
+  }
+
+  function levelPills(game) {
+    const l = levelsOf(game);
+    if (!l.length) return '';
+    return `<p class="game-levels">${l.map((k) => `<span class="lv lv-${k.toLowerCase()}">${escapeHtml(LEVELS.find((x) => x.key === k).label)}</span>`).join('')}</p>`;
+  }
+
+  function visibleGames(store) {
+    const list = activeLevel === 'all' ? [...store.games] : store.games.filter((g) => levelsOf(g).includes(activeLevel));
+    // urutkan dari jenjang paling dasar, urutan admin tetap dipertahankan di dalam jenjang
+    return list.map((g, i) => ({ g, i })).sort((a, b) => levelRank(a.g) - levelRank(b.g) || a.i - b.i).map((x) => x.g);
+  }
+
+  function renderGrid(store) {
+    const grid = $('game-grid');
+    renderLevelTabs(store);
+    const games = visibleGames(store);
+    grid.innerHTML = games.length
+      ? games.map(cardHtml).join('')
+      : '<div class="empty-state"><h3>Belum ada game untuk jenjang ini</h3><p>Pilih jenjang lain atau tanyakan lewat WhatsApp.</p></div>';
+    grid.setAttribute('aria-busy', 'false');
+    setupMedia(grid);
+  }
+
   function cardHtml(game, index) {
     const id = escapeHtml(game.id);
     const metaItems = [];
@@ -246,6 +312,7 @@
         </div>
         <div class="game-info">
           <div>
+            ${levelPills(game)}
             ${game.category ? `<p class="game-category">${escapeHtml(game.category)}</p>` : ''}
             <h3 class="game-name">${escapeHtml(game.title)}</h3>
             <p class="game-desc">${escapeHtml(game.shortDesc || '')}</p>
@@ -454,9 +521,7 @@
       return;
     }
 
-    grid.innerHTML = store.games.map(cardHtml).join('');
-    grid.setAttribute('aria-busy', 'false');
-    setupMedia(grid);
+    renderGrid(store);
     renderStructuredData(store);
   }
 
@@ -484,6 +549,10 @@
   document.addEventListener('DOMContentLoaded', () => {
     renderPublicCatalog();
     refreshFromServer(true);
+    // Link langsung ke jenjang, mis. lokamaindigital.my.id/#sd
+    if (LEVEL_KEYS.includes((location.hash || '').replace('#', '').toUpperCase())) {
+      setTimeout(() => $('katalog')?.scrollIntoView({ behavior: 'smooth', block: 'start' }), 200);
+    }
 
     // Dari halaman detail: ?pesan=ID langsung membuka jendela pesan
     const wanted = new URLSearchParams(location.search).get('pesan');
@@ -522,6 +591,14 @@
     }
 
     document.addEventListener('click', (e) => {
+      const lvBtn = e.target.closest('[data-level]');
+      if (lvBtn && !lvBtn.disabled) {
+        activeLevel = lvBtn.getAttribute('data-level');
+        try { sessionStorage.setItem('lokamain_level', activeLevel); } catch (_) { /* abaikan */ }
+        try { history.replaceState(null, '', activeLevel === 'all' ? '#katalog' : `#${activeLevel.toLowerCase()}`); } catch (_) { /* abaikan */ }
+        renderGrid(currentStore || loadStore());
+        return;
+      }
       const orderBtn = e.target.closest('[data-order]');
       if (orderBtn) {
         openOrderDialog(orderBtn.getAttribute('data-order'));

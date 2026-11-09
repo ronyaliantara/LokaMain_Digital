@@ -550,6 +550,60 @@ a {
   gap: 32px;
 }
 
+/* Tab jenjang (PAUD / SD / SMP / SMA) */
+.level-tabs {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+  margin: 0 0 28px;
+}
+.level-tabs[hidden] { display: none; }
+.level-tab {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  padding: 10px 16px;
+  font: 700 15px/1 var(--font);
+  color: var(--ink);
+  background: var(--card);
+  border: var(--edge);
+  border-radius: 999px;
+  box-shadow: 0 4px 0 var(--ink);
+  cursor: pointer;
+  transition: transform 0.15s var(--ease), background 0.15s, box-shadow 0.15s;
+}
+.level-tab b {
+  min-width: 26px;
+  padding: 3px 7px;
+  font-size: 12px;
+  text-align: center;
+  color: var(--ink);
+  background: var(--blue-tint);
+  border-radius: 999px;
+}
+.level-tab:hover:not(:disabled) { transform: translateY(-2px); }
+.level-tab.is-active { background: var(--amber); }
+.level-tab.is-active b { background: #fff; }
+.level-tab:disabled { opacity: 0.45; cursor: default; box-shadow: none; }
+.level-tab:focus-visible { outline: 3px solid var(--blue); outline-offset: 3px; }
+.game-levels { display: flex; flex-wrap: wrap; gap: 6px; margin: 0 0 6px; }
+.game-levels .lv {
+  padding: 3px 10px;
+  font-size: 11.5px;
+  font-weight: 800;
+  letter-spacing: 0.02em;
+  border: 1.5px solid var(--ink);
+  border-radius: 999px;
+}
+.lv-paud { background: #ffe0ef; }
+.lv-sd { background: #fff3d9; }
+.lv-smp { background: #e6edff; }
+.lv-sma { background: #dcfce7; }
+@media (max-width: 600px) {
+  .level-tabs { gap: 8px; margin-bottom: 20px; }
+  .level-tab { padding: 9px 12px; font-size: 14px; }
+}
+
 .game-block {
   display: flex;
   flex-direction: column;
