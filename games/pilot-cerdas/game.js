@@ -19,8 +19,9 @@
   const FOCAL = 2.0;
   const XMAX = 1.0; const YMAX = 0.45;
   const CAM_LIFT = 0.2; // kamera sedikit di atas pesawat → pesawat tampil lebih rendah, gerbang di kejauhan tidak tertutup
-  const SPEED = { 1: 7, 2: 9, 3: 11.5 };
+  const SPEED = { 0: 3.6, 1: 7, 2: 9, 3: 11.5 };
   const GATE_DELAY = 3.4; // detik setelah soal muncul sebelum gerbang datang
+  const gateDelay = () => (S.speed === 0 ? 6 : GATE_DELAY); // mode Sangat Pelan: waktu baca soal lebih lama
   const COL = { A: '#ef4444', B: '#3b82f6', C: '#f59e0b', D: '#10b981' };
   const HS_KEY = 'lokamain_pilot_hiscore';
   const PLANE_COLOR = '#ef4444';
@@ -179,7 +180,7 @@
       min: 1, max: 1, defaultCount: 1,
       settings: [
         { key: 'count', label: 'Jumlah soal', value: 8, options: [[5, '5 soal'], [8, '8 soal'], [10, '10 soal'], [15, '15 soal']] },
-        { key: 'speed', label: 'Kecepatan terbang', value: 2, options: [[1, 'Santai'], [2, 'Sedang'], [3, 'Cepat']] },
+        { key: 'speed', label: 'Kecepatan terbang', value: 2, options: [[0, 'Sangat pelan'], [1, 'Santai'], [2, 'Sedang'], [3, 'Cepat']] },
         { key: 'obst', label: 'Rintangan', value: 'on', options: [['on', 'Awan badai & burung'], ['off', 'Tanpa rintangan']] },
         { key: 'tb', label: 'Tinggi badan pemain', value: 150, options: TB_OPTIONS },
         { key: 'control', label: 'Kontrol', value: 'cam', options: [['cam', 'Kamera (tubuh)'], ['manual', 'Panah / mouse / sentuh']] }
@@ -229,7 +230,7 @@
     if (asked >= S.count) { land(); return; }
     q = QC.nextQuestion(); if (!q) { QC.toast('Bank soal kosong — tambahkan soal di Mode Guru.', 'bad'); land(); return; }
     keys = QC.optionsOf(q); asked++; segT = 0; gatesSpawned = false; phase = 'fly';
-    speed = SPEED[S.speed] * (1 + (asked - 1) * 0.025);
+    speed = SPEED[S.speed] * (S.speed === 0 ? 1 : 1 + (asked - 1) * 0.025); // Sangat pelan: tidak bertambah cepat
     const qc = $('qcard'); qc.hidden = false; qc.className = 'qcard'; qc.style.animation = 'none'; void qc.offsetWidth; qc.style.animation = '';
     $('qNum').textContent = `SOAL ${asked}/${S.count}`; $('qCat').textContent = q.category || ''; $('qHint').textContent = 'Gerbang jawaban segera datang…';
     $('qText').textContent = q.question;
@@ -238,10 +239,10 @@
     schedule = [];
     if (S.obst === 'on') {
       const n = 2 + Math.min(3, Math.floor(asked / 3));
-      for (let i = 0; i < n; i++) schedule.push({ t: rnd(0.3, GATE_DELAY + 0.6), kind: Math.random() < 0.55 ? 'storm' : 'birds' });
+      for (let i = 0; i < n; i++) schedule.push({ t: rnd(0.3, gateDelay() + 0.6), kind: Math.random() < 0.55 ? 'storm' : 'birds' });
     }
     schedule.push({ t: rnd(0.2, 1.4), kind: 'coins' });
-    if (Math.random() < 0.6) schedule.push({ t: rnd(1.6, GATE_DELAY), kind: 'coins' });
+    if (Math.random() < 0.6) schedule.push({ t: rnd(1.6, gateDelay()), kind: 'coins' });
     schedule.sort((a, b) => a.t - b.t);
     updateHud(); Engine.pitch(1 + (asked / S.count) * 0.6);
   }
@@ -407,7 +408,7 @@
     if (phase === 'fly') {
       segT += dt;
       while (schedule.length && schedule[0].t <= segT) spawnFrom(schedule.shift().kind);
-      if (!gatesSpawned && segT >= GATE_DELAY) spawnGates();
+      if (!gatesSpawned && segT >= gateDelay()) spawnGates();
     }
 
     const crossed = [];
