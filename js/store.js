@@ -27,31 +27,30 @@ const DEFAULT_STORE = {
   {
     "id": "LM-UT",
     "code": "SERI-UT",
-    "title": "Ular Tangga Kinestetik - Bahasa Arab (As-Sa'ah)",
-    "category": "Bahasa Arab & Kinestetik (AI Pose)",
+    "title": "Ular Tangga Kinestetik",
+    "category": "Kinestetik (AI Pose)",
     "grade": "SMP Kelas VIII",
     "duration": "20–30 menit",
     "device": "Smart TV, Laptop & Proyektor",
     "price": 35000,
     "image": "assets/games/game-1794134083691.gif",
     "coverImage": "assets/games/game-1793962874784.png",
-    "shortDesc": "Game edukasi berbasis gerak tubuh (AI Pose) materi waktu & jam (As-Sa'ah) Bahasa Arab dengan papan ular tangga interaktif 2 pemain.",
+    "shortDesc": "Game edukasi berbasis gerak tubuh dengan papan ular tangga interaktif 1-4 pemain. (SOAL BISA DI UBAH)",
     "howToPlay": [
       "Hubungkan laptop ke Smart TV atau proyektor kelas dan aktifkan kamera web.",
       "Pemain 1 dan Pemain 2 berdiri di depan kamera untuk melempar dadu dengan pose tubuh.",
-      "Jawab soal jam dan waktu Bahasa Arab di setiap petak papan untuk memenangkan permainan."
+      "Jawab soal di setiap petak untuk melaju. Dapat tangga = panjat, kena ular = jongkok, pertama sampai petak 50 menang!"
     ],
     "learningGoals": [
-      "Penguasaan kosakata bilangan jam (As-Sa'ah) Bahasa Arab tingkat SMP.",
+      "Mengulang materi pelajaran sesuai bank soal guru sambil bergerak aktif.",
       "Pembelajaran aktif kinestetik yang melatih motorik kasar dan fokus siswa.",
       "Meningkatkan partisipasi dan antusiasme belajar kelompok di ruang kelas."
     ],
     "gameUrl": "games/ular-tangga/",
-    "sampleQuestion": "Apakah arti dari kalimat \"السَّاعَةُ الْوَاحِدَةُ\" (As-Sa'atul Wahidah)?",
+    "sampleQuestion": "Secara geografis, kepulauan Indonesia berada di antara dua benua, yaitu...",
     "sampleOptions": [
-      "Jam satu tepat",
-      "Jam dua tepat",
-      "Jam tiga tepat"
+      "Benua Asia dan Benua Australia",
+      "Benua Eropa dan Benua Afrika"
     ],
     "sampleAnswer": 0
   },
@@ -59,13 +58,13 @@ const DEFAULT_STORE = {
     "id": "LM-EK",
     "code": "SERI-EK",
     "title": "Ekspedisi Nusantara - Kapal Layar Hidung",
-    "category": "IPS & Kinestetik (AI Kamera)",
+    "category": "Kinestetik (AI Kamera)",
     "grade": "SMP Kelas VII–IX",
     "duration": "20–30 menit",
     "device": "Smart TV, Laptop & Kamera Web",
     "price": 35000,
     "image": "assets/games/game-pulau.jpg",
-    "shortDesc": "Game edukasi kuis IPS SMP interaktif dengan navigasi arah kapal menggunakan sensor gerakan hidung/wajah (AI Face Detection) di depan kamera.",
+    "shortDesc": "Game kuis interaktif (SOAL BISA DI UBAH) dengan navigasi arah kapal menggunakan sensor gerakan hidung/wajah (AI Face Detection) di depan kamera.",
     "howToPlay": [
       "Nyalakan kamera web laptop atau hubungkan ke Smart TV kelas.",
       "Daftarkan nama 2–4 siswa pemain untuk saling berkompetisi secara bergantian.",

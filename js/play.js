@@ -10,9 +10,10 @@
 
   const BANKS = {
     'LM-UT': [
-      { q: 'Apakah arti dari kalimat "اَلسَّاعَةُ الْوَاحِدَةُ" (As-Saa\'atul Waahidah)?', opts: ['Jam 01.00 tepat', 'Jam 02.00 tepat', 'Jam 03.00 tepat'], ans: 0 },
-      { q: 'Bagaimana menyebut "Jam 06.30 (setengah tujuh)" dalam Bahasa Arab?', opts: ['اَلسَّاعَةُ السَّادِسَةُ وَالنِّصْفُ', 'اَلسَّاعَةُ السَّابِعَةُ وَالرُّبْعُ', 'اَلسَّاعَةُ الْخَامِسَةُ وَالثُّلُثُ'], ans: 0 },
-      { q: 'Kata "وَالرُّبْعُ" (war-rub\'u) dalam penyebutan waktu bahasa Arab menunjukkan lebih berapa menit?', opts: ['Lebih 15 menit (seperempat jam)', 'Lebih 30 menit (setengah jam)', 'Lebih 20 menit (sepertiga jam)'], ans: 0 }
+      // contoh dari soal bawaan Ular Tangga (2 pilihan, sama seperti di dalam game)
+      { q: 'Secara geografis, kepulauan Indonesia berada di antara dua benua, yaitu...', opts: ['Benua Asia dan Benua Australia', 'Benua Eropa dan Benua Afrika'], ans: 0 },
+      { q: 'Indonesia beriklim tropis karena dilalui garis khatulistiwa. Dua musim di Indonesia adalah musim...', opts: ['Panas dan Musim Dingin Berbatu', 'Kemarau dan Penghujan'], ans: 1 },
+      { q: 'Garis khayal yang memisahkan persebaran fauna Asiatis (barat) dengan fauna Peralihan (tengah) adalah...', opts: ['Garis Wallace', 'Garis Weber'], ans: 0 }
     ],
     'LM-EK': [
       { q: 'Benua terbesar di dunia adalah...', opts: ['Asia', 'Afrika', 'Eropa'], ans: 0 },
