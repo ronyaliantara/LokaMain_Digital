@@ -40,8 +40,6 @@
   }
 
   const isVideoSrc = (s) => /\.(mp4|webm|mov|m4v)(\?.*)?$/i.test(s || '') || String(s || '').startsWith('data:video/');
-  // nama video pratinjau kecil untuk kartu: assets/games/abc.mp4 -> assets/games/abc-kecil.mp4
-  const smallVideo = (s) => (/^assets\/games\/[^/?#]+\.mp4(\?.*)?$/i.test(s || '') && !/-kecil\.mp4/i.test(s) ? String(s).replace(/\.mp4(\?.*)?$/i, '-kecil.mp4$1') : s);
   const isGifSrc = (s) => /\.gif(\?.*)?$/i.test(s || '') || String(s || '').startsWith('data:image/gif');
 
   function shortPrice(price) {
@@ -209,7 +207,7 @@
 
     if (cover && animated && !reducedMotion) {
       const layer = video
-        ? `<video class="game-thumb game-anim-layer" data-src="${escapeHtml(smallVideo(media))}" data-full="${escapeHtml(media)}" muted loop playsinline preload="none" aria-hidden="true" tabindex="-1"></video>`
+        ? `<video class="game-thumb game-anim-layer" data-src="${escapeHtml(media)}" muted loop playsinline preload="none" aria-hidden="true" tabindex="-1"></video>`
         : `<img class="game-thumb game-anim-layer" data-src="${escapeHtml(media)}" alt="" aria-hidden="true" decoding="async">`;
       return `
         <div class="game-media-wrap" data-anim="${video ? 'video' : 'gif'}">
@@ -228,7 +226,7 @@
     if (video) {
       return `
         <div class="game-media-wrap" data-anim="video">
-          <video class="game-thumb game-anim-layer" data-src="${escapeHtml(smallVideo(media))}" data-full="${escapeHtml(media)}" muted loop playsinline preload="metadata" aria-label="${title}"></video>
+          <video class="game-thumb game-anim-layer" data-src="${escapeHtml(media)}" muted loop playsinline preload="metadata" aria-label="${title}"></video>
         </div>`;
     }
     return '<div class="game-media-wrap" aria-hidden="true"></div>';
@@ -333,9 +331,9 @@
   }
 
   // Animasi (video/GIF) hanya dimuat dan diputar saat kartu terlihat di layar.
-  // Hemat data: kartu memakai video pratinjau versi KECIL (<nama>-kecil.mp4, ±200 KB),
-  // video HD tetap dipakai di halaman detail. Di HP paling banyak 2 video berputar bersamaan,
-  // dan saat mode hemat data / jaringan lambat video tidak diputar otomatis (cukup gambar sampul).
+  // Kartu katalog memakai video HD (tampilan depan detail); halaman detail game memakai versi kecil.
+  // Di HP paling banyak 2 video berputar bersamaan, dan saat mode hemat data / jaringan lambat
+  // video tidak diputar otomatis (cukup gambar sampul).
   const conn = navigator.connection || {};
   const saveData = Boolean(conn.saveData) || /(^|-)2g$/.test(conn.effectiveType || '');
   const maxPlaying = () => (window.matchMedia('(max-width: 760px)').matches ? 2 : 4);

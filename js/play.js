@@ -56,7 +56,10 @@
   const media = safe(game.image), cover = safe(game.coverImage);
   const box = $('play-media');
   if (isVideo(media)) {
-    box.innerHTML = `<video src="${esc(media)}"${cover ? ` poster="${esc(cover)}"` : ''} autoplay loop muted playsinline controls></video>`;
+    // halaman detail memakai video pratinjau versi kecil (<nama>-kecil.mp4); jika belum ada, pakai video aslinya
+    const small = /^assets\/games\/[^/?#]+\.mp4(\?.*)?$/i.test(media) && !/-kecil\.mp4/i.test(media) ? media.replace(/\.mp4(\?.*)?$/i, '-kecil.mp4$1') : media;
+    box.innerHTML = `<video src="${esc(small)}"${cover ? ` poster="${esc(cover)}"` : ''} autoplay loop muted playsinline controls></video>`;
+    if (small !== media) { const v = box.querySelector('video'); v.addEventListener('error', () => { v.src = media; v.play().catch(() => {}); }, { once: true }); }
   } else if (media || cover) {
     box.innerHTML = `<img src="${esc(cover || media)}" width="800" height="500" alt="${esc(game.title)}">`;
   } else {
