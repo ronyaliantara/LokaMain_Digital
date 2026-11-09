@@ -1,5 +1,5 @@
 window.LOKAMAIN_LIVE_DATA = {
-  "updatedAt": 1794228040204,
+  "updatedAt": 1794228298782,
   "settings": {
     "storeName": "LokaMain Digital",
     "siteSubtitle": "Pilih game pembelajaran digital, lalu klik tombol WhatsApp di bawahnya untuk memesan.",
@@ -61,7 +61,7 @@ window.LOKAMAIN_LIVE_DATA = {
       "duration": "15–30 menit",
       "device": "Smart TV / IFP (layar sentuh), Laptop & Proyektor",
       "price": 35000,
-      "image": "assets/games/game-1794217725235d592.mp4",
+      "image": "assets/games/game-1794228274946ec88.mp4",
       "coverImage": "assets/games/game-17942084489833542.jpg",
       "shortDesc": "Duel roket antariksa 2 pemain di satu peta (main sendiri lawan Robot)! Soal tampil dengan slow-motion untuk dibaca, lalu rebutan menabrak kotak jawaban yang benar. Ada rudal pelacak, meteor, item seru & analog di layar untuk IFP. (SOAL BISA DI UBAH lewat Excel)",
       "howToPlay": [
