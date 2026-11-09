@@ -4,8 +4,9 @@
      sendiri (layar sentuh) atau tombol keyboard sendiri.
    - Yang pertama menjawab benar langsung merebut ronde & MEMILIH satu petak
      harta di peta: koin 20–50, peti +100, beo (curi 30), peta rahasia (x2),
-     bom −30, atau Kraken (tantangan lalu +20).
-   - Salah: langsung −10 koin & terkunci; pemain lain masih bisa merebut.
+     bom −30, atau Kraken (tantangan belajar lalu +20).
+   - Salah: langsung −10 koin & terkunci; soal langsung diganti untuk pemain lain.
+     Yang salah mengerjakan TUGAS BELAJAR bersama di akhir ronde.
    - Main sendiri? Lawan Kapten Robot.
    ========================================================================== */
 (function () {
@@ -38,26 +39,68 @@
     kraken: { ico: 'i-kraken', name: 'Kraken', cls: 'bad' }
   };
 
+  /* ---------- Tugas belajar (pengganti hukuman fisik) ----------
+     Setiap tugas berupa fungsi; sebagian memakai soal yang baru saja dijawab salah
+     (need: 'q' / 'exp') agar murid belajar langsung dari kesalahannya. */
+  const ri = (a, b) => a + Math.floor(Math.random() * (b - a + 1));
+  const some = (arr, n) => QC.shuffle(arr).slice(0, n).map((w) => `<b>${w}</b>`).join(', ');
+  const ansOf = (qq) => esc(qq['option' + qq.correct] || '');
+  const shortQ = (qq) => { const s = String(qq.question || ''); return esc(s.length > 110 ? s.slice(0, 107) + '…' : s); };
+  // Soal hitung ringan (penjumlahan/pengurangan/perkalian kecil)
+  const mathTask = () => QC.pick([
+    () => `${ri(2, 9)} + ${ri(2, 9)}`,
+    () => `${ri(10, 20)} − ${ri(1, 9)}`,
+    () => `${ri(2, 5)} × ${ri(2, 5)}`,
+    () => `${ri(10, 30)} + ${ri(1, 9)}`
+  ])();
+  const ANTONIM = ['besar', 'panas', 'siang', 'tinggi', 'cepat', 'senang', 'baru', 'terang', 'pagi', 'banyak'];
+  const SINONIM = ['pandai', 'indah', 'gembira', 'besar', 'cepat', 'hebat'];
+  const INGGRIS = ['buku', 'meja', 'guru', 'kucing', 'rumah', 'pintu', 'teman', 'ikan', 'bola', 'air', 'merah', 'satu'];
+  // Pantun & puisi pendek (karya sendiri) untuk dibacakan
+  const PANTUN = [
+    'Pergi ke pasar membeli roti,<br>roti dimakan bersama teman.<br>Belajar tekun sepenuh hati,<br>cita-cita pasti di tangan.',
+    'Burung camar terbang tinggi,<br>hinggap sebentar di atas kapal.<br>Ayo belajar setiap hari,<br>supaya pelajaran mudah dihafal.',
+    'Ikan hiu di laut biru,<br>berenang cepat ke sana kemari.<br>Hormati orang tua dan guru,<br>agar ilmu bermanfaat nanti.'
+  ];
+  /* Hukuman campuran: separuh BELAJAR (masuk akal & ringan), separuh SERU
+     (bernyanyi, pantun, gaya lucu). tag dipakai untuk label kecil di kartu. */
   const PUNISH = [
-    { t: 'Berjalan di atas "papan" (garis lurus) <b>tumit-ke-jari</b> sambil berteriak <b>"Arrr!"</b>' },
-    { t: 'Gerakan <b>mendayung perahu 10x</b> sambil bernyanyi "Dayung, dayung, dayung!"' },
-    { t: '<b>Jalan kepiting</b> menyamping 5 langkah ke kiri lalu 5 langkah ke kanan!' },
-    { t: 'Tutup satu mata dan perkenalkan diri sebagai <b>bajak laut paling ditakuti</b> di lautan!' },
-    { t: 'Jadilah <b>ombak</b>: goyangkan tangan & badan seperti ombak!', s: 10 },
-    { t: 'Angkat "peti harta": lakukan <b>5x squat</b> sambil menghitung dalam bahasa bajak laut!' },
-    { t: 'Jadi <b>burung beo</b>: tirukan kalimat yang diucapkan teman di sebelahmu 3 kali!' },
-    { t: 'Teriakkan yel-yel kru: <b>"Kami bajak laut pintar, harta karun pasti kami dapat!"</b>' }
+    // --- belajar ---
+    { tag: '📚', need: 'q', t: (qq) => `Ucapkan jawaban yang benar bersama-sama <b>3 kali</b>:<br><b style="font-size:1.25em">${ansOf(qq)}</b>` },
+    { tag: '📚', need: 'exp', t: (qq) => `Bacakan pembahasan soal tadi dengan suara lantang:<br><i>${esc(qq.explanation)}</i>` },
+    { tag: '📚', need: 'q', t: (qq) => `Buat <b>satu kalimat</b> yang memakai kata/jawaban <b>"${ansOf(qq)}"</b>.` },
+    { tag: '📚', t: () => 'Sebutkan <b>1 hal baru</b> yang kalian pelajari hari ini.' },
+    { tag: '📚', t: () => `Hitung bersama-sama:<br><b style="font-size:1.4em">${mathTask()} = ?</b>` },
+    { tag: '📚', t: () => 'Sebutkan <b>cita-cita</b> kalian dan pelajaran apa yang paling dibutuhkan untuk meraihnya.' },
+    { tag: '📚', t: () => 'Sebutkan <b>3 benda di kelas</b> dalam bahasa Inggris.' },
+    { tag: '📚', t: () => 'Sebutkan <b>2 sikap baik</b> saat belajar di kelas.' },
+    // --- seru ---
+    { tag: '🎵', t: () => 'Nyanyikan <b>1 bait lagu nasional</b> bersama-sama, misalnya <i>Garuda Pancasila</i> atau <i>Hari Merdeka</i>!' },
+    { tag: '🎵', t: () => 'Nyanyikan <b>1 bait lagu daerah</b>, misalnya <i>Ampar-Ampar Pisang</i> atau <i>Gundul-Gundul Pacul</i>!' },
+    { tag: '🎵', t: () => 'Nyanyikan lagu <i>Balonku</i> tetapi <b>semua huruf vokal diganti "O"</b>!' },
+    { tag: '🎤', t: () => `Bacakan pantun ini dengan <b>gaya penuh ekspresi</b>:<br><i>${QC.pick(PANTUN)}</i>` },
+    { tag: '🎤', t: () => 'Ucapkan <b>"Aku pasti bisa!"</b> dengan 3 gaya: <b>berbisik</b>, <b>biasa</b>, lalu <b>berteriak semangat</b>!' },
+    { tag: '😄', t: () => 'Tirukan <b>suara 3 hewan</b> yang berbeda, teman-teman menebak hewannya!' },
+    { tag: '👏', t: () => 'Pimpin <b>tepuk semangat</b> (misalnya tepuk pramuka) untuk seluruh kelas!' },
+    { tag: '💃', t: () => 'Joget <b>gaya bebas</b> selama 10 detik di depan kelas!', s: 10 }
   ];
   const KRAKEN = [
-    { t: 'Kraken melilitmu! Gerakkan kedua tangan seperti <b>tentakel gurita</b>!', s: 10 },
-    { t: 'Lepaskan diri dari Kraken: <b>lompat di tempat 10x</b>!' },
-    { t: 'Kraken ingin hiburan: <b>nyanyikan 1 bait lagu daerah</b> dengan gaya bajak laut!' },
-    { t: 'Kraken suka menari: <b>joget gaya gurita</b> bersama teman sekelas!', s: 10 }
+    { t: () => `Kraken menguji otakmu! Hitung:<br><b style="font-size:1.4em">${mathTask()} = ?</b>` },
+    { need: 'cat', t: (qq) => `Sebutkan <b>3 kata</b> yang berhubungan dengan <b>${esc(qq.category)}</b>!`, s: 20 },
+    { t: () => `Apa <b>persamaan kata</b> dari ${some(SINONIM, 1)}?` },
+    { t: () => `Apa <b>bahasa Inggris</b>-nya ${some(INGGRIS, 2)}?` },
+    { t: () => `Apa <b>lawan kata</b> dari ${some(ANTONIM, 2)}?` },
+    { t: () => 'Sebutkan <b>3 nama pahlawan nasional</b> Indonesia!', s: 20 },
+    { t: () => 'Sebutkan <b>3 nama provinsi</b> di Indonesia!', s: 20 }
   ];
+  function pickTask(list, qq) {
+    const ok = list.filter((x) => !x.need || (qq && (x.need === 'q' || (x.need === 'exp' && qq.explanation) || (x.need === 'cat' && qq.category))));
+    const c = QC.pick(ok); return { t: c.t(qq), s: c.s || 0, tag: c.tag || '' };
+  }
 
   let P = []; let S = {}; let round = 0; let phase = 'idle'; let gen = 0;
   let q = null; let keys = []; let qStart = 0; let timerIv = null; let cpuTimers = [];
-  let answers = new Map(); let pending = []; let wrongs = [];
+  let answers = new Map(); let pending = []; let wrongs = []; let locked = new Set(); let missed = [];
   let tiles = []; let cols = 5; let rows = 4; let pickResolve = null; let picker = -1;
 
   QC.init({ gameId: 'harta-karun', title: 'Pulau Harta Karun', avatars: ['🏴‍☠️', '🦜', '🐙', '🦈', '🐢', '🦀', '🧜', '🐒'], colors: ['#2563eb', '#dc2626', '#16a34a', '#9333ea'] });
@@ -70,7 +113,7 @@
   /* ------------------------------ Legenda peta ------------------------------ */
   $('legend').innerHTML = [
     ['i-bag', 'Koin 20–50'], ['i-chest', 'Peti +100'], ['i-parrot', 'Beo: curi 30'],
-    ['i-scroll', 'Peta: ronde x2'], ['i-bomb', 'Bom −30'], ['i-kraken', 'Kraken: tantangan +20']
+    ['i-scroll', 'Peta: ronde x2'], ['i-bomb', 'Bom −30'], ['i-kraken', 'Kraken: tantangan belajar +20']
   ].map(([id, t]) => `<span>${icon(id)}${t}</span>`).join('') + '<span class="warn">Salah jawab −10</span>';
 
   /* ------------------------------ Setup ------------------------------ */
@@ -85,14 +128,14 @@
         { key: 'timer', label: 'Waktu menjawab', value: 20, options: [[10, '10 detik'], [15, '15 detik'], [20, '20 detik'], [30, '30 detik'], [0, 'Tanpa batas']] },
         { key: 'rounds', label: 'Batas ronde', value: 0, options: [[8, '8 ronde'], [12, '12 ronde'], [15, '15 ronde'], [20, '20 ronde'], [0, 'Sampai peta habis']] },
         { key: 'start', label: 'Koin awal', value: 50, options: [[0, '0 koin'], [50, '50 koin'], [100, '100 koin']] },
-        { key: 'punish', label: 'Hukuman bajak laut', value: 'on', options: [['on', 'Aktif'], ['off', 'Nonaktif']] }
+        { key: 'punish', label: 'Hukuman (yang salah)', value: 'on', options: [['on', 'Aktif'], ['off', 'Nonaktif']] }
       ],
       rulesHtml: `<ul>
         <li>Satu soal muncul untuk <b>semua kapten sekaligus</b>. Jawab di pad warnamu (sentuh) atau tombol keyboard-mu.</li>
         <li>Keyboard: P1 <b>1 2 3 4</b> • P2 <b>7 8 9 0</b> • P3 <b>Z X C V</b> • P4 <b>N M , .</b></li>
         <li><b>Rebutan!</b> Yang pertama menjawab <b>benar</b> langsung merebut ronde dan <b>memilih satu petak</b> di peta.</li>
-        <li>Isi petak: koin 20–50, <b>peti +100</b>, <b>beo</b> mencuri 30 koin dari kapten pilihanmu, <b>peta rahasia</b> (kemenangan ronde berikutnya bernilai ganda), <b>bom −30</b>, atau <b>Kraken</b> (selesaikan tantangan, dapat +20).</li>
-        <li>Salah = <b>langsung −10 koin</b> & tidak bisa menjawab lagi di ronde itu — kapten lain masih bisa merebut. Yang salah menjalani <b>hukuman bajak laut</b> bersama.</li>
+        <li>Isi petak: koin 20–50, <b>peti +100</b>, <b>beo</b> mencuri 30 koin dari kapten pilihanmu, <b>peta rahasia</b> (kemenangan ronde berikutnya bernilai ganda), <b>bom −30</b>, atau <b>Kraken</b> (jawab tantangan belajar, dapat +20).</li>
+        <li>Salah = <b>langsung −10 koin</b> & terkunci sampai ronde berikutnya. <b>Soal langsung diganti soal baru</b>, jadi kapten lain tidak bisa menebak dari kesalahan lawan. Di akhir ronde, yang salah mendapat <b>hukuman</b> bersama: kadang <b>belajar</b> (mengulang jawaban benar, membaca pembahasan, hitung sederhana), kadang <b>seru</b> (bernyanyi, pantun, tirukan suara hewan, joget), atau yang salah <b>memilih PERTANYAAN atau TANTANGAN</b>, lalu kapten yang menjawab benar memberikannya.</li>
         <li>Selesai saat peta habis atau batas ronde tercapai. <b>Koin terbanyak = Raja Bajak Laut!</b> Main sendiri? Lawan <b>Kapten Robot</b>.</li></ul>`
     });
     P = r.players.map((p) => ({ ...p, cpu: false }));
@@ -116,10 +159,10 @@
   function newGame() {
     stopRound(); gen++; clearPick();
     P.forEach((p) => Object.assign(p, { coins: S.start, double: false, found: 0, correct: 0, wrong: 0, totalTime: 0 }));
-    round = 0; phase = 'ready'; pending = []; wrongs = [];
+    round = 0; phase = 'ready'; pending = []; wrongs = []; locked = new Set();
     tiles = makeTiles(S.size);
     buildMap(); buildScores(); buildPads(); render();
-    idleCard('Kapal berlabuh', 'Tekan <b>MULAI</b>. Rebutan! Yang pertama menjawab benar langsung <b>memilih petak harta</b>. Salah? Langsung <b>−10 koin</b>!', 'MULAI');
+    idleCard('Kapal berlabuh', 'Tekan <b>MULAI</b>. Rebutan! Yang pertama menjawab benar langsung <b>memilih petak harta</b>. Salah? Langsung <b>−10 koin</b> dan soal diganti baru!', 'MULAI');
     document.querySelectorAll('.tile').forEach((t, i) => t.animate([{ transform: 'scale(0) rotate(-25deg)', opacity: 0 }, { transform: 'none', opacity: 1 }], { duration: 480, delay: 200 + i * 28, easing: 'cubic-bezier(.2,.9,.3,1.4)', fill: 'backwards' }));
     document.querySelectorAll('.score').forEach((c, i) => c.animate([{ transform: 'translateY(-30px)', opacity: 0 }, { transform: 'none', opacity: 1 }], { duration: 600, delay: i * 120, easing: 'cubic-bezier(.2,.9,.3,1.3)', fill: 'backwards' }));
     FX.announce('ANGKAT JANGKAR!', { color: '#b45309', sub: `${P.length} kapten • ${tiles.length} petak harta tersembunyi`, dur: 1500 });
@@ -127,10 +170,12 @@
 
   /* ------------------------------ Bangun tampilan ------------------------------ */
   function buildMap() {
-    cols = S.size === 16 ? 4 : S.size === 20 ? 5 : 6;
+    // Peta memanjang (2–3 baris) di bawah soal; layar sempit memakai peta kotak
+    const wide = innerWidth > 900;
+    cols = wide ? (S.size === 16 ? 8 : 10) : (S.size === 16 ? 4 : S.size === 20 ? 5 : 6);
     rows = Math.ceil(tiles.length / cols);
     const g = $('grid'); g.style.setProperty('--cols', cols); g.style.setProperty('--rows', rows);
-    const L = 'ABCDEF';
+    const L = 'ABCDEFGHIJ';
     g.innerHTML = tiles.map((t, i) => `<button class="tile" id="t${i}" data-i="${i}">
       <span class="in"><span class="face front"><svg class="xmark" viewBox="0 0 24 24"><path d="M6 6 L18 18 M18 6 L6 18"/></svg><span class="co">${L[i % cols]}${Math.floor(i / cols) + 1}</span></span>
       <span class="face back"></span></span></button>`).join('');
@@ -239,7 +284,7 @@
     if (!q) { QC.toast('Bank soal kosong — tambahkan soal di Mode Guru.', 'bad'); return; }
     const g = gen;
     phase = 'countdown'; $('btnNext').hidden = true;
-    round++; render(); keys = QC.optionsOf(q); answers = new Map(); pending = []; wrongs = [];
+    round++; render(); keys = QC.optionsOf(q); answers = new Map(); pending = []; wrongs = []; locked = new Set(); missed = [];
     P.forEach((p, i) => { padState(i, 'idle', 'BERSIAP', 'Soal segera muncul'); $('pad' + i).classList.remove('picked'); });
     $('qCat').textContent = q.category || 'Soal'; $('qStatus').textContent = `Ronde ${round}`; $('qText').textContent = ''; $('qOpts').innerHTML = ''; $('qExp').innerHTML = '';
     await countdown();
@@ -257,13 +302,15 @@
     c.classList.remove('on');
   }
 
-  function showQuestion() {
+  function showQuestion(swapped = false) {
     phase = 'question';
     const qt = $('qText'); qt.textContent = q.question; retrigger(qt, 'in');
     $('qOpts').innerHTML = keys.map((k, n) => `<div class="opt" id="opt${k}" style="--oc:${OC[k]};--i:${n}"><span class="shape">${shape(k)}</span><span class="ot">${esc(q['option' + k])}</span><span class="who"></span></div>`).join('');
     P.forEach((p, i) => {
       const box = $('pbs' + i); box.style.setProperty('--k', keys.length);
-      box.innerHTML = padButtons(i, keys, p.cpu);
+      box.innerHTML = padButtons(i, keys, p.cpu || locked.has(i));
+      if (locked.has(i)) return; // yang sudah salah tetap terkunci sampai ronde berikutnya
+      $('pad' + i).classList.remove('picked');
       box.querySelectorAll('.pb').forEach((b) => (b.onclick = () => lock(i, b.dataset.k)));
       padState(i, p.cpu ? 'idle' : null, 'MENGHITUNG…', 'Robot sedang berpikir');
       if (p.cpu) {
@@ -273,7 +320,23 @@
       }
     });
     qStart = performance.now(); startTimer();
-    $('qStatus').textContent = `Ronde ${round} • rebutan dimulai!`;
+    $('qStatus').textContent = swapped ? `Ronde ${round} • SOAL BARU! ${P.length - locked.size} kapten masih bisa merebut` : `Ronde ${round} • rebutan dimulai!`;
+  }
+
+  /* Ada yang salah → soal langsung diganti soal baru (waktu diulang), agar kapten
+     lain tidak bisa menebak jawaban dari kesalahan lawan. */
+  async function swapQuestion(p) {
+    phase = 'swap'; stopRound(); const g = gen; $('qTimer').classList.remove('hurry');
+    $('qStatus').textContent = `Ronde ${round} • ${p.name} salah! Soal diganti…`;
+    P.forEach((x, i) => { if (!locked.has(i)) $('pad' + i).querySelectorAll('.pb').forEach((b) => (b.disabled = true)); });
+    await QC.sleep(350); if (g !== gen || phase !== 'swap') return;
+    const body = $('qBody'); retrigger(body, 'swap'); QC.sfx.whoosh();
+    FX.floatTextAt(body, 'SOAL DIGANTI!', '#b45309', 34);
+    await QC.sleep(260); if (g !== gen || phase !== 'swap') return;
+    const nq = QC.nextQuestion(); if (nq) q = nq;
+    keys = QC.optionsOf(q); answers = new Map();
+    $('qCat').textContent = q.category || 'Soal'; $('qExp').innerHTML = '';
+    showQuestion(true);
   }
 
   function startTimer() {
@@ -292,21 +355,21 @@
 
   /* Rebutan: jawaban langsung dinilai.
      - Benar pertama → ronde berakhir, pemain itu memilih petak harta.
-     - Salah        → langsung −10 koin & terkunci; pemain lain tetap boleh merebut.
+     - Salah        → langsung −10 koin & terkunci sampai ronde berikutnya;
+                      soal LANGSUNG DIGANTI soal baru untuk kapten lain.
      - Semua salah / waktu habis → ronde berakhir tanpa pemenang. */
   function lock(i, k) {
-    if (phase !== 'question' || answers.has(i) || !keys.includes(k)) return;
+    if (phase !== 'question' || answers.has(i) || locked.has(i) || !keys.includes(k)) return;
     const t = (performance.now() - qStart) / 1000; answers.set(i, { k, t });
     const pad = $('pad' + i); pad.classList.add('picked');
-    pad.querySelectorAll('.pb').forEach((b) => { b.disabled = true; if (b.dataset.k === k) b.classList.add('mine'); });
+    pad.querySelectorAll('.pb').forEach((b) => { b.disabled = true; if (b.dataset.k === k && k === q.correct) b.classList.add('mine'); });
     if (k === q.correct) { endQuestion(i); return; }
-    const p = P[i]; p.wrong++; wrongs.push(i);
-    padState(i, 'bad', '−10 KOIN', `Jawaban salah • ${t.toFixed(1)} dtk`);
+    const p = P[i]; p.wrong++; wrongs.push(i); locked.add(i); if (!p.cpu && !missed.includes(q)) missed.push(q);
+    padState(i, 'bad', '−10 KOIN', 'Salah • tunggu ronde berikutnya');
     retrigger(pad, 'flash-bad'); QC.sfx.wrong();
     pending.push(penalty(i));
-    const left = P.length - answers.size;
-    $('qStatus').textContent = left ? `Ronde ${round} • ${p.name} salah! ${left} kapten masih bisa merebut` : `Ronde ${round} • semua salah`;
-    if (!left) setTimeout(() => endQuestion(null), 300);
+    if (locked.size >= P.length) { $('qStatus').textContent = `Ronde ${round} • semua salah`; setTimeout(() => endQuestion(null), 300); return; }
+    swapQuestion(p);
   }
 
   async function endQuestion(winner = null) {
@@ -318,7 +381,7 @@
     answers.forEach((a, i) => $('opt' + a.k).querySelector('.who').insertAdjacentHTML('beforeend', `<i style="--pc:${P[i].color}">${P[i].avatar}</i>`));
     FX.ringAt($('opt' + q.correct), '#1fb36b', 280);
     if (q.explanation) $('qExp').innerHTML = `<b>Pembahasan:</b> ${esc(q.explanation)}`;
-    P.forEach((p, i) => { if (!answers.has(i)) { padState(i, 'idle', winner == null ? '—' : 'KALAH CEPAT', winner == null ? 'Tidak menjawab' : 'Sudah direbut lawan'); $('pad' + i).querySelectorAll('.pb').forEach((b) => (b.disabled = true)); } });
+    P.forEach((p, i) => { if (!answers.has(i) && !locked.has(i)) { padState(i, 'idle', winner == null ? '—' : 'KALAH CEPAT', winner == null ? 'Tidak menjawab' : 'Sudah direbut lawan'); $('pad' + i).querySelectorAll('.pb').forEach((b) => (b.disabled = true)); } });
 
     // 2) Pemenang ronde memilih petak
     if (winner != null) {
@@ -345,12 +408,34 @@
     if (g !== gen) return;
     render();
 
-    // 3) Satu kartu hukuman untuk semua pemain (manusia) yang salah
+    // 3) Satu kartu untuk semua pemain (manusia) yang salah:
+    //    kadang TUGAS BELAJAR, kadang JUARA ronde yang memberi pertanyaan/tantangan.
     const losers = wrongs.filter((i) => !P[i].cpu).map((i) => P[i]); wrongs = [];
     if (S.punish === 'on' && losers.length) {
       await QC.sleep(450); if (g !== gen) return;
-      const c = QC.pick(PUNISH);
-      await QC.punish({ icon: BIG('i-skull'), title: 'HUKUMAN BAJAK LAUT', sub: `${losers.map(QC.chip).join(' ')}<br>Kapten marah, koin kalian berkurang! Lakukan bersama-sama:`, text: c.t, seconds: c.s || 0 });
+      const mq = missed.length ? QC.pick(missed) : null;
+      const champ = winner != null && !P[winner].cpu ? P[winner] : null;
+      if (champ && Math.random() < 0.5) {
+        // Yang salah memilih: PERTANYAAN atau TANTANGAN; lalu juara memberikannya.
+        const who = losers.map(QC.chip).join(' ');
+        const pick = await QC.modal({
+          cls: 'qc-punish', icon: BIG('i-crown'), title: 'PERTANYAAN ATAU TANTANGAN?',
+          html: `<p class="qc-punish-sub">${who}<br>Kalian yang salah, <b>pilih salah satu</b>:</p>`,
+          buttons: [{ label: '❓ Pertanyaan', value: 'q', primary: true }, { label: '⚡ Tantangan', value: 't', primary: true }]
+        });
+        if (g !== gen) return;
+        const isQ = pick !== 't';
+        await QC.modal({
+          cls: 'qc-punish', icon: BIG('i-crown'), title: isQ ? '❓ PERTANYAAN' : '⚡ TANTANGAN',
+          html: `${QC.chip(champ)}<p class="qc-punish-sub">${who} memilih <b>${isQ ? 'PERTANYAAN' : 'TANTANGAN'}</b>.</p>` +
+            `<div class="qc-punish-box"><b>${esc(champ.name)}</b> (yang menjawab benar), berikan <b>1 ${isQ ? 'pertanyaan' : 'tantangan'}</b> kepada yang salah.</div>`,
+          buttons: [{ label: '✅ Selesai', value: true, primary: true }]
+        });
+      } else {
+        const c = pickTask(PUNISH, mq);
+        const fun = c.tag && c.tag !== '📚';
+        await QC.punish({ icon: BIG(fun ? 'i-skull' : 'i-scroll'), title: fun ? `${c.tag} HUKUMAN SERU` : '📚 HUKUMAN BELAJAR', sub: `${losers.map(QC.chip).join(' ')}<br>Yang salah, kerjakan bersama-sama:`, text: c.t, seconds: c.s });
+      }
       if (g !== gen) return;
     }
 
@@ -374,9 +459,8 @@
       picker = i; phase = 'pick';
       m.style.setProperty('--pc', p.color); m.classList.add('picking');
       const b = $('pickBanner'); b.style.setProperty('--pc', p.color);
-      b.innerHTML = `<span class="av">${p.avatar}</span><span><b>${esc(p.name)}</b>${p.cpu ? 'sedang memilih petak…' : ', pilih satu petak!'}</span>${p.cpu ? '' : '<button class="rand-btn" id="btnRand">Acak</button>'}`;
+      b.innerHTML = `<span class="av">${p.avatar}</span><span><b>${esc(p.name)}</b>${p.cpu ? 'sedang memilih petak…' : ', pilih satu petak!'}</span>`;
       retrigger(b, 'on');
-      if (!p.cpu) $('btnRand').onclick = () => humanPick(QC.pick(closedTiles()));
       $('qStatus').textContent = `Ronde ${round} • ${p.name} memilih petak harta…`;
       QC.sfx.magic();
       pickResolve = (t) => { clearPick(); phase = 'resolving'; res(t); };
@@ -466,8 +550,8 @@
       $('qStatus').textContent = `Ronde ${round} • ${p.name} membangunkan KRAKEN!`;
       await krakenRise(); if (g !== gen) return;
       if (!p.cpu) {
-        const c = QC.pick(KRAKEN);
-        await QC.punish({ icon: BIG('i-kraken'), title: 'KRAKEN BANGUN!', player: p, sub: `Selesaikan tantangan ini untuk merebut <b>+${20 * mult} koin</b> dari Kraken:`, text: c.t, seconds: c.s || 0 });
+        const c = pickTask(KRAKEN, q);
+        await QC.punish({ icon: BIG('i-kraken'), title: 'KRAKEN BANGUN!', player: p, sub: `Jawab tantangan belajar ini untuk merebut <b>+${20 * mult} koin</b> dari Kraken:`, text: c.t, seconds: c.s });
         if (g !== gen) return;
       } else { await announce('KRAKEN DIKALAHKAN!', { color: '#6d28d9', sub: `${esc(p.name)} lolos dari Kraken`, dur: 1100 }); if (g !== gen) return; }
       const amt = 20 * mult;
@@ -555,6 +639,26 @@
 
   /* ------------------------------ Kontrol ------------------------------ */
   $('btnNext').onclick = () => startRound();
+
+  // Menu peraturan singkat
+  $('btnRules').onclick = () => {
+    if (document.querySelector('.qc-rules-modal')) return;
+    const items = [['i-bag', 'Koin 20–50'], ['i-chest', 'Peti +100'], ['i-parrot', 'Beo: curi 30'], ['i-scroll', 'Peta: hadiah x2'], ['i-bomb', 'Bom −30'], ['i-kraken', 'Kraken: tantangan +20']]
+      .map(([id, t]) => `<span>${icon(id)}${t}</span>`).join('');
+    const rules = [
+      'Soal muncul untuk <b>semua kapten</b>. Jawab di <b>pad warnamu</b> (sentuh) atau tombol keyboard.',
+      'Yang <b>pertama benar</b> boleh <b>memilih 1 petak harta</b> di peta.',
+      `Isi petak:<div class="rules-items">${items}</div>`,
+      'Jawaban <b>salah = −10 koin</b>, tidak bisa menjawab lagi di ronde itu, dan <b>soal langsung diganti</b> untuk kapten lain.',
+      'Yang salah mendapat <b>hukuman</b> di akhir ronde, atau <b>pertanyaan/tantangan</b> dari kapten yang benar.',
+      'Permainan selesai saat peta habis / ronde habis. <b>Koin terbanyak = juara!</b>'
+    ];
+    QC.modal({
+      cls: 'qc-rules-modal', icon: BIG('i-scroll'), title: 'Peraturan Game', dismissable: true,
+      html: `<ol class="rules-list">${rules.map((r, i) => `<li><span class="no">${i + 1}</span><span>${r}</span></li>`).join('')}</ol>`,
+      buttons: [{ label: 'Mengerti!', value: true, primary: true }]
+    });
+  };
   QC.onKey = (e) => {
     if (phase === 'question') {
       const key = e.key.toLowerCase();

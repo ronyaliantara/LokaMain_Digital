@@ -1,0 +1,91 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
+  <title>Lari Pintar — Balapan Kuis 2 Pemain</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Lilita+One&family=Nunito:wght@700;800;900&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="quiz-core.css">
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+  <main class="game">
+    <canvas id="cv"></canvas>
+
+    <header class="top">
+      <div class="brand">
+        <svg class="logo" viewBox="0 0 48 48" aria-hidden="true">
+          <circle cx="24" cy="24" r="22" fill="#ffd23f" stroke="#7a4a00" stroke-width="3"/>
+          <path d="M14 30 L22 16 L28 26 L34 18" fill="none" stroke="#7a4a00" stroke-width="4" stroke-linecap="round" stroke-linejoin="round"/>
+          <circle cx="34" cy="16" r="4" fill="#e63946"/>
+        </svg>
+        <div><h1>LARI PINTAR</h1><p>Balapan kuis 2 pemain</p></div>
+      </div>
+      <nav class="tools">
+        <button class="ibtn" id="btnMusic" title="Musik">♪</button>
+        <button class="ibtn" id="btnSound" title="Suara">SFX</button>
+        <button class="ibtn" data-qc="fullscreen" title="Layar penuh">⛶</button>
+        <button class="ibtn" id="btnRestart" title="Ulang">↺</button>
+        <button class="ibtn guru" data-qc="teacher" title="Mode Guru">GURU</button>
+      </nav>
+    </header>
+
+    <!-- Panel tiap pemain (HUD + soal + kontrol) -->
+    <section class="side p1" id="side0">
+      <div class="hud">
+        <span class="av" id="av0">🧒</span>
+        <div class="nm"><b id="nm0">Pemain 1</b><small id="prog0">Soal 0/8</small></div>
+        <div class="sc"><small>SKOR</small><b id="sc0">0</b></div>
+        <div class="item" id="item0" title="Item"></div>
+      </div>
+      <div class="qbox" id="q0" hidden></div>
+      <div class="ctrl">
+        <div class="dpad">
+          <button class="b up" data-p="0" data-a="jump">⬆<span>LOMPAT</span></button>
+          <button class="b lt" data-p="0" data-a="left">◀<span>KIRI</span></button>
+          <button class="b rt" data-p="0" data-a="right">▶<span>KANAN</span></button>
+          <button class="b dn" data-p="0" data-a="duck">⬇<span>BUNGKUK</span></button>
+        </div>
+        <button class="b use" data-p="0" data-a="item">🍌<span>PAKAI</span></button>
+      </div>
+      <div class="keys">Keyboard: A/D pindah jalur • W lompat • S bungkuk • E pakai item</div>
+    </section>
+
+    <section class="side p2" id="side1">
+      <div class="hud">
+        <span class="av" id="av1">👧</span>
+        <div class="nm"><b id="nm1">Pemain 2</b><small id="prog1">Soal 0/8</small></div>
+        <div class="sc"><small>SKOR</small><b id="sc1">0</b></div>
+        <div class="item" id="item1" title="Item"></div>
+      </div>
+      <div class="qbox" id="q1" hidden></div>
+      <div class="ctrl">
+        <button class="b use" data-p="1" data-a="item">🍌<span>PAKAI</span></button>
+        <div class="dpad">
+          <button class="b up" data-p="1" data-a="jump">⬆<span>LOMPAT</span></button>
+          <button class="b lt" data-p="1" data-a="left">◀<span>KIRI</span></button>
+          <button class="b rt" data-p="1" data-a="right">▶<span>KANAN</span></button>
+          <button class="b dn" data-p="1" data-a="duck">⬇<span>BUNGKUK</span></button>
+        </div>
+      </div>
+      <div class="keys">Keyboard: ←/→ pindah jalur • ↑ lompat • ↓ bungkuk • Enter pakai item</div>
+    </section>
+
+    <div class="center" id="msg">
+      <div class="card">
+        <h2 id="msgTitle">LARI PINTAR</h2>
+        <div id="msgSub"></div>
+        <button class="go" id="btnGo">MULAI <small>Spasi</small></button>
+      </div>
+    </div>
+  </main>
+
+  <script src="https://cdn.jsdelivr.net/npm/xlsx@0.18.5/dist/xlsx.full.min.js" defer></script>
+  <script src="questions-default.js"></script>
+  <script src="quiz-core.js"></script>
+  <script src="game.js"></script>
+  <script src="../lokamain-license.js"></script>
+</body>
+</html>

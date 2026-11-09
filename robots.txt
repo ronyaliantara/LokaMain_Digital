@@ -1,0 +1,5 @@
+User-agent: *
+Allow: /
+Disallow: /aplikasi_admin/
+
+Sitemap: https://lokamaindigital.my.id/sitemap.xml

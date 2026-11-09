@@ -30,26 +30,13 @@
   const SND_OFF = '<svg viewBox="0 0 24 24"><path d="M11 5 6 9H2v6h4l5 4z"/><path d="m23 9-6 6M17 9l6 6"/></svg>';
   const LOGO = '<svg viewBox="0 0 130 52"><use href="#rocket" style="--pc:#22d3ee"/></svg>';
 
-  // Hukuman sederhana & mudah dipahami
-  const PUNISH = [
-    { t: '<b>Lompat 10 kali</b> di tempat!' },
-    { t: '<b>Push-up 5 kali</b>!' },
-    { t: '<b>Lari di tempat</b> selama 10 detik!', s: 10 },
-    { t: '<b>Bernyanyi</b> satu lagu anak-anak (1 bait) bersama-sama!' },
-    { t: '<b>Squat (jongkok-berdiri) 10 kali</b>!' },
-    { t: '<b>Jumping jack 10 kali</b> (lompat sambil buka-tutup tangan & kaki)!' },
-    { t: '<b>Berdiri satu kaki</b> selama 10 detik tanpa jatuh!', s: 10 },
-    { t: '<b>Tepuk tangan 20 kali</b> sambil menghitung keras-keras!' },
-    { t: '<b>Bernyanyi "Balonku"</b> sambil bertepuk tangan!' },
-    { t: '<b>Sit-up 5 kali</b>!' },
-    { t: '<b>Menari / berjoget</b> selama 10 detik!', s: 10 },
-    { t: '<b>Lompat kodok 5 kali</b>!' }
-  ];
-
   let P = []; let S = {}; let round = 0; let phase = 'idle';
   let q = null; let keys = []; let qStart = 0; let timerIv = null; let cpuTimers = [];
   let answers = new Map(); let events = {};
-  let mod = null; let finalShown = false; let leader = null;
+  let mod = null; let finalShown = false; let leader = null; let record = null;
+  const BOX = '<svg viewBox="0 0 24 24"><rect x="3" y="9" width="18" height="12" rx="2" fill="#7c3aed" stroke="#ede9fe" stroke-width="1.3"/><rect x="2" y="6" width="20" height="5" rx="1.5" fill="#a855f7" stroke="#ede9fe" stroke-width="1.3"/><path d="M12 6 V21" stroke="#fde047" stroke-width="2.4"/><path d="M12 6 Q7 1 6 4.5 Q6 7 12 6 Q17 1 18 4.5 Q18 7 12 6" fill="none" stroke="#fde047" stroke-width="1.6"/><text x="12" y="18.5" text-anchor="middle" font-size="7" font-weight="900" fill="#fff" font-family="Arial">?</text></svg>';
+  const MISSILE = '<svg viewBox="0 0 60 20"><path d="M0 6 Q-10 10 0 14 Z" fill="#fb923c"/><rect x="2" y="5" width="40" height="10" rx="3" fill="#e2e8f0" stroke="#0f172a" stroke-width="1.2"/><path d="M42 5 Q58 10 42 15 Z" fill="#ef4444" stroke="#0f172a" stroke-width="1.2"/><path d="M6 5 L2 0 L14 5 Z M6 15 L2 20 L14 15 Z" fill="#ef4444" stroke="#0f172a" stroke-width="1"/></svg>';
+  const CHEER = ['Secepat kilat!', 'Refleks luar biasa!', 'Otak encer!', 'Tak terbendung!', 'Jawaban roket!', 'Juara kelas!', 'Mantap jiwa!', 'Gesit sekali!'];
   const SHIELD = '<svg viewBox="0 0 24 24"><path d="M12 2 L20 5 V11 Q20 18 12 22 Q4 18 4 11 V5 Z" fill="#0ea5e9" stroke="#e0f2fe" stroke-width="1.5" stroke-linejoin="round"/><path d="M12 6 V18 M8 10 H16" stroke="#e0f2fe" stroke-width="1.4" opacity=".75"/></svg>';
   // Ronde spesial (muncul tiap 3 ronde)
   const MODS = {
@@ -117,12 +104,59 @@
 
   /* ------------------------------ Suara ------------------------------ */
   function syncSound() { $('btnSound').innerHTML = QC.muted ? SND_OFF : SND_ON; }
-  $('btnSound').onclick = () => { QC.muted = !QC.muted; try { localStorage.setItem('lokamain_muted', JSON.stringify(QC.muted)); } catch (e) { /* abaikan */ } syncSound(); QC.sfx.click(); };
+  $('btnSound').onclick = () => { QC.muted = !QC.muted; try { localStorage.setItem('lokamain_muted', JSON.stringify(QC.muted)); } catch (e) { /* abaikan */ } syncSound(); QC.sfx.click(); if (QC.muted) Music.stop(); else if (phase !== 'idle' && phase !== 'over') Music.start(); };
   syncSound();
+
+  /* ------------------------------ Musik latar (dibuat langsung oleh browser, tanpa file) ------------------------------ */
+  const Music = (() => {
+    let ctx = null; let master = null; let hatBuf = null; let timer = null; let next = 0; let step = 0; let bpm = 108;
+    let on = true; try { on = localStorage.getItem('lokamain_roket_music') !== 'off'; } catch (e) { /* abaikan */ }
+    const prog = [[57, 60, 64], [53, 57, 60], [48, 52, 55], [55, 59, 62]]; // Am – F – C – G
+    const hz = (m) => 440 * Math.pow(2, (m - 69) / 12);
+    function note(f, t, d, type, vol) {
+      const o = ctx.createOscillator(); const g = ctx.createGain(); o.type = type; o.frequency.value = f;
+      g.gain.setValueAtTime(0.0001, t); g.gain.exponentialRampToValueAtTime(vol, t + 0.012); g.gain.exponentialRampToValueAtTime(0.0001, t + d);
+      o.connect(g).connect(master); o.start(t); o.stop(t + d + 0.03);
+    }
+    function hat(t, vol) { const s = ctx.createBufferSource(); s.buffer = hatBuf; const g = ctx.createGain(); g.gain.value = vol; s.connect(g).connect(master); s.start(t); }
+    function kick(t) { const o = ctx.createOscillator(); const g = ctx.createGain(); o.frequency.setValueAtTime(140, t); o.frequency.exponentialRampToValueAtTime(45, t + 0.15); g.gain.setValueAtTime(0.9, t); g.gain.exponentialRampToValueAtTime(0.001, t + 0.2); o.connect(g).connect(master); o.start(t); o.stop(t + 0.22); }
+    function tick() {
+      const spb = 60 / bpm / 4;
+      while (next < ctx.currentTime + 0.18) {
+        const bar = Math.floor(step / 16) % 4; const s = step % 16; const ch = prog[bar];
+        if (s % 4 === 0) { kick(next); note(hz(ch[0] - 24), next, spb * 3.2, 'triangle', 0.55); }
+        if (s % 2 === 0) note(hz(ch[(s / 2) % 3] + 12), next, spb * 1.5, 'square', 0.06);
+        if (s % 4 === 2) hat(next, 0.22); else if (bpm > 120 && s % 2 === 1) hat(next, 0.08);
+        next += spb; step++;
+      }
+    }
+    return {
+      get on() { return on; },
+      start() {
+        if (!on || QC.muted) return;
+        try {
+          if (!ctx) {
+            ctx = new (window.AudioContext || window.webkitAudioContext)(); master = ctx.createGain(); master.gain.value = 0.07; master.connect(ctx.destination);
+            const len = Math.floor(ctx.sampleRate * 0.035); hatBuf = ctx.createBuffer(1, len, ctx.sampleRate); const d = hatBuf.getChannelData(0);
+            for (let i = 0; i < len; i++) d[i] = (Math.random() * 2 - 1) * (1 - i / len);
+          }
+          if (ctx.state === 'suspended') ctx.resume();
+        } catch (e) { return; }
+        if (timer) return; next = ctx.currentTime + 0.06; timer = setInterval(tick, 60);
+      },
+      stop() { clearInterval(timer); timer = null; },
+      tempo(b) { bpm = b; },
+      toggle() { on = !on; try { localStorage.setItem('lokamain_roket_music', on ? 'on' : 'off'); } catch (e) { /* abaikan */ } if (on && phase !== 'idle' && phase !== 'over') this.start(); else this.stop(); return on; }
+    };
+  })();
+  const baseTempo = () => (finalShown ? 126 : 108);
+  function syncMusic() { $('btnMusic').classList.toggle('off', !Music.on); $('btnMusic').title = Music.on ? 'Musik: nyala' : 'Musik: mati'; }
+  $('btnMusic').onclick = () => { Music.toggle(); syncMusic(); QC.sfx.click(); };
+  syncMusic();
 
   /* ------------------------------ Setup ------------------------------ */
   async function openSetup() {
-    stopRound();
+    stopRound(); Music.stop(); phase = 'idle';
     const r = await QC.setup({
       logo: LOGO, subtitle: 'Kuis rebutan! Siapa pertama menjawab benar, dia yang melesat!',
       min: 1, max: 4, defaultCount: 2, soloLabel: '1 vs Robot',
@@ -130,18 +164,17 @@
         { key: 'target', label: 'Jarak ke planet', value: 15, options: [[10, '10 langkah (cepat)'], [15, '15 langkah'], [20, '20 langkah'], [25, '25 langkah (panjang)']] },
         { key: 'timer', label: 'Waktu menjawab', value: 15, options: [[10, '10 detik'], [15, '15 detik'], [20, '20 detik'], [30, '30 detik'], [0, 'Tanpa batas']] },
         { key: 'meteor', label: 'Mundur jika salah', value: 1, options: [[0, 'Tidak mundur'], [1, '1 langkah'], [2, '2 langkah']] },
-        { key: 'events', label: 'Bintang & lubang hitam', value: 'on', options: [['on', 'Aktif'], ['off', 'Nonaktif']] },
-        { key: 'punish', label: 'Hukuman (gerak & nyanyi)', value: 'on', options: [['on', 'Aktif'], ['off', 'Nonaktif']] }
+        { key: 'events', label: 'Bintang, lubang hitam & perisai', value: 'on', options: [['on', 'Aktif'], ['off', 'Nonaktif']] }
       ],
       rulesHtml: `<ul>
         <li>Satu soal muncul untuk <b>semua pemain sekaligus</b>. Jawab di pad warnamu (sentuh) atau tombol keyboard-mu.</li>
         <li>Keyboard: P1 <b>1 2 3 4</b> • P2 <b>7 8 9 0</b> • P3 <b>Z X C V</b> • P4 <b>N M , .</b></li>
         <li><b>Rebutan!</b> Yang pertama menjawab <b>benar</b> langsung merebut ronde: <b>+3 langkah</b>. Tidak perlu menunggu yang lain.</li>
         <li>Salah = <b>langsung</b> dihantam meteor & tidak bisa menjawab lagi di ronde itu — pemain lain masih bisa merebut. 3x menang ronde beruntun = <b>HYPERDRIVE +2</b>.</li>
-        <li>Di lintasan: <b>bintang +2</b>, <b>lubang hitam −2</b>, <b>perisai</b> (menahan 1 meteor).</li>
+        <li>Di lintasan: <b>bintang +2</b>, <b>lubang hitam −2</b>, <b>perisai</b> (menahan 1 serangan), dan <b>KOTAK MISTERI</b>: turbo +3, <b>rudal</b> ke roket terdepan (−2), <b>tukar posisi</b>, atau <b>magnet</b> (semua lawan −1)!</li>
+        <li>Jawab paling cepat sepanjang permainan = <b>REKOR</b> baru. Ada musik latar yang makin cepat saat menegangkan (tombol ♪ untuk mematikan).</li>
         <li>Roket paling belakang yang menang ronde dapat bonus <b>KEJAR +1</b>.</li>
         <li>Tiap 3 ronde ada <b>ronde spesial</b>: Ronde Ganda (+6), Badai Meteor (+4, salah −2), Soal Kilat (waktu setengah, +4).</li>
-        <li>Yang salah menjalani <b>hukuman</b> bersama: lompat, push-up, lari di tempat, bernyanyi, dll.</li>
         <li>Main sendiri? Kamu akan melawan <b>Robot ARX</b>.</li></ul>`
     });
     P = r.players.map((p) => ({ ...p, cpu: false }));
@@ -155,12 +188,13 @@
     P.forEach((p) => Object.assign(p, { pos: 0, streak: 0, correct: 0, fastest: 0, totalTime: 0 }));
     round = 0; phase = 'ready'; events = {};
     if (S.events === 'on') {
-      const n = Math.max(2, Math.round(S.target / 4));
+      const n = Math.max(4, Math.round(S.target / 3));
       const slots = QC.shuffle(Array.from({ length: S.target - 4 }, (_, i) => i + 3)).slice(0, n);
-      const types = ['star', 'hole', 'shield'];
-      slots.forEach((s, i) => (events[s] = types[i % 3]));
+      const types = ['box', 'star', 'hole', 'box', 'shield'];
+      slots.forEach((s, i) => (events[s] = types[i % types.length]));
     }
-    mod = null; finalShown = false; leader = null; document.body.classList.remove('final');
+    mod = null; finalShown = false; leader = null; record = null; document.body.classList.remove('final');
+    $('recNo').textContent = '–';
     P.forEach((p) => (p.shield = false));
     $('targetNo').textContent = S.target;
     buildTrack(); buildPads(); render();
@@ -175,10 +209,10 @@
     $('lanes').innerHTML = P.map((p, i) => {
       let marks = '';
       for (let s = 1; s < S.target; s++) marks += `<div class="mark" style="left:${xAt(s)}">${s % 5 === 0 ? `<b>${s}</b>` : ''}</div>`;
-      const evs = Object.keys(events).map((s) => `<div class="ev ${events[s]}" style="left:${xAt(+s)}">${{ star: STAR, hole: HOLE, shield: SHIELD }[events[s]]}</div>`).join('');
+      const evs = Object.keys(events).map((s) => `<div class="ev ${events[s]}" style="left:${xAt(+s)}">${{ star: STAR, hole: HOLE, shield: SHIELD, box: BOX }[events[s]]}</div>`).join('');
       return `<div class="lane" id="lane${i}" style="--pc:${p.color}">
-        <div class="lane-tag"><span class="rank" id="lr${i}">1</span><span class="dot">${p.avatar}</span><span class="nm"><b>${esc(p.name)}</b><small id="lp${i}"></small></span><span class="streak" id="ls${i}"><i></i><i></i><i></i></span></div>
-        <div class="lane-run" id="run${i}">${marks}${evs}
+        <div class="lane-tag"><span class="rank" id="lr${i}">1</span><span class="dot">${p.avatar}</span><span class="nm"><b>${esc(p.name)}</b><small><span id="lp${i}"></span><span class="streak" id="ls${i}"><i></i><i></i><i></i></span></small></span></div>
+        <div class="lane-run" id="run${i}"><div class="trail" id="tr${i}"></div>${marks}${evs}
           <div class="rocket" id="rk${i}"><svg viewBox="0 0 130 52"><use href="#rocket"/></svg></div>
           <div class="lock-badge" id="lb${i}">SIAP</div>
         </div></div>`;
@@ -195,7 +229,7 @@
   function render() {
     P.forEach((p, i) => {
       const v = Math.min(1, p.pos / S.target);
-      $('rk' + i).style.setProperty('--p', v); $('lb' + i).style.setProperty('--p', v);
+      $('rk' + i).style.setProperty('--p', v); $('lb' + i).style.setProperty('--p', v); $('tr' + i).style.setProperty('--p', v);
       $('rk' + i).classList.toggle('shielded', !!p.shield);
       $('lp' + i).textContent = `${p.pos} / ${S.target}`;
       [...$('ls' + i).children].forEach((x, k) => x.classList.toggle('on', k < p.streak));
@@ -231,6 +265,7 @@
     const qc = $('qcard'); qc.classList.toggle('special', !!mod); qc.style.setProperty('--mc', mod ? mod.color : 'transparent');
     $('qCat').textContent = q.category; $('qStatus').innerHTML = mod ? `<span class="mod-tag">${mod.name}</span> ${mod.sub}` : `Ronde ${round}`;
     $('qText').textContent = ''; $('qOpts').innerHTML = ''; $('qExp').innerHTML = '';
+    Music.start(); Music.tempo(baseTempo());
     if (mod) { QC.sfx.magic(); FX.flash(mod.flash, 450); await withTimeout(FX.announce(mod.name, { color: mod.color, sub: mod.sub, dur: 1500 }), 1800); }
     await countdown();
     showQuestion();
@@ -249,7 +284,7 @@
   }
 
   function showQuestion() {
-    phase = 'question';
+    phase = 'question'; Music.tempo(mod ? 144 : (finalShown ? 140 : 128));
     const qt = $('qText'); qt.textContent = q.question; retrigger(qt, 'in');
     $('qOpts').innerHTML = keys.map((k, n) => `<div class="opt" id="opt${k}" style="--oc:${OC[k]};--i:${n}"><span class="shape">${shape(k)}</span><span>${esc(q['option' + k])}</span><span class="who"></span></div>`).join('');
     P.forEach((p, i) => {
@@ -306,7 +341,7 @@
 
   async function endQuestion(winner = null) {
     if (phase !== 'question') return;
-    phase = 'resolving'; stopRound(); $('qTimer').classList.remove('hurry');
+    phase = 'resolving'; stopRound(); $('qTimer').classList.remove('hurry'); Music.tempo(baseTempo());
     P.forEach((p, i) => $('lb' + i).classList.remove('on'));
 
     // 1) Buka jawaban
@@ -330,8 +365,12 @@
       retrigger($('pad' + winner), 'flash-good'); QC.sfx.correct();
       FX.burstAt($('pad' + winner), { emojis: ['★', '✦', '●'], color: ['#fde047', '#ffffff', p.color], count: 20, spread: 150, size: 18 });
       $('qStatus').textContent = `Ronde ${round} • ${p.name} merebut poin dalam ${a.t.toFixed(1)} detik!`;
+      const newRec = !record || a.t < record.t;
+      const beat = newRec && record && round > 1;
+      if (newRec) { record = { t: a.t, name: p.name }; $('recNo').textContent = `${a.t.toFixed(1)}s`; retrigger($('recBox'), 'pop'); }
       if (hyper) { warp(true); FX.flash('rgba(34,211,238,.35)', 500); FX.announce('HYPERDRIVE', { color: '#0891b2', sub: `${esc(p.name)} melesat secepat cahaya!`, dur: 1300 }); }
-      else FX.announce(`${esc(p.name)} TERCEPAT!`, { color: p.color, sub: last ? `Dari posisi buncit — bonus KEJAR +1!` : `Benar dalam ${a.t.toFixed(1)} detik`, dur: 1100 });
+      else if (beat) { QC.sfx.magic(); FX.announce('REKOR BARU!', { color: '#b45309', sub: `${esc(p.name)} menjawab dalam ${a.t.toFixed(2)} detik — tercepat sejauh ini!`, dur: 1300 }); }
+      else FX.announce(`${esc(p.name)} TERCEPAT!`, { color: p.color, sub: last ? `Dari posisi buncit — bonus KEJAR +1!` : `${QC.pick(CHEER)} ${a.t.toFixed(1)} detik`, dur: 1100 });
     } else {
       QC.sfx.magic();
       $('qStatus').textContent = `Ronde ${round} • tidak ada yang benar`;
@@ -358,18 +397,12 @@
       await withTimeout(FX.announce(`${esc(L.name)} MEMIMPIN!`, { color: L.color, sub: prev ? `Menyalip ${esc(prev.name)}!` : 'Roket terdepan saat ini', dur: 1200 }), 1500);
     }
     if (!finalShown && top >= S.target - 3) {
-      finalShown = true; document.body.classList.add('final');
+      finalShown = true; document.body.classList.add('final'); Music.tempo(baseTempo());
       FX.flash('rgba(250,204,21,.3)', 500);
       await withTimeout(FX.announce('PUTARAN TERAKHIR!', { color: '#b45309', sub: `Tinggal ${S.target - top} langkah lagi menuju planet!`, dur: 1400 }), 1700);
     }
 
-    // 6) Latihan astronot untuk yang salah
-    const losers = wrongs.filter((i) => !P[i].cpu).map((i) => P[i]); wrongs = [];
-    if (S.punish === 'on' && losers.length) {
-      await QC.sleep(500);
-      const c = QC.pick(PUNISH);
-      await QC.punish({ icon: '☄️', title: 'HUKUMAN!', sub: `${losers.map(QC.chip).join(' ')}<br>Jawaban kalian salah. Lakukan bersama-sama:`, text: c.t, seconds: c.s || 0 });
-    }
+    wrongs = [];
     phase = 'reveal'; setNext('RONDE BERIKUTNYA');
   }
 
@@ -411,6 +444,8 @@
       QC.sfx.magic(); FX.burstAt(rk, { emojis: ['★', '✦'], color: ['#fde047', '#ffffff'], count: 16, spread: 120, size: 20 });
       FX.floatTextAt(rk, 'BINTANG TURBO +2', '#fde047', 20);
       p.pos = Math.min(S.target, p.pos + 2); rk.classList.add('boost'); render(); await QC.sleep(1150); rk.classList.remove('boost');
+    } else if (ev === 'box') {
+      await mysteryBox(i);
     } else if (ev === 'shield') {
       if (p.shield) return;
       QC.sfx.magic(); p.shield = true; render();
@@ -424,15 +459,70 @@
     }
   }
 
+  /* ------------------------------ Kotak misteri ------------------------------ */
+  // Isi acak: TURBO (+3), RUDAL (tembak pemimpin −2), TUKAR (tukar posisi dengan roket di depan), MAGNET (semua lawan −1)
+  async function mysteryBox(i) {
+    const p = P[i]; const rk = $('rk' + i);
+    const ahead = P.filter((x) => x !== p && x.pos > p.pos);
+    const others = P.filter((x) => x !== p && x.pos > 0);
+    const pool = ['turbo'];
+    if (ahead.length) pool.push('missile', 'missile', 'swap');
+    if (others.length) pool.push('magnet');
+    const kind = QC.pick(pool);
+    QC.sfx.magic(); FX.burstAt(rk, { emojis: ['?', '★', '●'], color: ['#c084fc', '#fde047', '#ffffff'], count: 16, spread: 120, size: 18 });
+    const names = { turbo: ['TURBO!', `${esc(p.name)} melesat +3`], missile: ['RUDAL!', `${esc(p.name)} menembak roket terdepan`], swap: ['TUKAR POSISI!', `${esc(p.name)} bertukar tempat dengan roket di depannya`], magnet: ['MAGNET!', `Semua lawan ${esc(p.name)} tertarik mundur 1`] };
+    await withTimeout(FX.announce(`KOTAK MISTERI: ${names[kind][0]}`, { color: '#7c3aed', sub: names[kind][1], dur: 1300 }), 1600);
+    if (kind === 'turbo') {
+      p.pos = Math.min(S.target, p.pos + 3); rk.classList.add('boost'); QC.sfx.whoosh(); render(); FX.floatTextAt(rk, '+3', '#4ade80', 26);
+      await QC.sleep(1150); rk.classList.remove('boost');
+    } else if (kind === 'missile') {
+      const top = Math.max(...ahead.map((x) => x.pos)); const target = QC.pick(ahead.filter((x) => x.pos === top)); const ti = P.indexOf(target);
+      await missile(i, ti);
+      if (target.shield) { target.shield = false; render(); FX.floatTextAt($('rk' + ti), 'PERISAI!', '#7dd3fc', 24); }
+      else { target.pos = Math.max(0, target.pos - 2); render(); FX.floatTextAt($('rk' + ti), '−2', '#f87171', 26); }
+      await QC.sleep(1100);
+    } else if (kind === 'swap') {
+      const near = ahead.sort((a, b) => a.pos - b.pos)[0]; const ni = P.indexOf(near);
+      FX.ringAt(rk, p.color, 160); FX.ringAt($('rk' + ni), near.color, 160); QC.sfx.whoosh();
+      const tmp = near.pos; near.pos = p.pos; p.pos = tmp; render();
+      FX.floatTextAt(rk, 'TUKAR!', '#c084fc', 24); await QC.sleep(1200);
+    } else if (kind === 'magnet') {
+      FX.flash('rgba(167,139,250,.3)', 500); QC.sfx.wrong();
+      others.forEach((x) => { const xi = P.indexOf(x); if (x.shield) { x.shield = false; FX.floatTextAt($('rk' + xi), 'PERISAI!', '#7dd3fc', 20); } else { x.pos = Math.max(0, x.pos - 1); FX.floatTextAt($('rk' + xi), '−1', '#f87171', 22); } });
+      render(); await QC.sleep(1150);
+    }
+  }
+
+  async function missile(fromI, toI) {
+    const a = FX.center($('rk' + fromI)); const b = FX.center($('rk' + toI));
+    const m = document.createElement('div'); m.className = 'missile'; m.innerHTML = MISSILE; document.body.appendChild(m);
+    const ang = Math.atan2(b.y - a.y, b.x - a.x) * 180 / Math.PI;
+    QC.sfx.whoosh();
+    const trail = setInterval(() => { const r = m.getBoundingClientRect(); FX.burst(r.left + r.width / 2, r.top + r.height / 2, { emojis: ['●', '•'], color: ['#fb923c', '#fde047', '#e2e8f0'], count: 2, spread: 14, size: 10, gravity: 8, dur: 500 }); }, 45);
+    await withTimeout(m.animate([
+      { transform: `translate(${a.x}px, ${a.y}px) rotate(${ang}deg) scale(.6)` },
+      { transform: `translate(${(a.x + b.x) / 2}px, ${Math.min(a.y, b.y) - 60}px) rotate(${ang}deg) scale(1.1)`, offset: 0.5 },
+      { transform: `translate(${b.x}px, ${b.y}px) rotate(${ang}deg) scale(1)` }
+    ], { duration: 900, easing: 'ease-in-out', fill: 'forwards' }).finished.catch(() => {}), 1300);
+    clearInterval(trail); m.remove();
+    const rk = $('rk' + toI); QC.sfx.boom(); rk.classList.add('hit');
+    FX.burst(b.x, b.y, { emojis: ['●', '◆', '•'], color: ['#ef4444', '#fbbf24', '#ffffff'], count: 22, spread: 120, size: 15 });
+    FX.ring(b.x, b.y, '#ef4444', 180); FX.shake($('track'), 10, 450); FX.flash('rgba(239,68,68,.25)', 350);
+    setTimeout(() => rk.classList.remove('hit'), 700);
+  }
+
   async function finish() {
-    phase = 'over'; render();
+    phase = 'over'; render(); Music.stop();
+    const wi = P.indexOf([...P].sort((a, b) => b.pos - a.pos || b.fastest - a.fastest)[0]);
+    const wr = $('rk' + wi); if (wr) { wr.classList.add('landing'); await QC.sleep(1300); }
     const ranking = [...P].sort((a, b) => b.pos - a.pos || b.fastest - a.fastest || b.correct - a.correct || a.totalTime - b.totalTime);
     const w = ranking[0];
     FX.burstAt(document.querySelector('.finish .planet'), { emojis: ['★', '✦', '●'], color: ['#fde047', '#f59e0b', '#ffffff', w.color], count: 30, spread: 200, size: 20 });
     FX.ringAt(document.querySelector('.finish .planet'), '#facc15', 320);
-    await FX.announce(`${esc(w.name)} MENDARAT!`, { color: w.color, sub: 'Roket pertama yang mencapai planet tujuan', dur: 1600 });
+    FX.fireworks(6, 250);
+    await withTimeout(FX.announce(`${esc(w.name)} MENDARAT!`, { color: w.color, sub: 'Roket pertama yang mencapai planet tujuan', dur: 1600 }), 1900);
     const r = await QC.showWinner({
-      title: `${w.avatar} ${esc(w.name)} JUARA!`, note: `Balapan selesai dalam ${round} ronde`,
+      title: `${w.avatar} ${esc(w.name)} JUARA!`, note: `Balapan selesai dalam ${round} ronde${record ? ` • Rekor reaksi tercepat: ${esc(record.name)} (${record.t.toFixed(2)} dtk)` : ''}`,
       ranking: ranking.map((p) => ({ player: p, value: `${Math.min(p.pos, S.target)}/${S.target} · ${p.correct}✓ · ${p.fastest}⚡` }))
     });
     if (r === 'setup') openSetup(); else newGame();

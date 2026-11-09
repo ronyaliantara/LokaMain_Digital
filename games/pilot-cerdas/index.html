@@ -1,0 +1,87 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Pilot Cerdas — Kuis Terbang dengan Kamera</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Baloo+2:wght@600;700;800&family=Plus+Jakarta+Sans:wght@500;600;700;800&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="quiz-core.css">
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+  <main class="game" id="game">
+    <canvas id="cv"></canvas>
+
+    <!-- Bar atas -->
+    <header class="top">
+      <div class="brand">
+        <svg class="logo" viewBox="0 0 64 40" aria-hidden="true">
+          <path d="M4 22 Q32 14 60 22 L60 25 Q32 21 4 25 Z" fill="#fff"/>
+          <circle cx="32" cy="22" r="8" fill="#ef4444" stroke="#7f1d1d" stroke-width="1.5"/>
+          <path d="M32 6 L36 16 H28 Z" fill="#ef4444" stroke="#7f1d1d" stroke-width="1.2"/>
+          <path d="M28 20 Q32 16 36 20" stroke="#1e3a8a" stroke-width="2.4" fill="none"/>
+        </svg>
+        <div><h1>PILOT CERDAS</h1><p>Kuis terbang • kendalikan dengan tubuhmu</p></div>
+      </div>
+      <div class="scorebox">
+        <div><small>SKOR</small><b id="score">0</b></div>
+        <div><small>SOAL</small><b id="qProg">0/8</b></div>
+        <div><small>REKOR</small><b id="best">0</b></div>
+      </div>
+      <nav class="tools">
+        <button class="ibtn" id="btnCam" title="Kamera nyala/mati"><svg viewBox="0 0 24 24"><path d="M23 7l-7 5 7 5V7z"/><rect x="1" y="5" width="15" height="14" rx="2"/></svg></button>
+        <button class="ibtn" id="btnSound" title="Suara"><svg viewBox="0 0 24 24"><path d="M11 5 6 9H2v6h4l5 4z"/><path d="M15.5 8.5a5 5 0 0 1 0 7M19 5a10 10 0 0 1 0 14"/></svg></button>
+        <button class="ibtn" data-qc="fullscreen" title="Layar penuh"><svg viewBox="0 0 24 24"><path d="M4 9V4h5M15 4h5v5M20 15v5h-5M9 20H4v-5"/></svg></button>
+        <button class="ibtn" id="btnRestart" title="Ulang"><svg viewBox="0 0 24 24"><path d="M4 12a8 8 0 1 0 2.4-5.7M4 4v5h5"/></svg></button>
+        <button class="ibtn wide" data-qc="teacher" title="Mode Guru"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="3"/><path d="M12 2v3M12 19v3M4.2 4.2l2.1 2.1M17.7 17.7l2.1 2.1M2 12h3M19 12h3M4.2 19.8l2.1-2.1M17.7 6.3l2.1-2.1"/></svg><span>Mode Guru</span></button>
+      </nav>
+    </header>
+
+    <!-- Kartu soal -->
+    <section class="qcard" id="qcard" hidden>
+      <div class="q-meta"><span class="q-num" id="qNum">SOAL 1</span><span class="q-cat" id="qCat"></span><span class="q-hint" id="qHint">Terbang melewati gerbang jawaban yang benar!</span></div>
+      <p class="q-text" id="qText"></p>
+      <div class="q-opts" id="qOpts"></div>
+    </section>
+
+    <div class="combo" id="combo"></div>
+
+    <!-- Pratinjau kamera -->
+    <aside class="campad" id="campad">
+      <canvas id="mini" width="192" height="108"></canvas>
+      <div class="cam-info">
+        <b id="camState">Kamera mati</b>
+        <span id="camTip">Hidung: naik/turun • Tangan: belok</span>
+      </div>
+    </aside>
+    <video id="cam" playsinline muted></video>
+
+    <!-- Pesan tengah -->
+    <div class="center-msg" id="msg">
+      <div class="m-card">
+        <h2 id="msgTitle">PILOT CERDAS</h2>
+        <p id="msgSub"></p>
+        <div class="pose-guide" id="poseGuide" hidden>
+          <svg viewBox="0 0 120 80" aria-hidden="true">
+            <circle cx="60" cy="16" r="9" fill="none" stroke="#fff" stroke-width="3"/>
+            <circle cx="60" cy="16" r="2.5" fill="#fbbf24"/>
+            <path d="M60 25 V55 M60 55 L48 76 M60 55 L72 76" stroke="#fff" stroke-width="3" stroke-linecap="round"/>
+            <path class="arms" d="M10 32 H110" stroke="#38bdf8" stroke-width="4" stroke-linecap="round"/>
+          </svg>
+          <span>Rentangkan kedua tangan seperti sayap</span>
+          <div class="hold"><i id="holdBar"></i></div>
+        </div>
+        <button class="go-btn" id="btnGo">LEPAS LANDAS <small>Spasi / Enter</small></button>
+      </div>
+    </div>
+  </main>
+
+  <script src="https://cdn.jsdelivr.net/npm/xlsx@0.18.5/dist/xlsx.full.min.js" defer></script>
+  <script src="questions-default.js"></script>
+  <script src="quiz-core.js"></script>
+  <script src="game.js"></script>
+  <script src="../lokamain-license.js"></script>
+</body>
+</html>
