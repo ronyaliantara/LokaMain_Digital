@@ -1,5 +1,5 @@
 window.LOKAMAIN_LIVE_DATA = {
-  "updatedAt": 1794213527956,
+  "updatedAt": 1794214253140,
   "settings": {
     "storeName": "LokaMain Digital",
     "siteSubtitle": "Pilih game pembelajaran digital, lalu klik tombol WhatsApp di bawahnya untuk memesan.",
@@ -26,7 +26,7 @@ window.LOKAMAIN_LIVE_DATA = {
       "duration": "20–40 menit",
       "device": "Smart TV / IFP, Laptop & Proyektor",
       "price": 40000,
-      "image": "",
+      "image": "assets/games/game-1794214230946f84c.gif",
       "coverImage": "assets/games/game-1794208448934f5a2.jpg",
       "shortDesc": "Kuis rebutan bajak laut 1–4 pemain. Yang pertama menjawab benar menggali petak harta di peta: koin, peti emas, beo pencuri, bom, atau Kraken! (SOAL BISA DI UBAH lewat Excel)",
       "howToPlay": [
@@ -57,7 +57,7 @@ window.LOKAMAIN_LIVE_DATA = {
       "duration": "15–30 menit",
       "device": "Smart TV / IFP, Laptop & Proyektor",
       "price": 35000,
-      "image": "",
+      "image": "assets/games/game-17942142292450abd.gif",
       "coverImage": "assets/games/game-17942084489833542.jpg",
       "shortDesc": "Balapan roket antariksa 1–4 pemain! Jawab paling cepat dan benar untuk melesat ke garis finis. Ada Hyperdrive, kotak misteri, dan ronde spesial. (SOAL BISA DI UBAH lewat Excel)",
       "howToPlay": [
@@ -88,7 +88,7 @@ window.LOKAMAIN_LIVE_DATA = {
       "duration": "10–20 menit",
       "device": "Smart TV / IFP, Laptop Layar Sentuh",
       "price": 40000,
-      "image": "",
+      "image": "assets/games/game-17942142341881710.gif",
       "coverImage": "assets/games/game-179420844902549ee.jpg",
       "shortDesc": "Balapan lari 2 pemain dalam satu layar! Jawab soal secepatnya untuk dapat turbo, lompat dan bungkuk melewati rintangan, lalu lempar pisang agar lawan terpeleset. (SOAL BISA DI UBAH lewat Excel)",
       "howToPlay": [
@@ -119,7 +119,7 @@ window.LOKAMAIN_LIVE_DATA = {
       "duration": "10–20 menit",
       "device": "Laptop + Kamera Web, Smart TV / IFP",
       "price": 45000,
-      "image": "",
+      "image": "assets/games/game-17942142327141797.gif",
       "coverImage": "assets/games/game-17942084490745a7a.jpg",
       "shortDesc": "Game kamera 1 pemain: terbangkan pesawat menembus awan dengan gerak tubuh! Hidung untuk naik/turun, tangan direntangkan seperti sayap untuk belok, lalu lewati gerbang jawaban yang benar. (SOAL BISA DI UBAH lewat Excel)",
       "howToPlay": [
@@ -150,7 +150,7 @@ window.LOKAMAIN_LIVE_DATA = {
       "duration": "20–30 menit",
       "device": "Smart TV, Laptop & Proyektor",
       "price": 50000,
-      "image": "assets/games/game-1794134083691.gif",
+      "image": "assets/games/game-17942142356686c25.gif",
       "coverImage": "assets/games/game-1794208449124a479.jpg",
       "shortDesc": "Game edukasi berbasis gerak tubuh dengan papan ular tangga interaktif max 4 pemain. (SOAL BISA DI UBAH)",
       "howToPlay": [
@@ -181,7 +181,7 @@ window.LOKAMAIN_LIVE_DATA = {
       "duration": "20–30 menit",
       "device": "Smart TV, Laptop & Kamera Web",
       "price": 35000,
-      "image": "",
+      "image": "assets/games/game-17942142373671c36.gif",
       "shortDesc": "Game edukasi kuis IPS SMP(SOAL BISA DI UBAH) interaktif dengan navigasi arah kapal menggunakan sensor gerakan hidung/wajah (AI Face Detection) di depan kamera.",
       "howToPlay": [
         "Nyalakan kamera web laptop atau hubungkan ke Smart TV kelas.",
@@ -211,7 +211,7 @@ window.LOKAMAIN_LIVE_DATA = {
       "duration": "10–15 menit",
       "device": "Smart TV / IFP, Laptop & Tablet (layar sentuh)",
       "price": 25000,
-      "image": "",
+      "image": "assets/games/game-1794214214337ef0f.gif",
       "coverImage": "assets/games/game-17942109454878d06.jpg",
       "shortDesc": "Game PAUD seret-dan-taruh: seret buah jawaban yang benar dari pohon ke dalam keranjang! Soal dibacakan otomatis, cocok untuk layar sentuh. (SOAL BISA DI UBAH lewat Excel)",
       "howToPlay": [
@@ -242,7 +242,7 @@ window.LOKAMAIN_LIVE_DATA = {
       "duration": "10–15 menit",
       "device": "Smart TV / IFP, Laptop & Tablet (layar sentuh)",
       "price": 25000,
-      "image": "",
+      "image": "assets/games/game-17942142158121bb8.gif",
       "coverImage": "assets/games/game-1794210945519b233.jpg",
       "shortDesc": "Ketuk hewan satu per satu untuk menghitung (angkanya muncul & dibacakan), lalu pilih papan angka yang benar di pagar. Belajar berhitung sambil bermain! (SOAL BISA DI UBAH lewat Excel)",
       "howToPlay": [
@@ -273,7 +273,7 @@ window.LOKAMAIN_LIVE_DATA = {
       "duration": "10–15 menit",
       "device": "Smart TV / IFP, Laptop & Tablet (layar sentuh)",
       "price": 25000,
-      "image": "",
+      "image": "assets/games/game-17942142170006923.gif",
       "coverImage": "assets/games/game-179421094554863b9.jpg",
       "shortDesc": "Balon-balon huruf terbang ke langit — letuskan balon dengan jawaban yang benar sebelum terbang menjauh! (SOAL BISA DI UBAH lewat Excel)",
       "howToPlay": [
@@ -304,7 +304,7 @@ window.LOKAMAIN_LIVE_DATA = {
       "duration": "10–15 menit",
       "device": "Smart TV / IFP, Laptop & Tablet (layar sentuh)",
       "price": 25000,
-      "image": "",
+      "image": "assets/games/game-17942142183493e6f.gif",
       "coverImage": "assets/games/game-1794210945580e4c8.jpg",
       "shortDesc": "Ayo mewarnai kereta! Pilih kaleng cat dengan jawaban yang benar, kuas terbang dan mewarnai gerbong satu per satu. (SOAL BISA DI UBAH lewat Excel)",
       "howToPlay": [
@@ -335,7 +335,7 @@ window.LOKAMAIN_LIVE_DATA = {
       "duration": "10–15 menit",
       "device": "Smart TV / IFP, Laptop & Tablet (layar sentuh)",
       "price": 25000,
-      "image": "",
+      "image": "assets/games/game-17942142197963ca8.gif",
       "coverImage": "assets/games/game-1794210945616e3ac.jpg",
       "shortDesc": "Ayo memancing! Ikan-ikan berenang membawa jawaban — ketuk ikan yang benar, kail turun dan ikannya ditarik ke ember. (SOAL BISA DI UBAH lewat Excel)",
       "howToPlay": [
@@ -366,7 +366,7 @@ window.LOKAMAIN_LIVE_DATA = {
       "duration": "15–25 menit",
       "device": "Smart TV / IFP, Laptop & Tablet (layar sentuh)",
       "price": 30000,
-      "image": "",
+      "image": "assets/games/game-179421422134470c3.gif",
       "coverImage": "assets/games/game-179421094564790c3.jpg",
       "shortDesc": "Balapan memanjat pohon kelapa! Mode 2 tim = REBUTAN serentak (tiap tim punya tombol sendiri), jawab kurang dari 5 detik dapat bonus naik 2. Mode 1 kelas melawan waktu. (SOAL BISA DI UBAH lewat Excel)",
       "howToPlay": [
@@ -398,7 +398,7 @@ window.LOKAMAIN_LIVE_DATA = {
       "duration": "15–25 menit",
       "device": "Smart TV / IFP, Laptop & Tablet (layar sentuh)",
       "price": 30000,
-      "image": "",
+      "image": "assets/games/game-179421422281965e7.gif",
       "coverImage": "assets/games/game-17942109456814e29.jpg",
       "shortDesc": "Kemudikan kapal selam! Gerbang-gerbang jawaban datang dari kanan — gerakkan kapal ▲▼ ke gerbang yang benar sebelum tiba, lalu menyelam makin dalam. (SOAL BISA DI UBAH lewat Excel)",
       "howToPlay": [
@@ -430,7 +430,7 @@ window.LOKAMAIN_LIVE_DATA = {
       "duration": "15–25 menit",
       "device": "Smart TV / IFP, Laptop & Tablet (layar sentuh)",
       "price": 30000,
-      "image": "",
+      "image": "assets/games/game-1794214224311db12.gif",
       "coverImage": "assets/games/game-1794210945715ccb1.jpg",
       "shortDesc": "Tarik ketapel dan tembakkan roket ke lampion jawaban yang benar — DUAR! kembang api menyala dan lampu kota hidup. (SOAL BISA DI UBAH lewat Excel)",
       "howToPlay": [
@@ -462,7 +462,7 @@ window.LOKAMAIN_LIVE_DATA = {
       "duration": "15–25 menit",
       "device": "Smart TV / IFP, Laptop & Tablet (layar sentuh)",
       "price": 30000,
-      "image": "",
+      "image": "assets/games/game-17942142258092fbd.gif",
       "coverImage": "assets/games/game-179421094574504ba.jpg",
       "shortDesc": "Petualangan memilih jalan! Setiap jalan berakhir di papan jawaban — pilih yang benar dan Dino menemukan telur yang menetas, salah = jalan buntu. (SOAL BISA DI UBAH lewat Excel)",
       "howToPlay": [
@@ -494,7 +494,7 @@ window.LOKAMAIN_LIVE_DATA = {
       "duration": "15–25 menit",
       "device": "Smart TV / IFP, Laptop & Tablet (layar sentuh)",
       "price": 30000,
-      "image": "",
+      "image": "assets/games/game-1794214227542a4da.gif",
       "coverImage": "assets/games/game-17942109457778603.jpg",
       "shortDesc": "Jawab soal IPS dengan benar, lalu TEMBAK bola dengan timing tepat: zona hijau 3 poin (swish!), kuning 2, merah 1. Bisa 1 kelas atau 2 tim. (SOAL BISA DI UBAH lewat Excel)",
       "howToPlay": [
