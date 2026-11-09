@@ -55,12 +55,15 @@
 
   const media = safe(game.image), cover = safe(game.coverImage);
   const box = $('play-media');
-  if (isVideo(media)) {
-    // halaman detail memakai video pratinjau versi kecil (<nama>-kecil.mp4); jika belum ada, pakai video aslinya
-    const small = /^assets\/games\/[^/?#]+\.mp4(\?.*)?$/i.test(media) && !/-kecil\.mp4/i.test(media) ? media.replace(/\.mp4(\?.*)?$/i, '-kecil.mp4$1') : media;
-    box.innerHTML = `<video src="${esc(small)}"${cover ? ` poster="${esc(cover)}"` : ''} autoplay loop muted playsinline controls></video>`;
-    if (small !== media) { const v = box.querySelector('video'); v.addEventListener('error', () => { v.src = media; v.play().catch(() => {}); }, { once: true }); }
-  } else if (media || cover) {
+  if (cover) {
+    // halaman detail: GAMBAR sampul resolusi tinggi (<nama>-hd.jpg, 1600px) — layar kecil otomatis pakai versi 960px.
+    // Jika versi HD belum ada (mis. game baru dari admin), pakai gambar sampul biasa.
+    const hd = /^assets\/games\/[^/?#]+\.jpe?g(\?.*)?$/i.test(cover) && !/-hd\.jpe?g/i.test(cover) ? cover.replace(/\.(jpe?g)(\?.*)?$/i, '-hd.$1$2') : '';
+    box.innerHTML = `<img src="${esc(hd || cover)}"${hd ? ` srcset="${esc(cover)} 960w, ${esc(hd)} 1600w" sizes="(max-width: 980px) 100vw, 640px"` : ''} width="1600" height="1000" alt="${esc(game.title)}" fetchpriority="high" decoding="async">`;
+    if (hd) { const im = box.querySelector('img'); im.addEventListener('error', () => { im.removeAttribute('srcset'); im.src = cover; }, { once: true }); }
+  } else if (isVideo(media)) {
+    box.innerHTML = `<video src="${esc(media)}" autoplay loop muted playsinline controls></video>`;
+  } else if (media) {
     box.innerHTML = `<img src="${esc(cover || media)}" width="800" height="500" alt="${esc(game.title)}">`;
   } else {
     box.hidden = true;
