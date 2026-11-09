@@ -1,5 +1,5 @@
 {
-  "updatedAt": 1794235476740,
+  "updatedAt": 1794238471863,
   "settings": {
     "storeName": "LokaMain Digital",
     "siteSubtitle": "Pilih game pembelajaran digital, lalu klik tombol WhatsApp di bawahnya untuk memesan.",
@@ -182,11 +182,10 @@
         "Meningkatkan partisipasi dan antusiasme belajar kelompok di ruang kelas."
       ],
       "gameUrl": "games/ular-tangga/",
-      "sampleQuestion": "Apakah arti dari kalimat \"السَّاعَةُ الْوَاحِدَةُ\" (As-Sa'atul Wahidah)?",
+      "sampleQuestion": "Secara geografis, kepulauan Indonesia berada di antara dua benua, yaitu...",
       "sampleOptions": [
-        "Jam satu tepat",
-        "Jam dua tepat",
-        "Jam tiga tepat"
+        "Benua Asia dan Benua Australia",
+        "Benua Eropa dan Benua Afrika"
       ],
       "sampleAnswer": 0,
       "levels": [
