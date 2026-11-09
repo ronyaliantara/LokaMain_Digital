@@ -1,5 +1,5 @@
 window.LOKAMAIN_LIVE_DATA = {
-  "updatedAt": 1794208215709,
+  "updatedAt": 1794208449190,
   "settings": {
     "storeName": "LokaMain Digital",
     "siteSubtitle": "Pilih game pembelajaran digital, lalu klik tombol WhatsApp di bawahnya untuk memesan.",
@@ -27,7 +27,7 @@ window.LOKAMAIN_LIVE_DATA = {
       "device": "Smart TV / IFP, Laptop & Proyektor",
       "price": 40000,
       "image": "",
-      "coverImage": "assets/games/game-1794208175000594f.jpg",
+      "coverImage": "assets/games/game-1794208448934f5a2.jpg",
       "shortDesc": "Kuis rebutan bajak laut 1–4 pemain. Yang pertama menjawab benar menggali petak harta di peta: koin, peti emas, beo pencuri, bom, atau Kraken! (SOAL BISA DI UBAH lewat Excel)",
       "howToPlay": [
         "Buka game di Smart TV/IFP atau laptop, lalu pilih jumlah kapten (1–4 pemain; main sendiri melawan Kapten Robot).",
@@ -58,7 +58,7 @@ window.LOKAMAIN_LIVE_DATA = {
       "device": "Smart TV / IFP, Laptop & Proyektor",
       "price": 35000,
       "image": "",
-      "coverImage": "assets/games/game-1794208175038cba5.jpg",
+      "coverImage": "assets/games/game-17942084489833542.jpg",
       "shortDesc": "Balapan roket antariksa 1–4 pemain! Jawab paling cepat dan benar untuk melesat ke garis finis. Ada Hyperdrive, kotak misteri, dan ronde spesial. (SOAL BISA DI UBAH lewat Excel)",
       "howToPlay": [
         "Pilih 1–4 pemain (main sendiri ditemani roket robot).",
@@ -89,7 +89,7 @@ window.LOKAMAIN_LIVE_DATA = {
       "device": "Smart TV / IFP, Laptop Layar Sentuh",
       "price": 40000,
       "image": "",
-      "coverImage": "assets/games/game-1794208175068c006.jpg",
+      "coverImage": "assets/games/game-179420844902549ee.jpg",
       "shortDesc": "Balapan lari 2 pemain dalam satu layar! Jawab soal secepatnya untuk dapat turbo, lompat dan bungkuk melewati rintangan, lalu lempar pisang agar lawan terpeleset. (SOAL BISA DI UBAH lewat Excel)",
       "howToPlay": [
         "Dua pemain berdiri di depan layar: Pemain 1 di sisi kiri, Pemain 2 di sisi kanan.",
@@ -120,7 +120,7 @@ window.LOKAMAIN_LIVE_DATA = {
       "device": "Laptop + Kamera Web, Smart TV / IFP",
       "price": 45000,
       "image": "",
-      "coverImage": "assets/games/game-1794208175100807d.jpg",
+      "coverImage": "assets/games/game-17942084490745a7a.jpg",
       "shortDesc": "Game kamera 1 pemain: terbangkan pesawat menembus awan dengan gerak tubuh! Hidung untuk naik/turun, tangan direntangkan seperti sayap untuk belok, lalu lewati gerbang jawaban yang benar. (SOAL BISA DI UBAH lewat Excel)",
       "howToPlay": [
         "Nyalakan kamera web, atur tinggi badan pemain (100–200 cm), lalu berdiri di depan kamera.",
@@ -151,7 +151,7 @@ window.LOKAMAIN_LIVE_DATA = {
       "device": "Smart TV, Laptop & Proyektor",
       "price": 50000,
       "image": "assets/games/game-1794134083691.gif",
-      "coverImage": "assets/games/game-17942081751362e09.jpg",
+      "coverImage": "assets/games/game-1794208449124a479.jpg",
       "shortDesc": "Game edukasi berbasis gerak tubuh dengan papan ular tangga interaktif max 4 pemain. (SOAL BISA DI UBAH)",
       "howToPlay": [
         "Hubungkan laptop ke Smart TV atau proyektor kelas dan aktifkan kamera web.",
@@ -200,7 +200,7 @@ window.LOKAMAIN_LIVE_DATA = {
         "Afrika"
       ],
       "sampleAnswer": 0,
-      "coverImage": "assets/games/game-1794208175166f581.jpg"
+      "coverImage": "assets/games/game-1794208449172b320.jpg"
     }
   ],
   "orders": [
