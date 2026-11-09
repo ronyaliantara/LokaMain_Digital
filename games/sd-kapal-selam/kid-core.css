@@ -70,8 +70,29 @@ button { font-family: inherit; }
 .kg-opt.show { box-shadow: 0 0 0 6px #22c55e; opacity: 1; filter: none; }
 .kg-opt:disabled { cursor: default; }
 
+/* ------------------------------ Bar soal (mode jawaban kustom) ------------------------------ */
+.kg-qbar { position: absolute; z-index: 5; left: 50%; top: calc(58px + 1vh); transform: translateX(-50%); width: min(1100px, 92vw); padding: 10px 22px 12px; border-radius: 24px; text-align: center; background: var(--kg-panel); box-shadow: 0 6px 0 rgba(0, 0, 0, .14), 0 16px 40px rgba(0, 0, 0, .16); }
+.kg-qbar[hidden] { display: none; }
+.kg-qbar.in { animation: kgDrop .45s cubic-bezier(.2, .9, .3, 1.3); }
+@keyframes kgDrop { from { opacity: 0; transform: translate(-50%, -30px) scale(.94); } }
+.kg-qbar .kg-turn { margin: -26px auto 4px; }
+.kg-qtext { font-weight: 700; font-size: clamp(1.2rem, 3.6vh, 2.4rem); line-height: 1.22; }
+.kg-qtext .kg-emo { font-size: 1.4em; }
+.kg-hint { font-size: clamp(.8rem, 2vh, 1.1rem); font-weight: 600; color: #6b6390; }
+.kg-hint:empty { display: none; }
+/* token jawaban yang bisa dipakai adegan (buah, papan, ikan, lampion, dll.) */
+.kg-token { display: inline-flex; align-items: center; justify-content: center; text-align: center; min-width: 11vh; min-height: 11vh; padding: 1vh 1.6vh; border-radius: 3vh; background: #fff; color: var(--kg-ink);
+  font-weight: 700; font-size: clamp(1rem, 3vh, 1.9rem); line-height: 1.1; box-shadow: 0 .7vh 0 var(--c2, #b45309), inset 0 0 0 .6vh var(--c1, #f59e0b); user-select: none; -webkit-user-select: none; }
+.kg-token.emo { font-size: clamp(2.4rem, 8vh, 5rem); }
+.kg-token.bad { animation: kgShake .45s; }
+.kg-token.good { box-shadow: 0 0 0 .8vh #22c55e, 0 0 4vh rgba(34, 197, 94, .8); }
+.kg-token.show { box-shadow: 0 0 0 .8vh #22c55e, 0 0 4vh rgba(34, 197, 94, .8); animation: kgPulse 1s ease-in-out infinite; }
+.kg-how { display: grid; grid-template-columns: repeat(3, 1fr); gap: 8px; margin: 4px 0 6px; }
+.kg-how div { padding: 8px 6px; border-radius: 16px; background: #f5f3ff; border: 2px solid #e4defc; font-size: .82rem; font-weight: 600; color: #5b5480; line-height: 1.25; }
+.kg-how b { display: block; font-size: 1.7rem; line-height: 1.2; }
+
 /* ------------------------------ Pujian ------------------------------ */
-.kg-praise { position: absolute; z-index: 7; left: 50%; top: 22%; transform: translate(-50%, -50%); pointer-events: none; font-weight: 700; font-size: clamp(2rem, 7vh, 4.4rem); color: #fff; opacity: 0; white-space: nowrap;
+.kg-praise { position: absolute; z-index: 7; left: 50%; top: 40%; transform: translate(-50%, -50%); pointer-events: none; font-weight: 700; font-size: clamp(2rem, 7vh, 4.4rem); color: #fff; opacity: 0; white-space: nowrap;
   -webkit-text-stroke: 3px rgba(0, 0, 0, .25); text-shadow: 0 6px 0 rgba(0, 0, 0, .2); }
 .kg-praise.good { color: #ffe14d; }
 .kg-praise.bad { color: #ffffff; font-size: clamp(1.6rem, 5vh, 3rem); }

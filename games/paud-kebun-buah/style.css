@@ -1,32 +1,43 @@
-/* Kebun Buah Ceria */
+/* Kebun Buah Ceria — seret ke keranjang */
 :root { --kg-a: #e8590c; }
 .sky { position: absolute; inset: 0; background: linear-gradient(#5ec8ff, #b9ecff 55%, #e6f9ff); }
-.sun { position: absolute; right: 7%; top: 9%; font-size: 13vh; line-height: 1; }
+.sun { position: absolute; right: 4%; top: 22%; font-size: 12vh; line-height: 1; }
 .sun span { display: inline-block; animation: kgSpin 24s linear infinite; }
-.cloud { position: absolute; left: 0; font-size: 11vh; opacity: .95; animation: kgDrift 46s linear infinite; }
+.cloud { position: absolute; left: 0; font-size: 10vh; opacity: .95; animation: kgDrift 46s linear infinite; }
 .hill { position: absolute; border-radius: 50%; }
-.hill.a { left: -10%; bottom: 30%; width: 70%; height: 40%; background: #8fd16a; }
-.hill.b { right: -15%; bottom: 28%; width: 75%; height: 46%; background: #7cc45a; }
-.ground { position: absolute; left: 0; right: 0; bottom: 0; height: 40%; background: linear-gradient(#5fb548, #4a9a38); }
-.tree { position: absolute; left: 6%; bottom: 36%; width: 38vh; height: 52vh; transform-origin: 50% 100%; }
-.trunk { position: absolute; left: 50%; bottom: 0; width: 18%; height: 48%; transform: translateX(-50%); border-radius: 12px 12px 6px 6px; background: linear-gradient(90deg, #8d5a2b, #a86b33 60%, #7a4a1c); }
-.crown { position: absolute; left: 0; right: 0; top: 0; height: 72%; }
-.crown i { position: absolute; border-radius: 50%; background: radial-gradient(circle at 35% 30%, #6fd35a, #3f9a3a 70%); }
-.crown i:nth-child(1) { left: 8%; top: 18%; width: 52%; height: 64%; }
-.crown i:nth-child(2) { left: 40%; top: 10%; width: 56%; height: 66%; }
-.crown i:nth-child(3) { left: 22%; top: 0; width: 54%; height: 58%; }
-.crown i:nth-child(4) { left: 20%; top: 36%; width: 62%; height: 62%; }
-.fruit { position: absolute; z-index: 2; font-size: 5.6vh; transform-origin: 50% 0; animation: fruitSwing 2.6s ease-in-out infinite; }
+.hill.a { left: -10%; bottom: 14%; width: 70%; height: 34%; background: #8fd16a; }
+.hill.b { right: -15%; bottom: 12%; width: 75%; height: 40%; background: #7cc45a; }
+.ground { position: absolute; left: 0; right: 0; bottom: 0; height: 24%; background: linear-gradient(#5fb548, #4a9a38); }
+.tree { position: absolute; left: 3%; bottom: 18%; width: 64vh; height: 62vh; transform-origin: 50% 100%; }
+.trunk { position: absolute; left: 50%; bottom: 0; width: 13%; height: 46%; transform: translateX(-50%); border-radius: 12px 12px 6px 6px; background: linear-gradient(90deg, #8d5a2b, #a86b33 60%, #7a4a1c); }
+.crown { position: absolute; left: 0; right: 0; top: 0; height: 74%; }
+.crown i { position: absolute; border-radius: 50%; background: radial-gradient(circle at 35% 30%, #74d95f, #3f9a3a 70%); }
+.crown i:nth-child(1) { left: 2%; top: 22%; width: 48%; height: 62%; }
+.crown i:nth-child(2) { left: 48%; top: 18%; width: 50%; height: 64%; }
+.crown i:nth-child(3) { left: 22%; top: 0; width: 56%; height: 58%; }
+.crown i:nth-child(4) { left: 18%; top: 38%; width: 64%; height: 62%; }
+.crown i:nth-child(5) { left: 60%; top: 42%; width: 36%; height: 50%; }
+.fruit { position: absolute; z-index: 2; font-size: 4.6vh; transform-origin: 50% 0; animation: fruitSwing 2.6s ease-in-out infinite; }
 @keyframes fruitSwing { 50% { transform: rotate(10deg); } }
-.basket { position: absolute; left: 62%; bottom: 36%; transform: translateX(-50%); width: 24vh; text-align: center; }
-.basket .bk { display: block; font-size: 19vh; line-height: 1; filter: drop-shadow(0 6px 0 rgba(0, 0, 0, .15)); }
-.basket .pile { position: absolute; left: 12%; right: 12%; bottom: 52%; display: flex; flex-wrap: wrap-reverse; justify-content: center; font-size: 4.6vh; line-height: .9; }
-.basket .cnt { position: absolute; right: -6px; top: 18%; min-width: 7vh; height: 7vh; display: grid; place-items: center; border-radius: 50%; font-size: 4vh; color: #fff; background: #e8590c; box-shadow: 0 4px 0 #a33f06; }
-.flying { position: absolute; left: 0; top: 0; z-index: 4; font-size: 7vh; margin: -3.5vh 0 0 -3.5vh; pointer-events: none; }
+/* jawaban tergantung di pohon */
+.ans { position: absolute; z-index: 4; transform: translate(-50%, -50%); touch-action: none; cursor: grab; }
+.ans .stem { position: absolute; left: 50%; bottom: 100%; width: .5vh; height: 5vh; background: #5b3a1a; }
+.ans .kg-token { animation: fruitSwing 2.8s ease-in-out infinite; transform-origin: 50% -5vh; border-radius: 50%; min-width: 14vh; min-height: 14vh; }
+.ans:not(:has(.emo)) .kg-token { border-radius: 4vh; min-width: 16vh; }
+.ans.drag { z-index: 9; cursor: grabbing; }
+.ans.drag .kg-token { animation: none; box-shadow: 0 2vh 3vh rgba(0, 0, 0, .25), inset 0 0 0 .6vh var(--c1); }
+.basket { position: absolute; right: 9%; bottom: 14%; width: 30vh; text-align: center; transition: transform .2s; }
+.basket.hot { transform: scale(1.12); }
+.basket.hot .bk { filter: drop-shadow(0 0 3vh #fde047); }
+.basket .bk { display: block; font-size: 24vh; line-height: 1; filter: drop-shadow(0 6px 0 rgba(0, 0, 0, .15)); }
+.basket .pile { position: absolute; left: 12%; right: 12%; bottom: 55%; display: flex; flex-wrap: wrap-reverse; justify-content: center; font-size: 5vh; line-height: .9; }
+.basket .cnt { position: absolute; right: -6px; top: 22%; min-width: 8vh; height: 8vh; display: grid; place-items: center; border-radius: 50%; font-size: 4.4vh; color: #fff; background: #e8590c; box-shadow: 0 4px 0 #a33f06; }
+.basket em { display: block; margin-top: -1vh; font-style: normal; font-weight: 700; font-size: 2.4vh; color: #fff; text-shadow: 0 2px 0 rgba(0, 0, 0, .3); }
+.hand { position: absolute; left: 0; top: 0; z-index: 10; font-size: 9vh; margin: -2vh 0 0 -3vh; pointer-events: none; }
 .fly { position: absolute; font-size: 6vh; }
-.bee { top: 22%; animation: beeFly 11s ease-in-out infinite; }
-.butterfly { top: 36%; animation: beeFly 15s ease-in-out infinite reverse; }
-@keyframes beeFly { 0% { left: 40%; transform: translateY(0); } 25% { left: 80%; transform: translateY(-40px) scaleX(-1); } 50% { left: 55%; transform: translateY(30px) scaleX(-1); } 75% { left: 30%; transform: translateY(-20px); } 100% { left: 40%; transform: translateY(0); } }
-.flower { position: absolute; bottom: 33%; font-size: 5vh; transform-origin: 50% 100%; animation: kgSway 2.4s ease-in-out infinite; }
+.bee { top: 30%; animation: beeFly 11s ease-in-out infinite; }
+.butterfly { top: 48%; animation: beeFly 15s ease-in-out infinite reverse; }
+@keyframes beeFly { 0% { left: 55%; transform: translateY(0); } 25% { left: 85%; transform: translateY(-40px) scaleX(-1); } 50% { left: 62%; transform: translateY(30px) scaleX(-1); } 75% { left: 50%; transform: translateY(-20px); } 100% { left: 55%; transform: translateY(0); } }
+.flower { position: absolute; bottom: 10%; font-size: 5vh; transform-origin: 50% 100%; animation: kgSway 2.4s ease-in-out infinite; }
 .rain { position: absolute; top: -10%; font-size: 7vh; animation: rainDown 2.4s ease-in forwards; }
 @keyframes rainDown { to { transform: translateY(110vh) rotate(540deg); } }

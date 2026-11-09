@@ -1,5 +1,5 @@
 window.LOKAMAIN_LIVE_DATA = {
-  "updatedAt": 1794210945785,
+  "updatedAt": 1794213527956,
   "settings": {
     "storeName": "LokaMain Digital",
     "siteSubtitle": "Pilih game pembelajaran digital, lalu klik tombol WhatsApp di bawahnya untuk memesan.",
@@ -213,11 +213,11 @@ window.LOKAMAIN_LIVE_DATA = {
       "price": 25000,
       "image": "",
       "coverImage": "assets/games/game-17942109454878d06.jpg",
-      "shortDesc": "Game PAUD bergambar: pilih buah yang benar, petik dari pohon, dan isi keranjang sampai penuh! Soal dibacakan otomatis. (SOAL BISA DI UBAH lewat Excel)",
+      "shortDesc": "Game PAUD seret-dan-taruh: seret buah jawaban yang benar dari pohon ke dalam keranjang! Soal dibacakan otomatis, cocok untuk layar sentuh. (SOAL BISA DI UBAH lewat Excel)",
       "howToPlay": [
-        "Buka game di Smart TV/IFP atau laptop, pilih jumlah soal, lalu tekan MAIN.",
-        "Soal dibacakan otomatis — anak cukup menyentuh gambar/jawaban yang benar.",
-        "Setiap jawaban benar, buah terbang ke keranjang. Keranjang penuh = menang!"
+        "Soal dibacakan otomatis — dengarkan baik-baik.",
+        "Seret (geser) buah yang membawa jawaban benar ke dalam keranjang.",
+        "Keranjang penuh = menang! Jawaban salah boleh dicoba lagi."
       ],
       "learningGoals": [
         "Mengenal nama dan warna buah-buahan.",
@@ -244,11 +244,11 @@ window.LOKAMAIN_LIVE_DATA = {
       "price": 25000,
       "image": "",
       "coverImage": "assets/games/game-1794210945519b233.jpg",
-      "shortDesc": "Belajar berhitung di peternakan! Hitung ayam, sapi, dan domba — setiap jawaban benar, satu hewan baru datang ke kandang. (SOAL BISA DI UBAH lewat Excel)",
+      "shortDesc": "Ketuk hewan satu per satu untuk menghitung (angkanya muncul & dibacakan), lalu pilih papan angka yang benar di pagar. Belajar berhitung sambil bermain! (SOAL BISA DI UBAH lewat Excel)",
       "howToPlay": [
-        "Buka game di Smart TV/IFP atau laptop, pilih jumlah soal, lalu tekan MAIN.",
-        "Soal dibacakan otomatis — anak cukup menyentuh gambar/jawaban yang benar.",
-        "Hewan baru datang dengan nomor urut. Peternakan ramai = menang!"
+        "Hewan-hewan datang ke peternakan sesuai soal.",
+        "Ketuk setiap hewan untuk menghitung — angkanya muncul dan dibacakan.",
+        "Pilih papan angka yang benar, hewan masuk ke kandang!"
       ],
       "learningGoals": [
         "Mengenal angka dan berhitung 1–10.",
@@ -275,11 +275,11 @@ window.LOKAMAIN_LIVE_DATA = {
       "price": 25000,
       "image": "",
       "coverImage": "assets/games/game-179421094554863b9.jpg",
-      "shortDesc": "Mengenal huruf dengan balon warna-warni! Pilih balon huruf yang benar, lalu lihat balon terbang dan hurufnya terkumpul di langit. (SOAL BISA DI UBAH lewat Excel)",
+      "shortDesc": "Balon-balon huruf terbang ke langit — letuskan balon dengan jawaban yang benar sebelum terbang menjauh! (SOAL BISA DI UBAH lewat Excel)",
       "howToPlay": [
-        "Buka game di Smart TV/IFP atau laptop, pilih jumlah soal, lalu tekan MAIN.",
-        "Soal dibacakan otomatis — anak cukup menyentuh gambar/jawaban yang benar.",
-        "Huruf yang benar terkumpul di langit. Semua balon terbang = menang!"
+        "Dengarkan soal yang dibacakan.",
+        "Balon-balon jawaban terbang dari bawah ke atas.",
+        "Ketuk balon yang benar untuk meletuskannya — hurufnya terkumpul!"
       ],
       "learningGoals": [
         "Mengenal huruf kapital dan huruf awal kata.",
@@ -306,11 +306,11 @@ window.LOKAMAIN_LIVE_DATA = {
       "price": 25000,
       "image": "",
       "coverImage": "assets/games/game-1794210945580e4c8.jpg",
-      "shortDesc": "Tut tut tut! Setiap jawaban benar menambah gerbong kereta berisi penumpang hewan lucu. Belajar mengenal warna dan bentuk. (SOAL BISA DI UBAH lewat Excel)",
+      "shortDesc": "Ayo mewarnai kereta! Pilih kaleng cat dengan jawaban yang benar, kuas terbang dan mewarnai gerbong satu per satu. (SOAL BISA DI UBAH lewat Excel)",
       "howToPlay": [
-        "Buka game di Smart TV/IFP atau laptop, pilih jumlah soal, lalu tekan MAIN.",
-        "Soal dibacakan otomatis — anak cukup menyentuh gambar/jawaban yang benar.",
-        "Gerbong bertambah setiap jawaban benar. Kereta berangkat = menang!"
+        "Dengarkan soal tentang warna dan bentuk.",
+        "Ketuk kaleng cat yang bertuliskan jawaban benar.",
+        "Gerbong terwarnai dan penumpang naik — semua berwarna, kereta berangkat!"
       ],
       "learningGoals": [
         "Mengenal warna dasar dan bentuk geometri sederhana.",
@@ -337,11 +337,11 @@ window.LOKAMAIN_LIVE_DATA = {
       "price": 25000,
       "image": "",
       "coverImage": "assets/games/game-1794210945616e3ac.jpg",
-      "shortDesc": "Kenali hewan-hewan lucu: suaranya, makanannya, dan tempat hidupnya. Setiap jawaban benar, teman baru berenang masuk akuarium! (SOAL BISA DI UBAH lewat Excel)",
+      "shortDesc": "Ayo memancing! Ikan-ikan berenang membawa jawaban — ketuk ikan yang benar, kail turun dan ikannya ditarik ke ember. (SOAL BISA DI UBAH lewat Excel)",
       "howToPlay": [
-        "Buka game di Smart TV/IFP atau laptop, pilih jumlah soal, lalu tekan MAIN.",
-        "Soal dibacakan otomatis — anak cukup menyentuh gambar/jawaban yang benar.",
-        "Hewan laut baru masuk akuarium setiap jawaban benar. Akuarium penuh = menang!"
+        "Dengarkan soal tentang hewan.",
+        "Ketuk ikan yang membawa jawaban benar.",
+        "Perahu bergerak, kail turun, ikan masuk ember. Ember penuh = menang!"
       ],
       "learningGoals": [
         "Mengenal nama, suara, dan ciri hewan.",
@@ -368,11 +368,11 @@ window.LOKAMAIN_LIVE_DATA = {
       "price": 30000,
       "image": "",
       "coverImage": "assets/games/game-179421094564790c3.jpg",
-      "shortDesc": "Jawab soal matematika dan bantu monyet memanjat pohon kelapa! Bisa dimainkan 1 kelas atau 2 tim (Merah vs Biru) — tim yang sampai puncak duluan menang. (SOAL BISA DI UBAH lewat Excel)",
+      "shortDesc": "Balapan memanjat pohon kelapa! Mode 2 tim = REBUTAN serentak (tiap tim punya tombol sendiri), jawab kurang dari 5 detik dapat bonus naik 2. Mode 1 kelas melawan waktu. (SOAL BISA DI UBAH lewat Excel)",
       "howToPlay": [
-        "Pilih jumlah poin dan mode 1 Kelas atau 2 Tim, lalu tekan MAIN.",
-        "Sentuh jawaban yang benar. Salah? Coba lagi (mode kelas) atau kesempatan pindah ke tim lawan (mode 2 tim).",
-        "Monyet naik setiap jawaban benar. Sampai puncak dan petik kelapa = menang!"
+        "Pilih 1 Kelas (melawan waktu) atau 2 Tim (rebutan serentak).",
+        "Tim yang pertama menjawab benar memanjat; jawab < 5 detik = naik 2!",
+        "Jawaban salah mengunci tombol tim itu. Sampai puncak duluan = menang."
       ],
       "learningGoals": [
         "Melatih operasi hitung, bilangan, bangun datar, dan satuan.",
@@ -400,11 +400,11 @@ window.LOKAMAIN_LIVE_DATA = {
       "price": 30000,
       "image": "",
       "coverImage": "assets/games/game-17942109456814e29.jpg",
-      "shortDesc": "Setiap jawaban IPA yang benar membuat kapal selam menyelam lebih dalam, bertemu makhluk laut, dan akhirnya menemukan harta di dasar laut! (SOAL BISA DI UBAH lewat Excel)",
+      "shortDesc": "Kemudikan kapal selam! Gerbang-gerbang jawaban datang dari kanan — gerakkan kapal ▲▼ ke gerbang yang benar sebelum tiba, lalu menyelam makin dalam. (SOAL BISA DI UBAH lewat Excel)",
       "howToPlay": [
-        "Pilih jumlah soal, lalu tekan MAIN.",
-        "Sentuh jawaban yang benar. Salah? Coba lagi sampai benar.",
-        "Kapal selam menyelam 10 m setiap jawaban benar. Sampai dasar laut = menang!"
+        "Baca soal, gerbang-gerbang jawaban mendekat.",
+        "Gerakkan kapal selam ▲▼ (atau sentuh jalurnya) ke gerbang yang benar.",
+        "Masuk gerbang benar = menyelam 10 m. Sampai dasar laut = harta!"
       ],
       "learningGoals": [
         "Memahami materi IPA SD: makhluk hidup, tubuh manusia, bumi, energi.",
@@ -432,11 +432,11 @@ window.LOKAMAIN_LIVE_DATA = {
       "price": 30000,
       "image": "",
       "coverImage": "assets/games/game-1794210945715ccb1.jpg",
-      "shortDesc": "Jawab soal Bahasa Indonesia untuk meluncurkan kembang api warna-warni dan menyalakan lampu kota di malam hari. (SOAL BISA DI UBAH lewat Excel)",
+      "shortDesc": "Tarik ketapel dan tembakkan roket ke lampion jawaban yang benar — DUAR! kembang api menyala dan lampu kota hidup. (SOAL BISA DI UBAH lewat Excel)",
       "howToPlay": [
-        "Pilih jumlah soal, lalu tekan MAIN.",
-        "Sentuh jawaban yang benar. Salah? Coba lagi sampai benar.",
-        "Setiap jawaban benar meluncurkan kembang api. Semua lampu kota menyala = menang!"
+        "Baca soal, lampion-lampion jawaban melayang di langit.",
+        "Tarik ketapel ke bawah, bidik, lalu lepaskan (atau ketuk lampion).",
+        "Kena lampion benar = kembang api! Semua lampu kota menyala = menang."
       ],
       "learningGoals": [
         "Memahami sinonim, antonim, kata baku, tanda baca, dan kalimat.",
@@ -464,11 +464,11 @@ window.LOKAMAIN_LIVE_DATA = {
       "price": 30000,
       "image": "",
       "coverImage": "assets/games/game-179421094574504ba.jpg",
-      "shortDesc": "Jawab soal Pancasila untuk meretakkan telur dinosaurus dan lihat bayi dino menetas satu per satu! (SOAL BISA DI UBAH lewat Excel)",
+      "shortDesc": "Petualangan memilih jalan! Setiap jalan berakhir di papan jawaban — pilih yang benar dan Dino menemukan telur yang menetas, salah = jalan buntu. (SOAL BISA DI UBAH lewat Excel)",
       "howToPlay": [
-        "Pilih jumlah soal, lalu tekan MAIN.",
-        "Sentuh jawaban yang benar. Salah? Coba lagi sampai benar.",
-        "Telur retak setiap jawaban benar lalu menetas jadi bayi dino. Semua menetas = menang!"
+        "Baca soal, lihat papan jawaban di ujung tiap jalan.",
+        "Ketuk papan — Dino berjalan ke sana.",
+        "Benar = telur menetas jadi bayi dino; salah = jalan buntu, coba lagi."
       ],
       "learningGoals": [
         "Mengenal Pancasila, simbol negara, dan pengamalan sila.",
@@ -496,11 +496,11 @@ window.LOKAMAIN_LIVE_DATA = {
       "price": 30000,
       "image": "",
       "coverImage": "assets/games/game-17942109457778603.jpg",
-      "shortDesc": "Setiap jawaban IPS yang benar, bola masuk ring! Main 1 kelas atau 2 tim (Merah vs Biru) dengan papan skor. (SOAL BISA DI UBAH lewat Excel)",
+      "shortDesc": "Jawab soal IPS dengan benar, lalu TEMBAK bola dengan timing tepat: zona hijau 3 poin (swish!), kuning 2, merah 1. Bisa 1 kelas atau 2 tim. (SOAL BISA DI UBAH lewat Excel)",
       "howToPlay": [
-        "Pilih jumlah poin dan mode 1 Kelas atau 2 Tim, lalu tekan MAIN.",
-        "Sentuh jawaban yang benar. Salah? Coba lagi (mode kelas) atau kesempatan pindah ke tim lawan (mode 2 tim).",
-        "Bola masuk ring dan skor bertambah. Tim yang mencapai target lebih dulu menang!"
+        "Pilih 1 Kelas atau 2 Tim (giliran bergantian).",
+        "Jawab benar untuk mendapat kesempatan menembak.",
+        "Tekan TEMBAK saat penanda di zona hijau = 3 poin!"
       ],
       "learningGoals": [
         "Mengenal provinsi, budaya, geografi, sejarah, dan ekonomi Indonesia.",

@@ -1,33 +1,33 @@
-/* Kapal Selam IPA */
+/* Kapal Selam IPA — kemudikan ke gerbang */
 :root { --kg-a: #0369a1; }
 body.kg-body { background: #075985; }
-.ocean { position: absolute; inset: 0; background: linear-gradient(#38bdf8, #0284c7 45%, #075985); }
-.world { position: absolute; left: 0; right: 0; top: 0; transition: transform 1.1s cubic-bezier(.45, .05, .3, 1); }
-.surface { position: absolute; left: 0; right: 0; top: 0; height: 16vh; background: linear-gradient(#bae6fd, rgba(186, 230, 253, 0)); }
-.surface i { position: absolute; left: 0; right: 0; top: 0; height: 3vh; background: radial-gradient(18px 8px at 50% 100%, transparent 70%, rgba(255, 255, 255, .8) 72%) 0 0 / 60px 3vh; animation: surf 5s linear infinite; }
-@keyframes surf { to { background-position: 600px 0; } }
-.life { position: absolute; font-size: 8vh; animation: lifeSwim 7s ease-in-out infinite alternate; }
-.life.r { animation-name: lifeSwimR; }
-@keyframes lifeSwim { from { transform: translateX(0) scaleX(-1); } to { transform: translateX(12vw) scaleX(-1); } }
-@keyframes lifeSwimR { from { transform: translateX(0); } to { transform: translateX(-12vw); } }
-.depth-mark { position: absolute; right: 1.5%; padding: .2vh 1.2vh; border-radius: 99px; font-size: 2.2vh; font-weight: 700; color: #e0f2fe; background: rgba(0, 0, 0, .25); }
-.weed { position: absolute; font-size: 9vh; transform-origin: 50% 100%; animation: kgSway 3s ease-in-out infinite; }
-.seabed { position: absolute; left: 0; right: 0; height: 40vh; background: radial-gradient(ellipse at 50% 0, #fcd34d, #b45309 140%); border-radius: 50% 50% 0 0 / 6vh 6vh 0 0; text-align: center; }
-.seabed .chest { position: absolute; left: 50%; top: -6vh; transform: translateX(-50%); font-size: 11vh; }
-.seabed .gem { position: absolute; left: 50%; top: -14vh; transform: translateX(-50%); font-size: 6vh; opacity: .7; }
-.seabed .gem.shine { opacity: 1; animation: gemShine 1s ease-in-out infinite; filter: drop-shadow(0 0 2vh #67e8f9); }
-@keyframes gemShine { 50% { transform: translateX(-50%) scale(1.4) rotate(12deg); } }
+.ocean { position: absolute; inset: 0; background: linear-gradient(#38bdf8, #0284c7 45%, #075985 80%, #082f49) 0 0 / 100% 140%; }
+.life { position: absolute; left: 110%; font-size: 6vh; opacity: .5; animation: lifeSwim linear infinite; }
+@keyframes lifeSwim { from { left: 110%; } to { left: -10%; } }
+.weed { position: absolute; bottom: -1vh; font-size: 10vh; transform-origin: 50% 100%; animation: kgSway 3s ease-in-out infinite; opacity: .8; }
 .dark { position: absolute; inset: 0; background: #020617; opacity: 0; transition: opacity 1.2s; pointer-events: none; }
-.bubble { position: absolute; bottom: 30%; width: 1.6vh; height: 1.6vh; border-radius: 50%; border: 2px solid rgba(255, 255, 255, .7); animation: kgRise linear infinite; }
-.sub { position: absolute; left: calc(50% - 17vh); top: 24%; width: 34vh; height: 15vh; z-index: 2; animation: kgFloat 3s ease-in-out infinite; }
-.sub .hull { position: absolute; inset: 3vh 0 0; border-radius: 8vh; background: linear-gradient(#fde047, #f59e0b); box-shadow: inset 0 -1.6vh 0 rgba(0, 0, 0, .15), 0 0 0 .5vh #b45309; display: flex; align-items: center; justify-content: center; gap: 2.4vh; }
-.sub .hull b { width: 5vh; height: 5vh; border-radius: 50%; background: radial-gradient(circle at 35% 35%, #e0f2fe, #38bdf8); box-shadow: 0 0 0 .7vh #b45309; }
-.sub .tower { position: absolute; left: 38%; top: -1vh; width: 9vh; height: 6vh; border-radius: 1.4vh 1.4vh 0 0; background: #f59e0b; box-shadow: 0 0 0 .5vh #b45309; }
-.sub .peri { position: absolute; left: 60%; top: -5vh; width: 1vh; height: 5vh; background: #92400e; }
-.sub .peri::after { content: ''; position: absolute; left: 0; top: 0; width: 3vh; height: 1.2vh; background: #92400e; }
-.sub .prop { position: absolute; left: -4vh; top: 7vh; width: 4vh; height: 8vh; border-radius: 2vh; background: #64748b; animation: prop .3s linear infinite; }
+.bubble { position: absolute; bottom: 0; width: 1.6vh; height: 1.6vh; border-radius: 50%; border: 2px solid rgba(255, 255, 255, .7); animation: kgRise linear infinite; }
+.lane { position: absolute; left: 0; right: 0; height: 13vh; translate: 0 -50%; z-index: 1; cursor: pointer; border-top: 2px dashed rgba(255, 255, 255, .18); border-bottom: 2px dashed rgba(255, 255, 255, .18); }
+.lane.on { background: linear-gradient(90deg, rgba(253, 224, 71, .18), transparent 60%); }
+.sub { position: absolute; left: 4%; translate: 0 -50%; width: 26vh; height: 12vh; z-index: 3; transition: top .35s cubic-bezier(.3, 1.3, .5, 1); }
+.sub .hull { position: absolute; inset: 2.4vh 0 0; border-radius: 6vh; background: linear-gradient(#fde047, #f59e0b); box-shadow: inset 0 -1.2vh 0 rgba(0, 0, 0, .15), 0 0 0 .4vh #b45309; display: flex; align-items: center; justify-content: center; gap: 1.8vh; }
+.sub .hull b { width: 3.8vh; height: 3.8vh; border-radius: 50%; background: radial-gradient(circle at 35% 35%, #e0f2fe, #38bdf8); box-shadow: 0 0 0 .5vh #b45309; }
+.sub .tower { position: absolute; left: 38%; top: -.8vh; width: 7vh; height: 4.6vh; border-radius: 1.2vh 1.2vh 0 0; background: #f59e0b; box-shadow: 0 0 0 .4vh #b45309; }
+.sub .peri { position: absolute; left: 60%; top: -4vh; width: .8vh; height: 4vh; background: #92400e; }
+.sub .prop { position: absolute; left: -3vh; top: 5.4vh; width: 3vh; height: 6vh; border-radius: 1.5vh; background: #64748b; animation: prop .3s linear infinite; }
 @keyframes prop { 50% { transform: scaleY(.2); } }
-.sub .trail { position: absolute; left: -10vh; top: 9vh; width: 6vh; height: 4vh; background: radial-gradient(circle, rgba(255, 255, 255, .6) 0 20%, transparent 22%) 0 0 / 2vh 2vh; animation: trail .8s linear infinite; }
+.sub .trail { position: absolute; left: -8vh; top: 7vh; width: 5vh; height: 3vh; background: radial-gradient(circle, rgba(255, 255, 255, .6) 0 20%, transparent 22%) 0 0 / 1.6vh 1.6vh; animation: trail .8s linear infinite; }
 @keyframes trail { to { transform: translateX(-4vh); opacity: 0; } }
-.meter { position: absolute; left: 1.4%; top: 12vh; z-index: 3; padding: .8vh 1.8vh; border-radius: 1.6vh; font-weight: 700; font-size: 2.6vh; color: #fff; background: rgba(2, 6, 23, .45); }
+.gate { position: absolute; z-index: 2; translate: -2vh -50%; display: flex; align-items: center; gap: 1vh; pointer-events: none; transition: opacity .4s; }
+.gate .ring { width: 12vh; height: 12vh; border-radius: 50%; border: 1.4vh solid var(--c); box-shadow: 0 0 3vh var(--c), inset 0 0 3vh var(--c); animation: kgPulse 1.2s ease-in-out infinite; }
+.gate .kg-token { min-width: 14vh; min-height: 8vh; font-size: clamp(.95rem, 2.8vh, 1.7rem); max-width: 30vw; }
+.gate.nope .ring { border-color: #64748b; box-shadow: none; }
+.gate.show .kg-token { box-shadow: 0 0 0 .8vh #22c55e, 0 0 4vh rgba(34, 197, 94, .8); }
+.meter { position: absolute; left: 1.4%; top: 27%; z-index: 4; padding: .8vh 1.8vh; border-radius: 1.6vh; font-weight: 700; font-size: 2.6vh; color: #fff; background: rgba(2, 6, 23, .45); }
 .meter b { color: #fde047; }
+.ctrl { position: absolute; right: 1.5%; bottom: 4%; z-index: 5; display: flex; flex-direction: column; gap: 1.4vh; }
+.ctrl button { width: 13vh; height: 13vh; border: none; border-radius: 3vh; font-size: 6vh; color: #fff; cursor: pointer; background: linear-gradient(#22d3ee, #0891b2); box-shadow: 0 .8vh 0 #155e75; }
+.ctrl button:active { transform: translateY(.6vh); box-shadow: 0 .2vh 0 #155e75; }
+.treasure { position: absolute; left: 50%; bottom: 6%; translate: -50% 0; z-index: 4; text-align: center; }
+.treasure .chest { font-size: 18vh; display: block; }
+.treasure .gem { position: absolute; left: 50%; top: -6vh; translate: -50% 0; font-size: 9vh; animation: kgWin 1s ease-in-out infinite; filter: drop-shadow(0 0 2vh #67e8f9); }

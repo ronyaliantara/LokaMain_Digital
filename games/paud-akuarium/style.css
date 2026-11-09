@@ -1,15 +1,29 @@
-/* Akuarium Hewan */
+/* Akuarium Hewan — memancing */
 :root { --kg-a: #0891b2; }
 body.kg-body { background: #0e7490; }
-.water { position: absolute; inset: 0; background: linear-gradient(#67e8f9, #22b8cf 40%, #0e7490 85%); }
-.rays { position: absolute; inset: 0; opacity: .35; background: repeating-linear-gradient(105deg, rgba(255, 255, 255, .5) 0 4%, transparent 4% 12%); -webkit-mask: linear-gradient(#000, transparent 70%); mask: linear-gradient(#000, transparent 70%); animation: rays 8s ease-in-out infinite alternate; }
-@keyframes rays { to { transform: translateX(4%); } }
-.sand { position: absolute; left: 0; right: 0; bottom: 0; height: 40%; background: radial-gradient(ellipse at 50% 0, #fde68a, #f59e0b 120%); border-radius: 50% 50% 0 0 / 8vh 8vh 0 0; }
-.weed { position: absolute; bottom: 36%; font-size: 11vh; transform-origin: 50% 100%; animation: kgSway 3s ease-in-out infinite; }
-.shell { position: absolute; right: 12%; bottom: 37%; font-size: 6vh; }
-.bubble { position: absolute; bottom: 30%; border-radius: 50%; border: 2px solid rgba(255, 255, 255, .8); background: radial-gradient(circle at 30% 30%, rgba(255, 255, 255, .8), rgba(255, 255, 255, .1) 60%); animation: kgRise linear infinite; }
-.bubble.big { width: 3vh; height: 3vh; animation: kgRise 2.4s ease-in forwards; }
-.tank { position: absolute; inset: 0; }
-.swim { position: absolute; left: 0; animation: swimX linear infinite; }
-.swim span { display: inline-block; font-size: 9vh; animation: kgFloat 2.6s ease-in-out infinite; }
-@keyframes swimX { 0% { transform: translateX(-12vw) scaleX(-1); } 49% { transform: translateX(98vw) scaleX(-1); } 50% { transform: translateX(98vw) scaleX(1); } 100% { transform: translateX(-12vw) scaleX(1); } }
+.air { position: absolute; left: 0; right: 0; top: 0; height: 36%; background: linear-gradient(#7dd3fc, #e0f7ff); }
+.water { position: absolute; left: 0; right: 0; top: 36%; bottom: 0; background: linear-gradient(#22d3ee, #0891b2 50%, #0e7490); }
+.water .wave { position: absolute; left: 0; right: 0; top: -1.6vh; height: 3vh; background: radial-gradient(20px 12px at 50% 100%, #22d3ee 70%, transparent 72%) 0 0 / 50px 3vh; animation: waveMove 4s linear infinite; }
+@keyframes waveMove { to { background-position: 500px 0; } }
+.rays { position: absolute; left: 0; right: 0; top: 36%; bottom: 0; opacity: .3; background: repeating-linear-gradient(105deg, rgba(255, 255, 255, .5) 0 4%, transparent 4% 12%); -webkit-mask: linear-gradient(#000, transparent 70%); mask: linear-gradient(#000, transparent 70%); }
+.sand { position: absolute; left: 0; right: 0; bottom: 0; height: 9%; background: radial-gradient(ellipse at 50% 0, #fde68a, #f59e0b 140%); border-radius: 50% 50% 0 0 / 4vh 4vh 0 0; }
+.weed { position: absolute; bottom: 4%; font-size: 10vh; transform-origin: 50% 100%; animation: kgSway 3s ease-in-out infinite; }
+.floor { position: absolute; bottom: 2%; font-size: 5vh; }
+.bubble { position: absolute; bottom: 8%; width: 1.6vh; height: 1.6vh; border-radius: 50%; border: 2px solid rgba(255, 255, 255, .8); animation: kgRise linear infinite; }
+.boat { position: absolute; left: 50%; top: 24%; translate: -50% 0; z-index: 3; width: 26vh; height: 13vh; transition: left .45s ease-in-out; transform-origin: 50% 100%; }
+.boat .bob { position: absolute; inset: 0; animation: kgFloat 3s ease-in-out infinite; }
+.boat .kid { position: absolute; left: 7vh; top: -1vh; font-size: 9vh; line-height: 1; }
+.boat .hull { position: absolute; left: 0; right: 0; bottom: 0; height: 6vh; background: linear-gradient(#b45309, #78350f); border-radius: 0 0 50% 50% / 0 0 100% 100%; box-shadow: inset 0 1vh 0 #f59e0b; }
+.boat .rod { position: absolute; left: 14vh; top: 3vh; width: 14vh; height: .7vh; border-radius: 1vh; background: #78350f; transform: rotate(-28deg); transform-origin: 0 50%; }
+.boat .tip { position: absolute; right: 0; top: 0; width: .6vh; height: .6vh; }
+.boat .bucket { position: absolute; left: -10vh; top: 6vh; padding: .4vh 1.2vh; border-radius: 99px; background: #fff; font-size: 2.6vh; white-space: nowrap; box-shadow: 0 3px 0 rgba(0, 0, 0, .2); }
+.boat .bucket em { font-style: normal; color: #0891b2; }
+.line { position: absolute; z-index: 2; width: 2px; height: 0; background: rgba(255, 255, 255, .9); }
+.hook { position: absolute; z-index: 3; font-style: normal; font-size: 4vh; margin-left: -2vh; }
+.hook[hidden] { display: none; }
+.fish { position: absolute; z-index: 2; translate: -50% -50%; border: none; background: none; padding: 0; cursor: pointer; display: flex; align-items: center; gap: .6vh; }
+.fish .f { font-size: 11vh; line-height: 1; display: inline-block; }
+.fish .kg-token { min-width: 10vh; min-height: 9vh; font-size: clamp(1rem, 3.2vh, 2rem); border-radius: 50% 50% 50% 50% / 60% 60% 40% 40%; }
+.fish .kg-token.emo { font-size: 7vh; }
+.jump { position: absolute; bottom: 30%; font-size: 10vh; animation: fishJump 1.4s ease-in-out forwards; }
+@keyframes fishJump { 0% { transform: translateY(0); } 50% { transform: translateY(-30vh) rotate(-180deg); } 100% { transform: translateY(0) rotate(-360deg); opacity: 0; } }

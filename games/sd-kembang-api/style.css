@@ -1,19 +1,35 @@
-/* Kembang Api Kata */
+/* Kembang Api Kata — ketapel */
 :root { --kg-a: #7c3aed; }
 body.kg-body { background: #0b1026; }
 .night { position: absolute; inset: 0; background: radial-gradient(ellipse at 50% 120%, #4c1d95, transparent 60%), linear-gradient(#0b1026, #1e1b4b 60%, #312e81); }
 .star { position: absolute; width: var(--s); height: var(--s); border-radius: 50%; background: #fff; animation: twinkle 2.4s ease-in-out infinite; }
 @keyframes twinkle { 50% { opacity: .2; transform: scale(.6); } }
-.moon { position: absolute; right: 8%; top: 10%; font-size: 12vh; filter: drop-shadow(0 0 3vh rgba(253, 224, 71, .6)); animation: kgFloat 6s ease-in-out infinite; }
-.shoot { position: absolute; left: 10%; top: 12%; width: 16vh; height: .4vh; background: linear-gradient(90deg, transparent, #fff); border-radius: 99px; transform: rotate(-20deg); animation: shoot 7s ease-in infinite; opacity: 0; }
-@keyframes shoot { 0%, 80% { opacity: 0; transform: translate(0, 0) rotate(-20deg); } 85% { opacity: 1; } 100% { opacity: 0; transform: translate(40vw, -14vh) rotate(-20deg); } }
-.city { position: absolute; left: 0; right: 0; bottom: 30%; display: flex; align-items: flex-end; justify-content: space-between; padding: 0 1%; }
-.bld { position: relative; width: var(--w); background: linear-gradient(#1f2937, #111827); border-radius: .8vh .8vh 0 0; display: grid; grid-template-columns: 1fr 1fr; align-content: start; gap: 1.6vh 1.2vh; padding: 1.8vh 1.2vh; box-shadow: inset 0 0 0 2px rgba(255, 255, 255, .05); }
-.win { display: block; height: 3vh; border-radius: .4vh; background: #374151; transition: background .4s, box-shadow .4s; }
+.moon { position: absolute; right: 3%; top: 24%; font-size: 10vh; filter: drop-shadow(0 0 3vh rgba(253, 224, 71, .6)); animation: kgFloat 6s ease-in-out infinite; }
+.city { position: absolute; left: 0; right: 0; bottom: 12%; display: flex; align-items: flex-end; justify-content: space-between; padding: 0 1%; opacity: .95; }
+.bld { position: relative; width: var(--w); background: linear-gradient(#1f2937, #111827); border-radius: .8vh .8vh 0 0; display: grid; grid-template-columns: 1fr 1fr; align-content: start; gap: 1.4vh 1vh; padding: 1.6vh 1vh; }
+.win { display: block; height: 2.6vh; border-radius: .4vh; background: #374151; transition: background .4s, box-shadow .4s; }
 .win.on { background: #fde047; box-shadow: 0 0 1.6vh rgba(253, 224, 71, .8); }
-.ground { position: absolute; left: 0; right: 0; bottom: 0; height: 31%; background: linear-gradient(#111827, #030712); }
-.rocket { position: absolute; width: .8vh; height: 3vh; margin-left: -.4vh; border-radius: 99px; background: linear-gradient(var(--c), transparent); box-shadow: 0 0 1.4vh var(--c); }
-.spark { position: absolute; width: 1.2vh; height: 1.2vh; margin: -.6vh 0 0 -.6vh; border-radius: 50%; background: var(--c); box-shadow: 0 0 1vh var(--c); animation: spark 1.4s cubic-bezier(.1, .7, .3, 1) forwards; }
+.ground { position: absolute; left: 0; right: 0; bottom: 0; height: 13%; background: linear-gradient(#111827, #030712); }
+/* lampion jawaban */
+.lantern { position: absolute; z-index: 3; translate: -50% -50%; border: none; background: none; padding: 0; cursor: crosshair; display: flex; flex-direction: column; align-items: center; animation: kgFloat 3s ease-in-out infinite; }
+.lantern .cap { width: 8vh; height: 2vh; border-radius: .6vh; background: #7c2d12; }
+.lantern .kg-token { min-width: 16vh; min-height: 11vh; max-width: 24vw; border-radius: 4vh; font-size: clamp(.95rem, 2.8vh, 1.7rem); background: radial-gradient(circle at 50% 40%, #fff 30%, #ffedd5); box-shadow: 0 0 4vh var(--c), inset 0 0 0 .6vh var(--c); }
+.lantern .tail { width: 1vh; height: 4vh; background: linear-gradient(var(--c), transparent); }
+.lantern.burnt { filter: grayscale(1) brightness(.5); pointer-events: none; }
+.lantern.boom { animation: boom .6s forwards; }
+@keyframes boom { to { scale: 1.6; opacity: 0; } }
+/* ketapel */
+.sling { position: absolute; left: 50%; bottom: 2%; translate: -50% 0; width: 14vh; height: 22vh; z-index: 4; }
+.sling .stick { position: absolute; left: 50%; bottom: 0; width: 2.4vh; height: 12vh; margin-left: -1.2vh; border-radius: 1vh; background: linear-gradient(90deg, #92400e, #78350f); }
+.sling .fork { position: absolute; bottom: 10vh; width: 2.2vh; height: 10vh; border-radius: 1vh; background: linear-gradient(90deg, #a16207, #78350f); }
+.sling .fork.l { left: 2vh; transform: rotate(-18deg); } .sling .fork.r { right: 2vh; transform: rotate(18deg); }
+.bands { position: absolute; inset: 0; width: 100%; height: 100%; z-index: 5; pointer-events: none; overflow: visible; }
+.bands path { fill: none; stroke: #f97316; stroke-width: 6; }
+.rocket { position: absolute; z-index: 6; font-size: 7vh; transform: translate(-50%, -50%) rotate(-45deg); pointer-events: none; }
+.dot { position: absolute; z-index: 5; width: 1.2vh; height: 1.2vh; margin: -.6vh 0 0 -.6vh; border-radius: 50%; background: #fde047; opacity: 0; pointer-events: none; }
+.pullzone { position: absolute; left: 30%; right: 30%; bottom: 0; height: 34%; z-index: 4; cursor: grab; touch-action: none; }
+.fizz { position: absolute; z-index: 6; font-style: normal; font-size: 6vh; translate: -50% -50%; animation: kgPop .9s; }
+.spark { position: absolute; z-index: 6; width: 1.3vh; height: 1.3vh; margin: -.65vh 0 0 -.65vh; border-radius: 50%; background: var(--c); box-shadow: 0 0 1vh var(--c); animation: spark 1.4s cubic-bezier(.1, .7, .3, 1) forwards; }
 @keyframes spark { 0% { transform: translate(0, 0) scale(1); opacity: 1; } 70% { opacity: 1; } 100% { transform: translate(var(--dx), calc(var(--dy) + 6vh)) scale(.3); opacity: 0; } }
-.flash { position: absolute; width: 22vh; height: 22vh; margin: -11vh 0 0 -11vh; border-radius: 50%; background: radial-gradient(circle, var(--c), transparent 60%); opacity: .6; animation: flash .7s ease-out forwards; }
+.flash { position: absolute; z-index: 5; width: 26vh; height: 26vh; margin: -13vh 0 0 -13vh; border-radius: 50%; background: radial-gradient(circle, var(--c), transparent 60%); opacity: .7; animation: flash .7s ease-out forwards; }
 @keyframes flash { to { transform: scale(1.6); opacity: 0; } }
