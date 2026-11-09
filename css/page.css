@@ -1799,6 +1799,58 @@ a {
   color: var(--ink-soft);
 }
 
+.order-soal-note > div {
+  flex: 1;
+  min-width: 0;
+}
+
+.order-soal-how {
+  margin-top: 8px;
+  background: #fff;
+  border: 1.5px solid #f5c76a;
+  border-radius: 10px;
+}
+
+.order-soal-how summary {
+  cursor: pointer;
+  padding: 8px 12px;
+  font-size: 13.5px;
+  font-weight: 700;
+  color: var(--ink);
+  list-style: none;
+}
+
+.order-soal-how summary::-webkit-details-marker {
+  display: none;
+}
+
+.order-soal-how summary::before {
+  content: '▸';
+  display: inline-block;
+  width: 1.1em;
+  color: var(--amber-deep);
+  transition: transform 0.15s;
+}
+
+.order-soal-how[open] summary::before {
+  transform: rotate(90deg);
+}
+
+.order-soal-how ol {
+  margin: 0;
+  padding: 0 12px 10px 34px;
+  list-style: decimal;
+  display: flex;
+  flex-direction: column;
+  gap: 5px;
+  font-size: 13px;
+  color: var(--ink-soft);
+}
+
+.order-soal-more {
+  margin-top: 8px !important;
+}
+
 .order-soal-note a {
   color: var(--blue-deep);
   font-weight: 700;
@@ -1819,5 +1871,13 @@ a {
 
   .soal-excel {
     padding: 18px;
+  }
+
+  .order-soal-ic {
+    display: none;
+  }
+
+  .order-soal-note {
+    padding: 12px;
   }
 }
