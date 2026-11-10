@@ -1,5 +1,5 @@
 window.LOKAMAIN_LIVE_DATA = {
-  "updatedAt": 1794326447693,
+  "updatedAt": 1794326468474,
   "settings": {
     "storeName": "rnalt_Digital",
     "siteSubtitle": "Pilih game pembelajaran digital, lalu klik tombol WhatsApp di bawahnya untuk memesan.",
@@ -569,7 +569,7 @@ window.LOKAMAIN_LIVE_DATA = {
       "grade": "✏️ Soal Bisa Diubah",
       "duration": "10–15 menit",
       "device": "Smart TV / IFP, Laptop & Tablet (layar sentuh)",
-      "price": 15000,
+      "price": 10000,
       "image": "assets/games/game-1794217570327769f.mp4",
       "coverImage": "assets/games/game-1794210945616e3ac.jpg",
       "shortDesc": "Ayo memancing! Ikan-ikan berenang membawa jawaban — ketuk ikan yang benar, kail turun dan ikannya ditarik ke ember. (SOAL BISA DI UBAH lewat Excel)",
@@ -594,7 +594,8 @@ window.LOKAMAIN_LIVE_DATA = {
       "levels": [
         "PAUD"
       ],
-      "originalPrice": 25000
+      "originalPrice": 15000,
+      "coverHd": ""
     },
     {
       "id": "LM-SPK",
