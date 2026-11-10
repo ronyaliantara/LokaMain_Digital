@@ -1,5 +1,5 @@
 window.LOKAMAIN_LIVE_DATA = {
-  "updatedAt": 1794326574922,
+  "updatedAt": 1794326611433,
   "settings": {
     "storeName": "rnalt_Digital",
     "siteSubtitle": "Pilih game pembelajaran digital, lalu klik tombol WhatsApp di bawahnya untuk memesan.",
@@ -283,7 +283,7 @@ window.LOKAMAIN_LIVE_DATA = {
       "grade": "✏️ Soal Bisa Diubah",
       "duration": "10–20 menit",
       "device": "Smart TV / IFP, Laptop Layar Sentuh",
-      "price": 30000,
+      "price": 20000,
       "image": "assets/games/game-17942331735799805.mp4",
       "coverImage": "assets/games/game-179420844902549ee.jpg",
       "shortDesc": "Balapan lari 2 pemain dalam satu layar! Jawab soal secepatnya untuk dapat turbo, lompat dan sleding melewati rintangan, lalu lempar pisang agar lawan terpeleset. Grafis pegunungan cerah & animasi seru, tetap ringan untuk IFP. (SOAL BISA DI UBAH lewat Excel)",
@@ -309,7 +309,8 @@ window.LOKAMAIN_LIVE_DATA = {
         "SD",
         "SMP"
       ],
-      "originalPrice": 40000
+      "originalPrice": 30000,
+      "coverHd": ""
     },
     {
       "id": "LM-PC",
