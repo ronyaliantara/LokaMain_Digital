@@ -42,6 +42,12 @@
   const isVideoSrc = (s) => /\.(mp4|webm|mov|m4v)(\?.*)?$/i.test(s || '') || String(s || '').startsWith('data:video/');
   const isGifSrc = (s) => /\.gif(\?.*)?$/i.test(s || '') || String(s || '').startsWith('data:image/gif');
 
+  // Promo: harga normal (originalPrice) dicoret bila lebih mahal dari harga jual (price)
+  function promoOf(game) {
+    const price = Number(game.price) || 0; const orig = Number(game.originalPrice) || 0;
+    return orig > price ? { orig, save: orig - price } : null;
+  }
+
   function shortPrice(price) {
     const n = Number(price) || 0;
     if (n >= 1000 && n % 1000 === 0) return `Rp ${n / 1000}rb`;
@@ -88,6 +94,11 @@
 
     $('order-title').textContent = game.title;
     $('order-price').textContent = `Rp ${formatIdr(game.price)}`;
+    const promoEl = $('order-promo'); const promo = promoOf(game);
+    if (promoEl) {
+      promoEl.hidden = !promo;
+      promoEl.innerHTML = promo ? `Harga normal <s>Rp ${formatIdr(promo.orig)}</s> <span class="promo-tag">Hemat Rp ${formatIdr(promo.save)}</span>` : '';
+    }
 
     const qrisSection = $('order-qris-section');
     const noQrisSection = $('order-no-qris');
@@ -301,7 +312,7 @@
 
   function cardHtml(game, index) {
     const id = escapeHtml(game.id);
-    const metaItems = [];
+    const metaItems = []; const promo = promoOf(game);
     if (game.duration) metaItems.push(`<li>${icon('i-clock')}<span>${escapeHtml(game.duration)}</span></li>`);
     if (game.device) metaItems.push(`<li>${icon('i-monitor')}<span>${escapeHtml(game.device)}</span></li>`);
 
@@ -310,6 +321,7 @@
         <div style="position:relative">
           ${mediaHtml(game, index)}
           ${game.grade ? `<span class="game-chip">${escapeHtml(game.grade)}</span>` : ''}
+          ${promo ? `<span class="promo-ribbon">PROMO −${shortPrice(promo.save).replace('Rp ', '')}</span>` : ''}
         </div>
         <div class="game-info">
           <div>
@@ -320,7 +332,10 @@
           </div>
           ${metaItems.length ? `<ul class="game-meta">${metaItems.join('')}</ul>` : ''}
           <div class="game-buy">
-            <p class="game-price"><small>Rp</small>${formatIdr(game.price)}</p>
+            <div class="game-price-box">
+              ${promo ? `<p class="game-price-old"><s>Rp ${formatIdr(promo.orig)}</s><span class="promo-tag">Hemat ${shortPrice(promo.save).replace('Rp ', '')}</span></p>` : ''}
+              <p class="game-price${promo ? ' is-promo' : ''}"><small>Rp</small>${formatIdr(game.price)}</p>
+            </div>
             <div class="game-actions">
               <button type="button" class="btn btn-primary" data-order="${id}">Pesan</button>
               <a class="btn btn-ghost-detail" href="play.html?id=${encodeURIComponent(game.id)}" aria-label="Lihat detail ${escapeHtml(game.title)}">Detail</a>
@@ -414,10 +429,10 @@
         </div>
         <div class="hero-card-body">
           <span class="hero-card-title">${escapeHtml(featured.title)}</span>
-          <span class="hero-card-price">Rp ${formatIdr(featured.price)}</span>
+          <span class="hero-card-price">${promoOf(featured) ? `<s>Rp ${formatIdr(promoOf(featured).orig)}</s> ` : ''}Rp ${formatIdr(featured.price)}</span>
         </div>
       </a>
-      <div class="hero-sticker" aria-hidden="true"><span>Mulai<b>${shortPrice(minPrice).replace('Rp ', '')}</b></span></div>`;
+      <div class="hero-sticker${games.some((g) => promoOf(g)) ? ' is-promo' : ''}" aria-hidden="true"><span>${games.some((g) => promoOf(g)) ? 'Promo mulai' : 'Mulai'}<b>${shortPrice(minPrice).replace('Rp ', '')}</b></span></div>`;
   }
 
   function renderStructuredData(store) {

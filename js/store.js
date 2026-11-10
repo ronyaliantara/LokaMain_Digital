@@ -173,6 +173,12 @@ function fillTemplate(tpl, values) {
   ));
 }
 
+// "40.000" atau "40.000 (harga promo, normal Rp 50.000)"
+function priceText(game) {
+  const p = Number(game.price) || 0; const o = Number(game.originalPrice) || 0;
+  return formatIdr(p) + (o > p ? ` (harga promo, normal Rp ${formatIdr(o)})` : '');
+}
+
 function buildBuyerMessage(game, settings) {
   const tpl = settings?.buyerTemplate || DEFAULT_STORE.settings.buyerTemplate;
   return fillTemplate(tpl, {
@@ -180,7 +186,7 @@ function buildBuyerMessage(game, settings) {
     storeName: settings?.storeName || 'rnalt_Digital',
     title: game.title,
     code: game.code || game.id,
-    price: formatIdr(game.price)
+    price: priceText(game)
   });
 }
 
@@ -197,7 +203,7 @@ function buildSellerReplyText(game, buyerName, settings) {
     storeName: settings?.storeName || 'rnalt_Digital',
     title: game.title,
     code: game.code || game.id,
-    price: formatIdr(game.price),
+    price: priceText(game),
     gameUrl: resolveFullGameUrl(game.gameUrl)
   });
 }

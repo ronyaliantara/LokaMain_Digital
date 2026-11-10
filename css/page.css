@@ -726,6 +726,64 @@ a {
   border-top: 2px dashed var(--line);
 }
 
+/* ---- Promo: harga normal dicoret + hemat ---- */
+.promo-ribbon {
+  position: absolute;
+  right: 12px;
+  bottom: 12px;
+  z-index: 3;
+  padding: 4px 11px;
+  background: #e11d48;
+  color: #fff;
+  border: var(--edge);
+  border-radius: 999px;
+  box-shadow: 0 3px 0 var(--ink);
+  font-size: 12.5px;
+  font-weight: 800;
+  letter-spacing: .02em;
+  white-space: nowrap;
+}
+
+.game-price-box { display: flex; flex-direction: column; gap: 2px; }
+
+.game-price-old {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 4px 8px;
+  font-size: 13.5px;
+  font-weight: 600;
+  color: var(--muted);
+}
+
+.game-price-old s { text-decoration-thickness: 2px; text-decoration-color: #e11d48; }
+
+.promo-tag {
+  display: inline-block;
+  padding: 1px 8px;
+  background: #ffe4e6;
+  color: #be123c;
+  border: 1.5px solid #fda4af;
+  border-radius: 999px;
+  font-size: 12px;
+  font-weight: 800;
+  white-space: nowrap;
+}
+
+.game-price.is-promo { color: #be123c; }
+
+.order-promo {
+  margin: 8px 0 0;
+  font-size: 14px;
+  font-weight: 600;
+  color: var(--muted);
+}
+
+.order-promo s { text-decoration-color: #e11d48; text-decoration-thickness: 2px; }
+.order-promo[hidden] { display: none; }
+.hero-card-price s { font-weight: 500; font-size: 12px; opacity: .7; margin-right: 2px; }
+.hero-sticker.is-promo { background: #ffe4e6; font-size: 10.5px; }
+
 .game-price {
   font-size: 1.5rem;
   font-weight: 700;
