@@ -1,5 +1,5 @@
 window.LOKAMAIN_LIVE_DATA = {
-  "updatedAt": 1794319149621,
+  "updatedAt": 1794326402430,
   "settings": {
     "storeName": "rnalt_Digital",
     "siteSubtitle": "Pilih game pembelajaran digital, lalu klik tombol WhatsApp di bawahnya untuk memesan.",
@@ -426,7 +426,7 @@ window.LOKAMAIN_LIVE_DATA = {
       "grade": "✏️ Soal Bisa Diubah",
       "duration": "10–15 menit",
       "device": "Smart TV / IFP, Laptop & Tablet (layar sentuh)",
-      "price": 15000,
+      "price": 9981,
       "image": "assets/games/game-17942174553382120.mp4",
       "coverImage": "assets/games/game-17942109454878d06.jpg",
       "shortDesc": "Game PAUD seret-dan-taruh: seret buah jawaban yang benar dari pohon ke dalam keranjang! Soal dibacakan otomatis, cocok untuk layar sentuh. (SOAL BISA DI UBAH lewat Excel)",
@@ -451,7 +451,8 @@ window.LOKAMAIN_LIVE_DATA = {
       "levels": [
         "PAUD"
       ],
-      "originalPrice": 25000
+      "originalPrice": 15000,
+      "coverHd": ""
     },
     {
       "id": "LM-PHH",
