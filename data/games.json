@@ -1,5 +1,5 @@
 {
-  "updatedAt": 1794326468474,
+  "updatedAt": 1794326488860,
   "settings": {
     "storeName": "rnalt_Digital",
     "siteSubtitle": "Pilih game pembelajaran digital, lalu klik tombol WhatsApp di bawahnya untuk memesan.",
@@ -605,7 +605,7 @@
       "grade": "✏️ Soal Bisa Diubah",
       "duration": "15–25 menit",
       "device": "Smart TV / IFP, Laptop & Tablet (layar sentuh)",
-      "price": 20000,
+      "price": 10000,
       "image": "assets/games/game-1794217594346b513.mp4",
       "coverImage": "assets/games/game-179421094564790c3.jpg",
       "shortDesc": "Balapan memanjat pohon kelapa! Mode 2 tim = REBUTAN serentak (tiap tim punya tombol sendiri), jawab kurang dari 5 detik dapat bonus naik 2. Mode 1 kelas melawan waktu. (SOAL BISA DI UBAH lewat Excel)",
@@ -631,7 +631,8 @@
       "levels": [
         "SD"
       ],
-      "originalPrice": 30000
+      "originalPrice": 15000,
+      "coverHd": ""
     },
     {
       "id": "LM-SKS",
