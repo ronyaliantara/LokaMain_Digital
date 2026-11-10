@@ -1,0 +1,98 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
+  <title>Tarik Tambang Juara — Kuis Adu Tenaga 2 Tim</title>
+  <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Ccircle cx='32' cy='32' r='29' fill='%23ffd23f' stroke='%2323194a' stroke-width='4'/%3E%3Cpath d='M5 37 C20 31 44 31 59 37' stroke='%23b07a3a' stroke-width='8' fill='none'/%3E%3Cpath d='M32 34 l-10 -9 v16 z M32 34 l10 -9 v16 z' fill='%23ef4444'/%3E%3C/svg%3E">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Baloo+2:wght@600;700;800&family=Lilita+One&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="quiz-core.css">
+  <link rel="stylesheet" href="style.css?v=1">
+</head>
+<body>
+  <main class="game" id="game">
+    <canvas id="cv"></canvas>
+
+    <!-- HUD atas: kartu tim + babak + meter tali + tombol -->
+    <header class="top">
+      <div class="tcard t0" id="tc0">
+        <span class="tav" id="tav0">🔥</span>
+        <div class="tinfo"><b id="tnm0">Tim Merah</b><small id="tst0">0 benar</small>
+          <div class="spirit" title="Semangat penonton"><i id="tsp0"></i><span>📣</span></div></div>
+        <div class="tpow"><small>TENAGA</small><b id="tpw0">×1.0</b></div>
+      </div>
+
+      <div class="mid">
+        <div class="mrow">
+          <span class="round" id="round">SOAL 0/8</span>
+          <div class="meter" title="Posisi pita tali"><i class="mline l"></i><i class="mline r"></i><b class="mk" id="mk"></b></div>
+        </div>
+        <nav class="tools">
+          <button class="tool" data-qc="sound" title="Suara"></button>
+          <button class="tool" id="btnMusic" title="Musik latar">🎵</button>
+          <button class="tool" data-qc="fullscreen" title="Layar penuh">⛶</button>
+          <button class="tool" id="btnRules" title="Peraturan">📜</button>
+          <button class="tool" id="btnSetup" title="Pengaturan / ganti tim">⚙️</button>
+          <button class="tool guru" data-qc="teacher" title="Mode Guru (kelola soal)">🔐</button>
+        </nav>
+      </div>
+
+      <div class="tcard t1" id="tc1">
+        <span class="tav" id="tav1">🌊</span>
+        <div class="tinfo"><b id="tnm1">Tim Biru</b><small id="tst1">0 benar</small>
+          <div class="spirit" title="Semangat penonton"><i id="tsp1"></i><span>📣</span></div></div>
+        <div class="tpow"><small>TENAGA</small><b id="tpw1">×1.0</b></div>
+      </div>
+    </header>
+
+    <!-- Papan soal (tengah atas) -->
+    <section class="board" id="board" hidden>
+      <div class="b-top">
+        <span class="b-st" id="bSt0"></span>
+        <div class="b-mid"><span class="b-no" id="bNo">SOAL 1</span><span class="b-time" id="bTime">15</span></div>
+        <span class="b-st r" id="bSt1"></span>
+      </div>
+      <div class="b-q" id="bQ"></div>
+      <div class="b-opts" id="bOpts"></div>
+      <div class="b-res" id="bRes" hidden></div>
+      <div class="b-pull" id="bPull" hidden></div>
+      <div class="b-bar"><i id="bBar"></i></div>
+    </section>
+
+    <!-- Pad tiap tim: tombol jawaban A–D, lalu tombol TARIK raksasa -->
+    <section class="pads" id="pads">
+      <div class="pad" id="pad0">
+        <div class="pad-head"><span class="pav" id="pav0">🔥</span><b class="pnm" id="pnm0">Tim Merah</b><span class="pkeys" id="pkeys0">1 2 3 4 / Q W E R</span></div>
+        <div class="pad-body">
+          <div class="pad-ans" id="pans0"></div>
+          <button class="pull" id="pull0" hidden><i class="pl-fill" id="pfill0"></i><i class="pl-beat" id="pbeat0"></i><span class="pl-main" id="pmain0">💪 TARIK!</span><span class="pl-sub" id="psub0"></span></button>
+          <div class="pad-msg" id="pmsg0"></div>
+        </div>
+      </div>
+      <div class="pad" id="pad1">
+        <div class="pad-head"><span class="pav" id="pav1">🌊</span><b class="pnm" id="pnm1">Tim Biru</b><span class="pkeys" id="pkeys1">7 8 9 0 / U I O P</span></div>
+        <div class="pad-body">
+          <div class="pad-ans" id="pans1"></div>
+          <button class="pull" id="pull1" hidden><i class="pl-fill" id="pfill1"></i><i class="pl-beat" id="pbeat1"></i><span class="pl-main" id="pmain1">💪 TARIK!</span><span class="pl-sub" id="psub1"></span></button>
+          <div class="pad-msg" id="pmsg1"></div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Pesan tengah / hitung mundur -->
+    <div class="center" id="msg" hidden>
+      <div class="card">
+        <h2 id="msgTitle"></h2>
+        <div id="msgSub"></div>
+        <button class="go" id="btnGo">MULAI <small>Spasi</small></button>
+      </div>
+    </div>
+  </main>
+  <script src="questions-default.js"></script>
+  <script src="quiz-core.js"></script>
+  <script src="game.js?v=1"></script>
+  <script src="../lokamain-license.js?v=20261109"></script>
+</body>
+</html>

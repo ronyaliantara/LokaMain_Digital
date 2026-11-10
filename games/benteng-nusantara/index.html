@@ -1,0 +1,90 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
+  <title>Benteng Nusantara — Kuis Pertahanan Kelas 1–4 Tim</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Baloo+2:wght@500;600;700;800&family=Nunito:wght@600;700;800;900&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="quiz-core.css">
+  <link rel="stylesheet" href="style.css?v=1">
+</head>
+<body>
+  <header class="topbar">
+    <div class="brand">
+      <img class="logo" id="logo" alt="">
+      <div class="brand-t"><h1>Benteng Nusantara</h1><p>Kuis pertahanan satu kelas</p></div>
+    </div>
+
+    <div class="hud">
+      <div class="hstat wave" id="waveBox" title="Gelombang">
+        <span class="hi">🌊</span>
+        <div><small>GELOMBANG</small><b><span id="waveNo">0</span><i>/<span id="waveMax">10</span></i></b></div>
+      </div>
+      <div class="hstat hp" id="hpBox" title="Nyawa benteng">
+        <span class="hi">🏰</span>
+        <div class="hpw"><small>BENTENG</small><div class="hpbar"><i id="hpFill"></i><span id="hpTxt">20/20</span></div></div>
+      </div>
+      <div class="hstat gold" id="goldBox" title="Emas bersama">
+        <span class="hi coin">🪙</span>
+        <div><small>EMAS</small><b id="goldTxt">0</b></div>
+      </div>
+      <div class="hstat fog" id="fogBox" hidden title="Kabut Lupa: menara menembak lebih lambat">
+        <span class="hi">☁️</span>
+        <div><small>KABUT</small><b><span id="fogTxt">0</span>s</b></div>
+      </div>
+    </div>
+
+    <nav class="tools">
+      <button class="tbtn" id="btnMusic" title="Musik latar on/off">🎵</button>
+      <button class="tbtn" data-qc="sound" title="Suara"></button>
+      <button class="tbtn" data-qc="fullscreen" title="Layar penuh">⛶</button>
+      <button class="tbtn" id="btnRules" title="Peraturan">📜</button>
+      <button class="tbtn" id="btnSetup" title="Pengaturan / ulang permainan">⚙️</button>
+      <button class="tbtn guru" data-qc="teacher" title="Mode Guru (kelola soal)">🔐<span>Guru</span></button>
+    </nav>
+  </header>
+
+  <main class="game">
+    <section class="mapwrap" id="mapwrap">
+      <canvas id="cv"></canvas>
+      <div class="maptip" id="mapTip" hidden></div>
+      <div class="veil" id="veil" hidden><div><b>⏸ JEDA</b><small>Tekan ▶ atau P untuk lanjut</small></div></div>
+      <div class="tmenu" id="tmenu" hidden></div>
+    </section>
+
+    <aside class="side">
+      <div class="wbox">
+        <div class="wrow">
+          <button class="wbtn" id="btnWave"><span class="wl" id="wbLbl">▶ MULAI GELOMBANG 1</span><small id="wbSub">Spasi</small><i class="wprog" id="wProg"></i></button>
+          <button class="sbtn" id="btnSpeed" title="Kecepatan 1× / 2× (X)">1×</button>
+          <button class="sbtn" id="btnPause" title="Jeda / lanjut (P)">⏸</button>
+        </div>
+        <div class="wnext"><span id="wNext"></span><button class="gong" id="btnGong" title="Gong Semangat (G): terisi dari jawaban benar"><i class="gm" id="gongMeter"></i><span>🔔</span><b id="gongLbl">Gong 0%</b></button></div>
+      </div>
+
+      <div class="qcard" id="qcard">
+        <div class="qhead">
+          <span class="qturn" id="qTurnLbl">Giliran menjawab</span>
+          <span class="qchip" id="qChip"></span>
+          <span class="qcombo" id="qCombo" hidden></span>
+          <span class="qtimer" id="qTimer" hidden><svg viewBox="0 0 44 44"><circle cx="22" cy="22" r="19" class="tb"/><circle cx="22" cy="22" r="19" class="tf" id="qRing"/></svg><b id="qSec">20</b></span>
+        </div>
+        <div class="qbody" id="qBody">
+          <div class="qtext" id="qText">Bersiap…</div>
+          <div class="qopts" id="qOpts"></div>
+          <div class="qfb" id="qFb" hidden></div>
+        </div>
+      </div>
+
+      <div class="teams" id="teams"></div>
+    </aside>
+  </main>
+
+  <script src="questions-default.js"></script>
+  <script src="quiz-core.js"></script>
+  <script src="game.js?v=1"></script>
+  <script src="../lokamain-license.js?v=20261109"></script>
+</body>
+</html>

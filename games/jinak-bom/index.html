@@ -1,0 +1,60 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Misi Jinak Bom — Kuis Regu Penjinak 1–4 Tim</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Black+Ops+One&family=Chakra+Petch:wght@500;600;700&family=Orbitron:wght@600;800;900&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="quiz-core.css">
+  <link rel="stylesheet" href="style.css?v=3">
+</head>
+<body>
+  <div class="app" id="app">
+    <header class="topbar">
+      <div class="brand">
+        <div class="logo" aria-hidden="true">💣</div>
+        <div>
+          <h1>MISI <span>JINAK</span> BOM</h1>
+          <p>MARKAS REGU PENJINAK</p>
+        </div>
+      </div>
+      <div class="mission">
+        <div class="m-item"><small>MODE</small><b id="modeLbl">—</b></div>
+        <div class="m-item lvl" id="lvlBox"><small>LEVEL</small><b id="lvlNo">1</b></div>
+        <div class="m-item"><small>RONDE</small><b><span id="roundNo">0</span><em id="roundMax"></em></b></div>
+        <div class="m-item"><small>BOM</small><b id="bombNo">0</b></div>
+      </div>
+      <nav class="tools">
+        <button class="tbtn" id="btnMusic" title="Musik tegang (M)">🎵<span>Musik</span></button>
+        <button class="tbtn" data-qc="sound" title="Suara"></button>
+        <button class="tbtn" data-qc="fullscreen" title="Layar penuh">⛶</button>
+        <button class="tbtn" id="btnRules" title="Peraturan">📜</button>
+        <button class="tbtn" id="btnSetup" title="Pengaturan / ubah regu">⚙️</button>
+        <button class="tbtn wide" data-qc="teacher" title="Mode Guru (kelola soal)">🔐<span>Guru</span></button>
+      </nav>
+    </header>
+
+    <main class="stage" id="stage">
+      <canvas id="cv"></canvas>
+      <section class="qcard" id="qcard">
+        <div class="q-wait">Menunggu regu penjinak…</div>
+      </section>
+      <div class="plates left" id="platesL"></div>
+      <div class="bomb-spot" id="bombSpot"></div>
+      <div class="plates right" id="platesR"></div>
+      <div class="dock" id="dock"></div>
+      <div class="vignette" aria-hidden="true"></div>
+      <div class="brief" id="brief" hidden></div>
+    </main>
+
+    <footer class="teams" id="teams"></footer>
+  </div>
+
+  <script src="questions-default.js"></script>
+  <script src="quiz-core.js"></script>
+  <script src="game.js?v=3"></script>
+  <script src="../lokamain-license.js?v=20261109"></script>
+</body>
+</html>

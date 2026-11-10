@@ -1,0 +1,103 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Panggung Kuis Juara — Kuis Kursi Panas 1–4 Tim</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Bungee&family=Outfit:wght@500;600;700;800;900&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="quiz-core.css">
+  <link rel="stylesheet" href="style.css?v=1">
+</head>
+<body>
+  <!-- Logo panggung (bintang di atas tirai) -->
+  <svg width="0" height="0" style="position:absolute" aria-hidden="true">
+    <defs>
+      <linearGradient id="gStar" x1="0" y1="0" x2="0" y2="1">
+        <stop offset="0" stop-color="#fff7c2"/><stop offset=".5" stop-color="#fbbf24"/><stop offset="1" stop-color="#d97706"/>
+      </linearGradient>
+      <linearGradient id="gCurtain" x1="0" y1="0" x2="0" y2="1">
+        <stop offset="0" stop-color="#e11d74"/><stop offset="1" stop-color="#7e1048"/>
+      </linearGradient>
+      <symbol id="i-logo" viewBox="0 0 64 64">
+        <circle cx="32" cy="32" r="30" fill="#1b0b3f" stroke="url(#gStar)" stroke-width="3"/>
+        <path d="M6 16 Q14 28 10 50 Q6 40 5 30Z M58 16 Q50 28 54 50 Q58 40 59 30Z" fill="url(#gCurtain)"/>
+        <path d="M14 50 H50 L46 56 H18Z" fill="#a78bfa"/>
+        <path d="M32 12l5.2 10.6 11.7 1.7-8.5 8.2 2 11.6L32 38.6l-10.4 5.5 2-11.6-8.5-8.2 11.7-1.7z" fill="url(#gStar)" stroke="#92400e" stroke-width="1.2" stroke-linejoin="round"/>
+        <circle cx="27" cy="22" r="2" fill="#fff" opacity=".8"/>
+      </symbol>
+      <symbol id="i-seat" viewBox="0 0 40 48">
+        <path d="M10 4 Q20 0 30 4 L28 26 H12Z" fill="currentColor" opacity=".9"/>
+        <rect x="8" y="26" width="24" height="6" rx="3" fill="currentColor"/>
+        <path d="M20 32 V42 M12 46 H28" stroke="currentColor" stroke-width="3" stroke-linecap="round"/>
+      </symbol>
+    </defs>
+  </svg>
+
+  <header class="topbar">
+    <div class="brand">
+      <svg class="logo"><use href="#i-logo"/></svg>
+      <div><h1>Panggung Kuis Juara</h1><p>Kuis kursi panas • tangga bintang</p></div>
+    </div>
+    <div class="round-info">
+      <div><small>PUTARAN</small><b id="roundNo">–</b></div>
+      <div class="sep"></div>
+      <div><small>KURSI PANAS</small><b id="turnName">–</b></div>
+    </div>
+    <nav class="tools">
+      <button class="tb" data-qc="sound" title="Suara efek"></button>
+      <button class="tb" id="btnMusic" title="Musik latar tegang">🎵<span> Musik</span></button>
+      <button class="tb" data-qc="fullscreen" title="Layar penuh">⛶<span> Layar</span></button>
+      <button class="tb" id="btnRules" title="Peraturan">📜<span> Aturan</span></button>
+      <button class="tb" id="btnSetup" title="Pengaturan / ubah tim">⚙️<span> Atur</span></button>
+      <button class="tb guru" data-qc="teacher" title="Mode Guru">🔐<span> Guru</span></button>
+    </nav>
+  </header>
+
+  <main class="game">
+    <section class="stage" id="stage">
+      <canvas id="cv" aria-hidden="true"></canvas>
+      <div class="teams" id="teams"></div>
+
+      <div class="scene" id="scene">
+        <div class="clock" id="clock">
+          <svg viewBox="0 0 120 120"><circle class="c-bg" cx="60" cy="60" r="52"/><circle class="c-fg" id="cRing" cx="60" cy="60" r="52"/></svg>
+          <div class="c-in"><b id="cNum">–</b><small>DETIK</small></div>
+        </div>
+        <div class="led" id="led">
+          <div class="led-main" id="ledMain">PANGGUNG KUIS JUARA</div>
+          <div class="led-sub" id="ledSub">Bersiap…</div>
+        </div>
+        <div class="meter" id="meter" title="Meteran sorak penonton">
+          <div class="m-bar"><i id="mFill"></i></div>
+          <small id="mLabel">SORAK</small>
+        </div>
+      </div>
+
+      <section class="panel" id="panel">
+        <div class="qbox" id="qbox">
+          <div class="qmeta"><span class="lvl" id="qLvl">TINGKAT 1</span><span class="tier" id="qTier">Pemanasan</span><span class="worth" id="qWorth">⭐ 100</span></div>
+          <div class="qtext" id="qText">Selamat datang!</div>
+        </div>
+        <div class="answers" id="answers"></div>
+        <div class="actbar" id="actbar">
+          <div class="lifelines" id="lifelines"></div>
+          <div class="act-mid" id="actMid"></div>
+          <button class="secure" id="btnSecure" hidden>🔒 AMANKAN<small id="secVal">⭐ 0</small></button>
+        </div>
+      </section>
+    </section>
+
+    <aside class="ladder" id="ladder">
+      <div class="ld-head"><svg class="ld-logo"><use href="#i-logo"/></svg><div><b>TANGGA BINTANG</b><small id="ldInfo">12 tingkat</small></div></div>
+      <ol class="ld-rows" id="ldRows"></ol>
+    </aside>
+  </main>
+
+  <script src="questions-default.js"></script>
+  <script src="quiz-core.js"></script>
+  <script src="game.js?v=1"></script>
+  <script src="../lokamain-license.js?v=20261109"></script>
+</body>
+</html>

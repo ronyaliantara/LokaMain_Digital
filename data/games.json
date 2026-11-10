@@ -1,5 +1,5 @@
 {
-  "updatedAt": 1794273190705,
+  "updatedAt": 1794283930398,
   "settings": {
     "storeName": "LokaMain Digital",
     "siteSubtitle": "Pilih game pembelajaran digital, lalu klik tombol WhatsApp di bawahnya untuk memesan.",
@@ -17,6 +17,186 @@
     "sellerTemplate": "Halo Kak {buyerName}, terima kasih sudah memesan di {storeName}!\n\nBerikut akses game pembelajaran digital pesanan Anda:\nJudul Game: {title} ({code})\nLink Akses Game: {gameUrl}\n\nCara Pakai:\n1. Klik link di atas melalui browser HP, tablet, atau laptop.\n2. Game langsung berjalan tanpa instalasi tambahan.\n3. Simpan link ini untuk digunakan kembali kapan saja.\n\nSelamat bermain dan belajar!"
   },
   "games": [
+    {
+      "id": "LM-JB",
+      "code": "SERI-JB",
+      "title": "Misi Jinak Bom",
+      "category": "Kuis Regu 1–4 Tim (Soal Bisa Diubah)",
+      "grade": "✏️ Soal Bisa Diubah",
+      "duration": "15–30 menit",
+      "device": "Smart TV / IFP (layar sentuh), Laptop & Proyektor",
+      "price": 45000,
+      "image": "assets/games/game-179428270468332c6.mp4",
+      "coverImage": "assets/games/game-jinak-bom-cover.jpg",
+      "shortDesc": "Bom aktif di markas! Tiap kabel berwarna berisi satu pilihan jawaban — regu harus MENYAYAT semua kabel jawaban SALAH dan menyisakan kabel yang benar sebelum waktu habis. Salah sayat? DUARR! Ada Pemindai, +10 detik, Bom Kilat & Bom Emas. (SOAL BISA DI UBAH lewat Excel)",
+      "howToPlay": [
+        "Pilih 1–4 regu dan mode: Kumpulkan Poin atau Bertahan. Regu bergiliran menjinakkan bom.",
+        "Sayat kabel dengan menyentuh layar lalu menggeser melintasi kabel (atau ketuk kabelnya). Putuskan SEMUA kabel yang jawabannya salah — kabel jawaban benar jangan dipotong!",
+        "Semua kabel salah putus = bom AMAN + poin & bonus waktu. Kabel benar terpotong / waktu habis = DUARR, nyawa berkurang. Pakai 🔍 Pemindai & ⏱️ +10 detik di saat genting."
+      ],
+      "learningGoals": [
+        "Melatih ketelitian: memilah semua jawaban yang salah, bukan sekadar menebak yang benar.",
+        "Membangun kerja sama dan ketenangan regu di bawah tekanan waktu.",
+        "Bank soal fleksibel: guru bisa mengganti soal lewat impor/ekspor Excel (Mode Guru)."
+      ],
+      "gameUrl": "games/jinak-bom/",
+      "sampleQuestion": "Bagian komputer yang sering disebut \"otak\" komputer adalah...",
+      "sampleOptions": [
+        "CPU",
+        "RAM",
+        "Hard disk",
+        "Monitor"
+      ],
+      "sampleAnswer": 0,
+      "levels": [
+        "SMP",
+        "SMA"
+      ]
+    },
+    {
+      "id": "LM-RW",
+      "code": "SERI-RW",
+      "title": "Rebut Wilayah",
+      "category": "Strategi Regu 2–4 Tim (Soal Bisa Diubah)",
+      "grade": "✏️ Soal Bisa Diubah",
+      "duration": "20–40 menit",
+      "device": "Smart TV / IFP (layar sentuh), Laptop & Proyektor",
+      "price": 50000,
+      "image": "assets/games/game-179428316314441cd.mp4",
+      "coverImage": "assets/games/game-rebut-wilayah-cover.jpg",
+      "shortDesc": "Perang pulau penuh strategi! Peta kepulauan acak dibagi petak-petak; regu merebut petak dengan menjawab benar, MENYERANG petak lawan, dan lawan bisa menangkis dengan soal \"Tangkis!\". Bangun benteng, kuasai Tambang Emas & rebut Ibu Kota lawan. (SOAL BISA DI UBAH lewat Excel)",
+      "howToPlay": [
+        "Pilih 2–4 regu (atau solo melawan Pasukan Kabut). Tiap regu mulai dari Ibu Kota di sudut peta.",
+        "Saat giliran, ketuk petak yang bersebelahan dengan wilayahmu: petak kosong direbut dengan 1 jawaban benar; petak lawan = SERANGAN — kalau penyerang benar, regu lawan menjawab soal Tangkis untuk bertahan.",
+        "Bangun benteng agar petak lebih kuat, kuasai petak istimewa (Tambang Emas, Mercusuar, Gunung, Pulau Harta). Poin wilayah terbanyak setelah ronde habis menang! Ada Mode Damai tanpa saling serang."
+      ],
+      "learningGoals": [
+        "Mengulang materi pelajaran sambil berpikir strategis dan mengambil keputusan.",
+        "Melatih sportivitas: menyerang, bertahan, dan menerima kekalahan dengan baik.",
+        "Bank soal fleksibel: guru bisa mengganti soal lewat impor/ekspor Excel (Mode Guru)."
+      ],
+      "gameUrl": "games/rebut-wilayah/",
+      "sampleQuestion": "Gunung tertinggi di Indonesia adalah...",
+      "sampleOptions": [
+        "Gunung Semeru",
+        "Gunung Kerinci",
+        "Puncak Jaya",
+        "Gunung Rinjani"
+      ],
+      "sampleAnswer": 2,
+      "levels": [
+        "SMP",
+        "SMA"
+      ]
+    },
+    {
+      "id": "LM-TT",
+      "code": "SERI-TT",
+      "title": "Tarik Tambang Juara",
+      "category": "Kuis Adu 2 Tim (Soal Bisa Diubah)",
+      "grade": "✏️ Soal Bisa Diubah",
+      "duration": "15–30 menit",
+      "device": "Smart TV / IFP (layar sentuh), Laptop & Proyektor",
+      "price": 40000,
+      "image": "assets/games/game-17942827533065b0d.mp4",
+      "coverImage": "assets/games/game-tarik-tambang-cover.jpg",
+      "shortDesc": "Lomba tarik tambang di kelas! Dua tim menjawab soal yang sama — jawaban benar mengisi tenaga, lalu babak ADU TENAGA: tekan secepat-cepatnya untuk menarik tali. Kuda-kuda serempak, meter sorakan & lawan jatuh ke lumpur! (SOAL BISA DI UBAH lewat Excel)",
+      "howToPlay": [
+        "Bagi kelas menjadi 2 tim (atau main melawan komputer). Soal muncul untuk kedua tim sekaligus.",
+        "Jawab dengan benar dan cepat untuk mengumpulkan tenaga. Jawaban beruntun membuat kuda-kuda makin kuat.",
+        "Di babak ADU TENAGA, tekan tombol tim secepat-cepatnya untuk menarik tali. Tim yang menarik lawan melewati garis tengah menang!"
+      ],
+      "learningGoals": [
+        "Mengulang materi dengan suasana lomba yang membakar semangat.",
+        "Melatih kecepatan menjawab dan kekompakan tim.",
+        "Bank soal fleksibel: guru bisa mengganti soal lewat impor/ekspor Excel (Mode Guru)."
+      ],
+      "gameUrl": "games/tarik-tambang/",
+      "sampleQuestion": "Ibu kota negara Jepang adalah...",
+      "sampleOptions": [
+        "Osaka",
+        "Kyoto",
+        "Tokyo",
+        "Seoul"
+      ],
+      "sampleAnswer": 2,
+      "levels": [
+        "SMP",
+        "SMA"
+      ]
+    },
+    {
+      "id": "LM-PK",
+      "code": "SERI-PK",
+      "title": "Panggung Kuis Juara",
+      "category": "Kuis Panggung TV (Soal Bisa Diubah)",
+      "grade": "✏️ Soal Bisa Diubah",
+      "duration": "15–30 menit",
+      "device": "Smart TV / IFP (layar sentuh), Laptop & Proyektor",
+      "price": 40000,
+      "image": "assets/games/game-1794282801621a2fe.mp4",
+      "coverImage": "assets/games/game-panggung-kuis-cover.jpg",
+      "shortDesc": "Rasakan tampil di acara kuis TV! Naiki tangga bintang soal demi soal dengan titik aman, pakai bantuan 50:50, Tanya Kelas & Ganti Soal, lalu hadapi pertanyaan \"Jawaban terakhir?\". Amankan poin atau ambil risiko demi bintang tertinggi! (SOAL BISA DI UBAH lewat Excel)",
+      "howToPlay": [
+        "Pilih 1–4 pemain/regu dan panjang tangga bintang (8, 12, atau 15 soal). Peserta maju ke panggung bergiliran.",
+        "Pilih jawaban lalu kunci. Bingung? Pakai bantuan 50:50, Tanya Kelas (polling teman sekelas), atau Ganti Soal.",
+        "Jawaban benar menaikkan tangga bintang. Salah = turun ke titik aman terakhir. Berani lanjut atau amankan poin? Bintang tertinggi jadi juara!"
+      ],
+      "learningGoals": [
+        "Membangun rasa percaya diri tampil dan menjawab di depan kelas.",
+        "Melatih pengambilan keputusan dan strategi memakai bantuan.",
+        "Bank soal fleksibel: guru bisa mengganti soal lewat impor/ekspor Excel (Mode Guru)."
+      ],
+      "gameUrl": "games/panggung-kuis/",
+      "sampleQuestion": "Planet terbesar di tata surya kita adalah...",
+      "sampleOptions": [
+        "Saturnus",
+        "Jupiter",
+        "Neptunus",
+        "Bumi"
+      ],
+      "sampleAnswer": 1,
+      "levels": [
+        "SMP",
+        "SMA"
+      ]
+    },
+    {
+      "id": "LM-BN",
+      "code": "SERI-BN",
+      "title": "Benteng Nusantara",
+      "category": "Tower Defense Kerja Sama (Soal Bisa Diubah)",
+      "grade": "✏️ Soal Bisa Diubah",
+      "duration": "20–40 menit",
+      "device": "Smart TV / IFP (layar sentuh), Laptop & Proyektor",
+      "price": 50000,
+      "image": "assets/games/game-17942834363630c95.mp4",
+      "coverImage": "assets/games/game-benteng-nusantara-cover.jpg",
+      "shortDesc": "Pertahankan benteng dari serbuan pasukan Kabut Lupa! Setiap jawaban benar memberi emas untuk membangun & menaikkan 4 jenis menara. Hadapi Kalong, Golem, Jamur, sampai bos Raja Kabut — pukul Gong Semangat saat genting! (SOAL BISA DI UBAH lewat Excel)",
+      "howToPlay": [
+        "Pilih 1–4 tim yang bekerja sama menjaga benteng. Sebelum gelombang musuh datang, jawab soal untuk mendapat emas.",
+        "Pakai emas untuk membangun atau menaikkan menara di jalur musuh. Tiap menara punya kekuatan berbeda.",
+        "Musuh makin kuat tiap gelombang hingga bos Raja Kabut muncul. Jawab benar beruntun untuk bonus & Gong Semangat. Bertahan sampai gelombang terakhir!"
+      ],
+      "learningGoals": [
+        "Mengulang materi pelajaran sambil menyusun strategi bersama.",
+        "Melatih kerja sama tim, perencanaan, dan ketahanan menghadapi tantangan.",
+        "Bank soal fleksibel: guru bisa mengganti soal lewat impor/ekspor Excel (Mode Guru)."
+      ],
+      "gameUrl": "games/benteng-nusantara/",
+      "sampleQuestion": "Proses tumbuhan hijau membuat makanan sendiri dengan bantuan cahaya matahari disebut...",
+      "sampleOptions": [
+        "Evaporasi",
+        "Respirasi",
+        "Transpirasi",
+        "Fotosintesis"
+      ],
+      "sampleAnswer": 3,
+      "levels": [
+        "SMP",
+        "SMA"
+      ]
+    },
     {
       "id": "LM-HK",
       "code": "SERI-HK",
