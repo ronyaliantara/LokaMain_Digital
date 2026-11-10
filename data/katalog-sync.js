@@ -1,5 +1,5 @@
 window.LOKAMAIN_LIVE_DATA = {
-  "updatedAt": 1794326488860,
+  "updatedAt": 1794326509574,
   "settings": {
     "storeName": "rnalt_Digital",
     "siteSubtitle": "Pilih game pembelajaran digital, lalu klik tombol WhatsApp di bawahnya untuk memesan.",
@@ -714,7 +714,7 @@ window.LOKAMAIN_LIVE_DATA = {
       "grade": "✏️ Soal Bisa Diubah",
       "duration": "15–25 menit",
       "device": "Smart TV / IFP, Laptop & Tablet (layar sentuh)",
-      "price": 20000,
+      "price": 10000,
       "image": "assets/games/game-179421767181170a9.mp4",
       "coverImage": "assets/games/game-179421094574504ba.jpg",
       "shortDesc": "Petualangan memilih jalan! Setiap jalan berakhir di papan jawaban — pilih yang benar dan Dino menemukan telur yang menetas, salah = jalan buntu. (SOAL BISA DI UBAH lewat Excel)",
@@ -740,7 +740,8 @@ window.LOKAMAIN_LIVE_DATA = {
       "levels": [
         "SD"
       ],
-      "originalPrice": 30000
+      "originalPrice": 15000,
+      "coverHd": ""
     },
     {
       "id": "LM-SBJ",
