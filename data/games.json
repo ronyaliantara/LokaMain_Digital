@@ -1,5 +1,5 @@
 {
-  "updatedAt": 1794302493654,
+  "updatedAt": 1794302867547,
   "settings": {
     "storeName": "rnalt_Digital",
     "siteSubtitle": "Pilih game pembelajaran digital, lalu klik tombol WhatsApp di bawahnya untuk memesan.",
@@ -394,7 +394,7 @@
       "device": "Smart TV, Laptop & Kamera Web",
       "price": 25000,
       "image": "assets/games/game-1794217860533f815.mp4",
-      "shortDesc": "Game kuis interaktif (SOAL BISA DI UBAH) dengan navigasi arah kapal menggunakan sensor gerakan hidung/wajah (AI Face Detection) di depan kamera. (SOAL BISA DIUBAH: tinggal tempel dari Word/WhatsApp atau buat dengan AI gratis)",
+      "shortDesc": "Game kuis interaktif dengan navigasi arah kapal menggunakan sensor gerakan hidung/wajah (AI Face Detection) di depan kamera. (SOAL BISA DIUBAH: tinggal tempel dari Word/WhatsApp atau buat dengan AI gratis)",
       "howToPlay": [
         "Nyalakan kamera web laptop atau hubungkan ke Smart TV kelas.",
         "Daftarkan nama 2–4 siswa pemain untuk saling berkompetisi secara bergantian.",
