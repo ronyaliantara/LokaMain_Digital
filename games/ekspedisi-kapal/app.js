@@ -38,7 +38,9 @@ function applySettings() {
   const g = document.getElementById('goalTxt'); if (g) g.textContent = `(finis: ${GOAL} benar)`;
 }
 const SEEN_KEY = 'ips_ekspedisi_seen_v1';
-const FACE_CDN = 'https://cdn.jsdelivr.net/npm/@mediapipe/face_detection@0.4.1657300184/';
+// Pendeteksi wajah: MediaPipe Tasks Vision (paket lama @mediapipe/face_detection sudah tidak jalan di Chrome terbaru)
+const TASKS_CDN = 'https://cdn.jsdelivr.net/npm/@mediapipe/tasks-vision@0.10.14';
+const FACE_MODEL = 'https://storage.googleapis.com/mediapipe-models/face_detector/blaze_face_short_range/float16/1/blaze_face_short_range.tflite';
 const rnd = () => { try { const a = new Uint32Array(1); crypto.getRandomValues(a); return a[0] / 4294967296; } catch (e) { return Math.random(); } };
 const pick = (a) => a[Math.floor(rnd() * a.length)];
 const clamp = (v, a, b) => Math.max(a, Math.min(b, v));
@@ -308,18 +310,18 @@ class Game {
   async initCamera() {
     const st = (m) => { $('camStatus').textContent = m; };
     try {
-      const stream = await navigator.mediaDevices.getUserMedia({ video: { width: 320, height: 240, facingMode: 'user' }, audio: false });
+      // 640x480: wajah yang agak jauh dari kamera (berdiri di depan IFP) tetap cukup besar untuk dikenali
+      const stream = await navigator.mediaDevices.getUserMedia({ video: { width: { ideal: 640 }, height: { ideal: 480 }, facingMode: 'user' }, audio: false });
       this.video = $('cam'); this.video.srcObject = stream; await this.video.play();
       this.camOn = true; $('camHint').textContent = 'Kamera aktif, mencari wajah…';
-    } catch (e) { st('Tanpa kamera: pakai mouse / ← →'); $('camHint').textContent = 'Kamera tidak tersedia'; return; }
+    } catch (e) { st('Tanpa kamera: pakai mouse / ← →'); $('camHint').textContent = 'Kamera tidak tersedia / izin kamera ditolak'; return; }
     st('Memuat deteksi wajah…');
     try {
-      await new Promise((res, rej) => { const s = document.createElement('script'); s.src = FACE_CDN + 'face_detection.js'; s.crossOrigin = 'anonymous'; s.onload = res; s.onerror = rej; document.head.appendChild(s); });
-      this.fd = new FaceDetection({ locateFile: (f) => FACE_CDN + f });
-      this.fd.setOptions({ model: 'short', minDetectionConfidence: 0.5 });
-      this.fd.onResults((r) => this.onFace(r));
-      await this.fd.initialize();
-      this.fdReady = true; st('Kamera aktif ✓'); $('camHint').textContent = 'Titik merah = hidungmu';
+      const { FaceDetector, FilesetResolver } = await import(TASKS_CDN + '/vision_bundle.mjs');
+      const files = await FilesetResolver.forVisionTasks(TASKS_CDN + '/wasm');
+      const make = (delegate) => FaceDetector.createFromOptions(files, { baseOptions: { modelAssetPath: FACE_MODEL, delegate }, runningMode: 'VIDEO', minDetectionConfidence: 0.65 });   // 0.65: benda/pola di latar tidak dianggap wajah
+      try { this.fd = await make('GPU'); } catch (e) { this.fd = await make('CPU'); }   // laptop tanpa GPU/WebGL tetap jalan
+      this.fdReady = true; this.detErr = 0; this.lastDetT = 0; st('Kamera aktif ✓'); $('camHint').textContent = 'Titik merah = hidungmu';
       this.detectLoop();
     } catch (e) { st('Deteksi gagal (perlu internet): pakai mouse / ← →'); }
   }
@@ -331,18 +333,25 @@ class Game {
     const h = $('camHint'); h.textContent = on ? '✅ Wajah terdeteksi — titik merah = hidungmu' : '🔍 Wajah belum terlihat: hadap kamera, jarak ±1 meter, cukup cahaya';
     h.style.color = on ? '#15803d' : '#b45309';
   }
-  async detectLoop() {
-    if (this.fdReady && this.needFace() && !this.busy && !document.hidden && this.video.readyState >= 2) {
-      this.busy = true;
-      try { await this.fd.send({ image: this.video }); } catch (e) {}
-      this.busy = false;
+  detectLoop() {
+    if (this.fdReady && this.needFace() && !document.hidden && this.video.readyState >= 2) {
+      const now = performance.now();
+      if (now > this.lastDetT) {
+        this.lastDetT = now;
+        try { this.onFace(this.fd.detectForVideo(this.video, now)); this.detErr = 0; }
+        catch (e) { if (++this.detErr === 40) $('camStatus').textContent = 'Deteksi bermasalah: pakai mouse / ← →'; }
+      }
     }
     setTimeout(() => this.detectLoop(), 50);
   }
   onFace(r) {
-    const d = r.detections && r.detections[0]; if (!d) return;
-    const lm = d.landmarks || d.keypoints, n = lm && lm[2]; if (!n) return;
-    const bb = d.boundingBox, h = bb && bb.height ? bb.height : 0.2;
+    // beberapa wajah di kamera (teman di belakang)? ikuti wajah TERBESAR = siswa paling dekat yang sedang bermain
+    const all = (r && r.detections) || []; if (!all.length) return;
+    const size = (x) => (x.boundingBox ? x.boundingBox.width * x.boundingBox.height : 0);
+    const d = all.reduce((a, b) => (size(b) > size(a) ? b : a));
+    const lm = d.keypoints || d.landmarks, n = lm && lm[2]; if (!n) return;   // titik ke-3 = ujung hidung
+    const bb = d.boundingBox, vh = (this.video && this.video.videoHeight) || 480;
+    const h = bb && bb.height ? (bb.height > 1 ? bb.height / vh : bb.height) : 0.2;   // tinggi wajah (0..1)
     this.face = { x: n.x, y: n.y, h, t: performance.now() };
     const dot = $('noseDot'); dot.style.left = (1 - n.x) * 100 + '%'; dot.style.top = n.y * 100 + '%';
   }
