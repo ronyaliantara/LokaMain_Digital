@@ -1,5 +1,5 @@
 {
-  "updatedAt": 1794326434786,
+  "updatedAt": 1794326447693,
   "settings": {
     "storeName": "rnalt_Digital",
     "siteSubtitle": "Pilih game pembelajaran digital, lalu klik tombol WhatsApp di bawahnya untuk memesan.",
@@ -498,7 +498,7 @@
       "grade": "✏️ Soal Bisa Diubah",
       "duration": "10–15 menit",
       "device": "Smart TV / IFP, Laptop & Tablet (layar sentuh)",
-      "price": 15000,
+      "price": 10000,
       "image": "assets/games/game-17942175221047c5e.mp4",
       "coverImage": "assets/games/game-179421094554863b9.jpg",
       "shortDesc": "Balon-balon huruf terbang ke langit — letuskan balon dengan jawaban yang benar sebelum terbang menjauh! (SOAL BISA DI UBAH lewat Excel)",
@@ -523,7 +523,8 @@
       "levels": [
         "PAUD"
       ],
-      "originalPrice": 25000
+      "originalPrice": 15000,
+      "coverHd": ""
     },
     {
       "id": "LM-PKW",
