@@ -1,5 +1,5 @@
 window.LOKAMAIN_LIVE_DATA = {
-  "updatedAt": 1794326527306,
+  "updatedAt": 1794326542263,
   "settings": {
     "storeName": "rnalt_Digital",
     "siteSubtitle": "Pilih game pembelajaran digital, lalu klik tombol WhatsApp di bawahnya untuk memesan.",
@@ -752,7 +752,7 @@ window.LOKAMAIN_LIVE_DATA = {
       "grade": "✏️ Soal Bisa Diubah",
       "duration": "15–25 menit",
       "device": "Smart TV / IFP, Laptop & Tablet (layar sentuh)",
-      "price": 20000,
+      "price": 10000,
       "image": "assets/games/game-1794217696250a077.mp4",
       "coverImage": "assets/games/game-17942109457778603.jpg",
       "shortDesc": "Jawab soal dengan benar, lalu TEMBAK bola dengan timing tepat: zona hijau 3 poin (swish!), kuning 2, merah 1. Bisa 1 kelas atau 2 tim. (SOAL BISA DI UBAH lewat Excel)",
@@ -778,7 +778,8 @@ window.LOKAMAIN_LIVE_DATA = {
       "levels": [
         "SD"
       ],
-      "originalPrice": 30000
+      "originalPrice": 15000,
+      "coverHd": ""
     }
   ],
   "orders": [
