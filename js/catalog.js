@@ -7,7 +7,7 @@
   } = window.LokaStore;
 
   const POLL_MS = 60000;
-  const SITE_URL = 'https://lokamaindigital.my.id/';
+  const SITE_URL = 'https://rnaltdigital.my.id/';
   // Teks lama bawaan; bila masih ini, pakai teks hero yang baru di index.html.
   const LEGACY_SUBTITLES = [
     'Pilih game pembelajaran digital, lalu klik tombol WhatsApp di bawahnya untuk memesan.'
@@ -608,7 +608,7 @@
   document.addEventListener('DOMContentLoaded', () => {
     renderPublicCatalog();
     refreshFromServer(true);
-    // Link langsung ke jenjang, mis. lokamaindigital.my.id/#sd
+    // Link langsung ke jenjang, mis. rnaltdigital.my.id/#sd
     if (LEVEL_KEYS.includes((location.hash || '').replace('#', '').toUpperCase())) {
       setTimeout(() => $('katalog')?.scrollIntoView({ behavior: 'smooth', block: 'start' }), 200);
     }
