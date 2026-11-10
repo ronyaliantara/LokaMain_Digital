@@ -1,5 +1,5 @@
 window.LOKAMAIN_LIVE_DATA = {
-  "updatedAt": 1794326559768,
+  "updatedAt": 1794326574922,
   "settings": {
     "storeName": "rnalt_Digital",
     "siteSubtitle": "Pilih game pembelajaran digital, lalu klik tombol WhatsApp di bawahnya untuk memesan.",
@@ -534,7 +534,7 @@ window.LOKAMAIN_LIVE_DATA = {
       "grade": "✏️ Soal Bisa Diubah",
       "duration": "10–15 menit",
       "device": "Smart TV / IFP, Laptop & Tablet (layar sentuh)",
-      "price": 15000,
+      "price": 10000,
       "image": "assets/games/game-17942175461100c68.mp4",
       "coverImage": "assets/games/game-1794210945580e4c8.jpg",
       "shortDesc": "Ayo mewarnai kereta! Pilih kaleng cat dengan jawaban yang benar, kuas terbang dan mewarnai gerbong satu per satu. (SOAL BISA DI UBAH lewat Excel)",
@@ -559,7 +559,8 @@ window.LOKAMAIN_LIVE_DATA = {
       "levels": [
         "PAUD"
       ],
-      "originalPrice": 25000
+      "originalPrice": 15000,
+      "coverHd": ""
     },
     {
       "id": "LM-PAK",
