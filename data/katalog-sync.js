@@ -1,5 +1,5 @@
 window.LOKAMAIN_LIVE_DATA = {
-  "updatedAt": 1794286973738,
+  "updatedAt": 1794288271415,
   "settings": {
     "storeName": "rnalt_Digital",
     "siteSubtitle": "Pilih game pembelajaran digital, lalu klik tombol WhatsApp di bawahnya untuk memesan.",
@@ -9,7 +9,7 @@ window.LOKAMAIN_LIVE_DATA = {
     "sellerName": "Admin rnalt",
     "whatsappNumber": "6287881258019",
     "qrisImage": "assets/qris/qris-17942306572678e14.jpeg",
-    "qrisName": "LokaMain_Store",
+    "qrisName": "rnaltDigital_Store",
     "qrisCity": "",
     "qrisRawPayload": "00020101021126570011ID.DANA.WWW011893600915303673559102090367355910303UMI51440014ID.CO.QRIS.WWW0215ID10266330641950303UMI5204737253033605802ID5924LokaMain_Store, Komputer6006Gresik6105611556304DF5E",
     "qrisDynamicEnabled": true,
