@@ -1,5 +1,5 @@
 window.LOKAMAIN_LIVE_DATA = {
-  "updatedAt": 1794302867547,
+  "updatedAt": 1794319149621,
   "settings": {
     "storeName": "rnalt_Digital",
     "siteSubtitle": "Pilih game pembelajaran digital, lalu klik tombol WhatsApp di bawahnya untuk memesan.",
@@ -28,7 +28,7 @@ window.LOKAMAIN_LIVE_DATA = {
       "price": 35000,
       "image": "assets/games/game-179428270468332c6.mp4",
       "coverImage": "assets/games/game-jinak-bom-cover.jpg",
-      "shortDesc": "Bom aktif di markas! Tiap kabel berwarna berisi satu pilihan jawaban — regu harus MENYAYAT semua kabel jawaban SALAH dan menyisakan kabel yang benar sebelum waktu habis. Salah sayat? DUARR! Ada Pemindai, +10 detik, Bom Kilat & Bom Emas. (SOAL BISA DIUBAH: tinggal tempel dari Word/WhatsApp atau buat dengan AI gratis)",
+      "shortDesc": "Bom aktif di markas! Tiap kabel berwarna berisi satu pilihan jawaban — regu harus MENYAYAT semua kabel jawaban SALAH dan menyisakan kabel yang benar sebelum waktu habis. Salah sayat? DUARR! Ada Pemindai, +10 detik, Bom Kilat & Bom Emas. (SOAL BISA DI UBAH lewat Excel)",
       "howToPlay": [
         "Pilih 1–4 regu dan mode: Kumpulkan Poin atau Bertahan. Regu bergiliran menjinakkan bom.",
         "Sayat kabel dengan menyentuh layar lalu menggeser melintasi kabel (atau ketuk kabelnya). Putuskan SEMUA kabel yang jawabannya salah — kabel jawaban benar jangan dipotong!",
@@ -37,7 +37,7 @@ window.LOKAMAIN_LIVE_DATA = {
       "learningGoals": [
         "Melatih ketelitian: memilah semua jawaban yang salah, bukan sekadar menebak yang benar.",
         "Membangun kerja sama dan ketenangan regu di bawah tekanan waktu.",
-        "Ganti soal sangat mudah di Mode Guru: tempel soal dari Word/WhatsApp, atau buat otomatis dengan AI gratis (ChatGPT/Gemini). Excel juga bisa."
+        "Bank soal fleksibel: guru bisa mengganti soal lewat impor/ekspor Excel (Mode Guru)."
       ],
       "gameUrl": "games/jinak-bom/",
       "sampleQuestion": "Bagian komputer yang sering disebut \"otak\" komputer adalah...",
@@ -65,7 +65,7 @@ window.LOKAMAIN_LIVE_DATA = {
       "price": 40000,
       "image": "assets/games/game-179428316314441cd.mp4",
       "coverImage": "assets/games/game-rebut-wilayah-cover.jpg",
-      "shortDesc": "Perang pulau penuh strategi! Peta kepulauan acak dibagi petak-petak; regu merebut petak dengan menjawab benar, MENYERANG petak lawan, dan lawan bisa menangkis dengan soal \"Tangkis!\". Bangun benteng, kuasai Tambang Emas & rebut Ibu Kota lawan. (SOAL BISA DIUBAH: tinggal tempel dari Word/WhatsApp atau buat dengan AI gratis)",
+      "shortDesc": "Perang pulau penuh strategi! Peta kepulauan acak dibagi petak-petak; regu merebut petak dengan menjawab benar, MENYERANG petak lawan, dan lawan bisa menangkis dengan soal \"Tangkis!\". Bangun benteng, kuasai Tambang Emas & rebut Ibu Kota lawan. (SOAL BISA DI UBAH lewat Excel)",
       "howToPlay": [
         "Pilih 2–4 regu (atau solo melawan Pasukan Kabut). Tiap regu mulai dari Ibu Kota di sudut peta.",
         "Saat giliran, ketuk petak yang bersebelahan dengan wilayahmu: petak kosong direbut dengan 1 jawaban benar; petak lawan = SERANGAN — kalau penyerang benar, regu lawan menjawab soal Tangkis untuk bertahan.",
@@ -74,7 +74,7 @@ window.LOKAMAIN_LIVE_DATA = {
       "learningGoals": [
         "Mengulang materi pelajaran sambil berpikir strategis dan mengambil keputusan.",
         "Melatih sportivitas: menyerang, bertahan, dan menerima kekalahan dengan baik.",
-        "Ganti soal sangat mudah di Mode Guru: tempel soal dari Word/WhatsApp, atau buat otomatis dengan AI gratis (ChatGPT/Gemini). Excel juga bisa."
+        "Bank soal fleksibel: guru bisa mengganti soal lewat impor/ekspor Excel (Mode Guru)."
       ],
       "gameUrl": "games/rebut-wilayah/",
       "sampleQuestion": "Gunung tertinggi di Indonesia adalah...",
@@ -102,7 +102,7 @@ window.LOKAMAIN_LIVE_DATA = {
       "price": 30000,
       "image": "assets/games/game-17942827533065b0d.mp4",
       "coverImage": "assets/games/game-tarik-tambang-cover.jpg",
-      "shortDesc": "Lomba tarik tambang di kelas! Dua tim menjawab soal yang sama — jawaban benar mengisi tenaga, lalu babak ADU TENAGA: tekan secepat-cepatnya untuk menarik tali. Kuda-kuda serempak, meter sorakan & lawan jatuh ke lumpur! (SOAL BISA DIUBAH: tinggal tempel dari Word/WhatsApp atau buat dengan AI gratis)",
+      "shortDesc": "Lomba tarik tambang di kelas! Dua tim menjawab soal yang sama — jawaban benar mengisi tenaga, lalu babak ADU TENAGA: tekan secepat-cepatnya untuk menarik tali. Kuda-kuda serempak, meter sorakan & lawan jatuh ke lumpur! (SOAL BISA DI UBAH lewat Excel)",
       "howToPlay": [
         "Bagi kelas menjadi 2 tim (atau main melawan komputer). Soal muncul untuk kedua tim sekaligus.",
         "Jawab dengan benar dan cepat untuk mengumpulkan tenaga. Jawaban beruntun membuat kuda-kuda makin kuat.",
@@ -111,7 +111,7 @@ window.LOKAMAIN_LIVE_DATA = {
       "learningGoals": [
         "Mengulang materi dengan suasana lomba yang membakar semangat.",
         "Melatih kecepatan menjawab dan kekompakan tim.",
-        "Ganti soal sangat mudah di Mode Guru: tempel soal dari Word/WhatsApp, atau buat otomatis dengan AI gratis (ChatGPT/Gemini). Excel juga bisa."
+        "Bank soal fleksibel: guru bisa mengganti soal lewat impor/ekspor Excel (Mode Guru)."
       ],
       "gameUrl": "games/tarik-tambang/",
       "sampleQuestion": "Ibu kota negara Jepang adalah...",
@@ -139,7 +139,7 @@ window.LOKAMAIN_LIVE_DATA = {
       "price": 30000,
       "image": "assets/games/game-1794282801621a2fe.mp4",
       "coverImage": "assets/games/game-panggung-kuis-cover.jpg",
-      "shortDesc": "Rasakan tampil di acara kuis TV! Naiki tangga bintang soal demi soal dengan titik aman, pakai bantuan 50:50, Tanya Kelas & Ganti Soal, lalu hadapi pertanyaan \"Jawaban terakhir?\". Amankan poin atau ambil risiko demi bintang tertinggi! (SOAL BISA DIUBAH: tinggal tempel dari Word/WhatsApp atau buat dengan AI gratis)",
+      "shortDesc": "Rasakan tampil di acara kuis TV! Naiki tangga bintang soal demi soal dengan titik aman, pakai bantuan 50:50, Tanya Kelas & Ganti Soal, lalu hadapi pertanyaan \"Jawaban terakhir?\". Amankan poin atau ambil risiko demi bintang tertinggi! (SOAL BISA DI UBAH lewat Excel)",
       "howToPlay": [
         "Pilih 1–4 pemain/regu dan panjang tangga bintang (8, 12, atau 15 soal). Peserta maju ke panggung bergiliran.",
         "Pilih jawaban lalu kunci. Bingung? Pakai bantuan 50:50, Tanya Kelas (polling teman sekelas), atau Ganti Soal.",
@@ -148,7 +148,7 @@ window.LOKAMAIN_LIVE_DATA = {
       "learningGoals": [
         "Membangun rasa percaya diri tampil dan menjawab di depan kelas.",
         "Melatih pengambilan keputusan dan strategi memakai bantuan.",
-        "Ganti soal sangat mudah di Mode Guru: tempel soal dari Word/WhatsApp, atau buat otomatis dengan AI gratis (ChatGPT/Gemini). Excel juga bisa."
+        "Bank soal fleksibel: guru bisa mengganti soal lewat impor/ekspor Excel (Mode Guru)."
       ],
       "gameUrl": "games/panggung-kuis/",
       "sampleQuestion": "Planet terbesar di tata surya kita adalah...",
@@ -176,7 +176,7 @@ window.LOKAMAIN_LIVE_DATA = {
       "price": 40000,
       "image": "assets/games/game-17942834363630c95.mp4",
       "coverImage": "assets/games/game-benteng-nusantara-cover.jpg",
-      "shortDesc": "Pertahankan benteng dari serbuan pasukan Kabut Lupa! Setiap jawaban benar memberi emas untuk membangun & menaikkan 4 jenis menara. Hadapi Kalong, Golem, Jamur, sampai bos Raja Kabut — pukul Gong Semangat saat genting! (SOAL BISA DIUBAH: tinggal tempel dari Word/WhatsApp atau buat dengan AI gratis)",
+      "shortDesc": "Pertahankan benteng dari serbuan pasukan Kabut Lupa! Setiap jawaban benar memberi emas untuk membangun & menaikkan 4 jenis menara. Hadapi Kalong, Golem, Jamur, sampai bos Raja Kabut — pukul Gong Semangat saat genting! (SOAL BISA DI UBAH lewat Excel)",
       "howToPlay": [
         "Pilih 1–4 tim yang bekerja sama menjaga benteng. Sebelum gelombang musuh datang, jawab soal untuk mendapat emas.",
         "Pakai emas untuk membangun atau menaikkan menara di jalur musuh. Tiap menara punya kekuatan berbeda.",
@@ -185,7 +185,7 @@ window.LOKAMAIN_LIVE_DATA = {
       "learningGoals": [
         "Mengulang materi pelajaran sambil menyusun strategi bersama.",
         "Melatih kerja sama tim, perencanaan, dan ketahanan menghadapi tantangan.",
-        "Ganti soal sangat mudah di Mode Guru: tempel soal dari Word/WhatsApp, atau buat otomatis dengan AI gratis (ChatGPT/Gemini). Excel juga bisa."
+        "Bank soal fleksibel: guru bisa mengganti soal lewat impor/ekspor Excel (Mode Guru)."
       ],
       "gameUrl": "games/benteng-nusantara/",
       "sampleQuestion": "Proses tumbuhan hijau membuat makanan sendiri dengan bantuan cahaya matahari disebut...",
@@ -213,7 +213,7 @@ window.LOKAMAIN_LIVE_DATA = {
       "price": 30000,
       "image": "assets/games/game-1794217753733029d.mp4",
       "coverImage": "assets/games/game-1794208448934f5a2.jpg",
-      "shortDesc": "Kuis rebutan bajak laut 1–4 pemain. Yang pertama menjawab benar menggali petak harta di peta: koin, peti emas, beo pencuri, bom, atau Kraken! (SOAL BISA DIUBAH: tinggal tempel dari Word/WhatsApp atau buat dengan AI gratis)",
+      "shortDesc": "Kuis rebutan bajak laut 1–4 pemain. Yang pertama menjawab benar menggali petak harta di peta: koin, peti emas, beo pencuri, bom, atau Kraken! (SOAL BISA DI UBAH lewat Excel)",
       "howToPlay": [
         "Buka game di Smart TV/IFP atau laptop, lalu pilih jumlah kapten (1–4 pemain; main sendiri melawan Kapten Robot).",
         "Soal tampil di atas untuk semua pemain. Jawab di pad warna masing-masing (layar sentuh) atau tombol keyboard.",
@@ -222,7 +222,7 @@ window.LOKAMAIN_LIVE_DATA = {
       "learningGoals": [
         "Menguatkan pemahaman materi pelajaran melalui kuis yang cepat dan kompetitif.",
         "Melatih ketelitian membaca soal, kecepatan berpikir, dan sportivitas.",
-        "Ganti soal sangat mudah di Mode Guru: tempel soal dari Word/WhatsApp, atau buat otomatis dengan AI gratis (ChatGPT/Gemini). Excel juga bisa."
+        "Guru bebas mengganti bank soal sesuai mata pelajaran lewat impor/ekspor Excel."
       ],
       "gameUrl": "games/harta-karun/",
       "sampleQuestion": "Benua terluas di dunia yang juga memiliki jumlah penduduk terbanyak adalah Benua...",
@@ -249,7 +249,7 @@ window.LOKAMAIN_LIVE_DATA = {
       "price": 25000,
       "image": "assets/games/game-1794228274946ec88.mp4",
       "coverImage": "assets/games/game-17942084489833542-v2.jpg",
-      "shortDesc": "Duel roket antariksa 2 pemain di satu peta (main sendiri lawan Robot)! Soal tampil dengan slow-motion untuk dibaca, lalu rebutan menabrak kotak jawaban yang benar. Ada rudal pelacak, meteor, item seru & analog di layar untuk IFP. (SOAL BISA DIUBAH: tinggal tempel dari Word/WhatsApp atau buat dengan AI gratis)",
+      "shortDesc": "Duel roket antariksa 2 pemain di satu peta (main sendiri lawan Robot)! Soal tampil dengan slow-motion untuk dibaca, lalu rebutan menabrak kotak jawaban yang benar. Ada rudal pelacak, meteor, item seru & analog di layar untuk IFP. (SOAL BISA DI UBAH lewat Excel)",
       "howToPlay": [
         "Pilih 1–2 pemain (main sendiri melawan Robot). Gerakkan roket dengan analog di layar (IFP/layar sentuh), WASD, tombol panah/remote TV, atau gamepad.",
         "Soal muncul di papan atas dan permainan jadi slow-motion untuk membaca. Lalu 3 kotak jawaban muncul acak — tabrak yang BENAR lebih dulu untuk +1 poin.",
@@ -258,7 +258,7 @@ window.LOKAMAIN_LIVE_DATA = {
       "learningGoals": [
         "Mengulang materi pelajaran dengan suasana balapan yang seru.",
         "Melatih fokus dan kecepatan menjawab secara sportif.",
-        "Ganti soal sangat mudah di Mode Guru: tempel soal dari Word/WhatsApp, atau buat otomatis dengan AI gratis (ChatGPT/Gemini). Excel juga bisa."
+        "Bank soal fleksibel: guru bisa mengganti soal lewat impor/ekspor Excel."
       ],
       "gameUrl": "games/balap-roket/",
       "sampleQuestion": "Samudera terluas di permukaan bumi yang menutupi sepertiga luas dunia adalah Samudera...",
@@ -286,7 +286,7 @@ window.LOKAMAIN_LIVE_DATA = {
       "price": 30000,
       "image": "assets/games/game-17942331735799805.mp4",
       "coverImage": "assets/games/game-179420844902549ee.jpg",
-      "shortDesc": "Balapan lari 2 pemain dalam satu layar! Jawab soal secepatnya untuk dapat turbo, lompat dan sleding melewati rintangan, lalu lempar pisang agar lawan terpeleset. Grafis pegunungan cerah & animasi seru, tetap ringan untuk IFP. (SOAL BISA DIUBAH: tinggal tempel dari Word/WhatsApp atau buat dengan AI gratis)",
+      "shortDesc": "Balapan lari 2 pemain dalam satu layar! Jawab soal secepatnya untuk dapat turbo, lompat dan sleding melewati rintangan, lalu lempar pisang agar lawan terpeleset. Grafis pegunungan cerah & animasi seru, tetap ringan untuk IFP. (SOAL BISA DI UBAH lewat Excel)",
       "howToPlay": [
         "Dua pemain berdiri di depan layar: Pemain 1 di sisi kiri, Pemain 2 di sisi kanan.",
         "Saat soal muncul, pilih jawaban dengan ◀ ▶ lalu tekan ⬆ (atau sentuh jawabannya). Benar = turbo, salah = pusing 3 detik.",
@@ -295,7 +295,7 @@ window.LOKAMAIN_LIVE_DATA = {
       "learningGoals": [
         "Melatih membaca soal dengan cepat dan tepat.",
         "Menggabungkan belajar dengan gerak dan koordinasi tangan–mata.",
-        "Ganti soal sangat mudah di Mode Guru: tempel soal dari Word/WhatsApp, atau buat otomatis dengan AI gratis (ChatGPT/Gemini). Excel juga bisa."
+        "Soal dapat diganti guru sesuai materi lewat impor/ekspor Excel."
       ],
       "gameUrl": "games/super-mario/",
       "sampleQuestion": "Daratan sempit yang menjorok masuk ke arah laut disebut...",
@@ -322,7 +322,7 @@ window.LOKAMAIN_LIVE_DATA = {
       "price": 35000,
       "image": "assets/games/game-17942177815442a7b.mp4",
       "coverImage": "assets/games/game-17942084490745a7a.jpg",
-      "shortDesc": "Game kamera 1 pemain: terbangkan pesawat menembus awan dengan gerak tubuh! Hidung untuk naik/turun, tangan direntangkan seperti sayap untuk belok, lalu lewati gerbang jawaban yang benar. (SOAL BISA DIUBAH: tinggal tempel dari Word/WhatsApp atau buat dengan AI gratis)",
+      "shortDesc": "Game kamera 1 pemain: terbangkan pesawat menembus awan dengan gerak tubuh! Hidung untuk naik/turun, tangan direntangkan seperti sayap untuk belok, lalu lewati gerbang jawaban yang benar. (SOAL BISA DI UBAH lewat Excel)",
       "howToPlay": [
         "Nyalakan kamera web, atur tinggi badan pemain (100–200 cm), lalu berdiri di depan kamera.",
         "Rentangkan kedua tangan untuk lepas landas; turunkan tangan kanan/kiri untuk belok, gerakkan kepala untuk naik/turun.",
@@ -331,7 +331,7 @@ window.LOKAMAIN_LIVE_DATA = {
       "learningGoals": [
         "Belajar materi pelajaran sambil bergerak aktif (kinestetik).",
         "Melatih koordinasi tubuh, keseimbangan, dan fokus.",
-        "Bisa dimainkan tanpa kamera memakai keyboard/mouse; soal tinggal ditempel atau dibuat dengan AI gratis."
+        "Bisa dimainkan tanpa kamera memakai keyboard/mouse; soal bisa diganti lewat Excel."
       ],
       "gameUrl": "games/pilot-cerdas/",
       "sampleQuestion": "Garis khayal yang memisahkan persebaran fauna Asiatis (barat) dengan fauna Peralihan (tengah) adalah...",
@@ -359,7 +359,7 @@ window.LOKAMAIN_LIVE_DATA = {
       "price": 40000,
       "image": "assets/games/game-1794218006936873b.mp4",
       "coverImage": "assets/games/game-1794208449124a479.jpg",
-      "shortDesc": "Game edukasi berbasis gerak tubuh dengan papan ular tangga interaktif 1-4 pemain. (SOAL BISA DIUBAH: tinggal tempel dari Word/WhatsApp atau buat dengan AI gratis)",
+      "shortDesc": "Game edukasi berbasis gerak tubuh dengan papan ular tangga interaktif 1-4 pemain. (SOAL BISA DI UBAH)",
       "howToPlay": [
         "Hubungkan laptop ke Smart TV atau proyektor kelas dan aktifkan kamera web.",
         "Pemain 1 dan Pemain 2 berdiri di depan kamera untuk melempar dadu dengan pose tubuh.",
@@ -368,8 +368,7 @@ window.LOKAMAIN_LIVE_DATA = {
       "learningGoals": [
         "Mengulang materi pelajaran sesuai bank soal guru sambil bergerak aktif.",
         "Pembelajaran aktif kinestetik yang melatih motorik kasar dan fokus siswa.",
-        "Meningkatkan partisipasi dan antusiasme belajar kelompok di ruang kelas.",
-        "Ganti soal sangat mudah di Mode Guru: tempel soal dari Word/WhatsApp, atau buat otomatis dengan AI gratis (ChatGPT/Gemini). Excel juga bisa."
+        "Meningkatkan partisipasi dan antusiasme belajar kelompok di ruang kelas."
       ],
       "gameUrl": "games/ular-tangga/",
       "sampleQuestion": "Secara geografis, kepulauan Indonesia berada di antara dua benua, yaitu...",
@@ -394,7 +393,7 @@ window.LOKAMAIN_LIVE_DATA = {
       "device": "Smart TV, Laptop & Kamera Web",
       "price": 25000,
       "image": "assets/games/game-1794217860533f815.mp4",
-      "shortDesc": "Game kuis interaktif dengan navigasi arah kapal menggunakan sensor gerakan hidung/wajah (AI Face Detection) di depan kamera. (SOAL BISA DIUBAH: tinggal tempel dari Word/WhatsApp atau buat dengan AI gratis)",
+      "shortDesc": "Game kuis interaktif (SOAL BISA DI UBAH) dengan navigasi arah kapal menggunakan sensor gerakan hidung/wajah (AI Face Detection) di depan kamera.",
       "howToPlay": [
         "Nyalakan kamera web laptop atau hubungkan ke Smart TV kelas.",
         "Daftarkan nama 2–4 siswa pemain untuk saling berkompetisi secara bergantian.",
@@ -403,8 +402,7 @@ window.LOKAMAIN_LIVE_DATA = {
       "learningGoals": [
         "Mengulang materi pelajaran sesuai bank soal guru sambil berpetualang.",
         "Melatih motorik halus dan koordinasi fokus visual siswa secara aktif dan menyenangkan.",
-        "Mempermudah guru mengelola kuis kelas berkat fitur Bank Soal yang fleksibel.",
-        "Ganti soal sangat mudah di Mode Guru: tempel soal dari Word/WhatsApp, atau buat otomatis dengan AI gratis (ChatGPT/Gemini). Excel juga bisa."
+        "Mempermudah guru mengelola kuis kelas berkat fitur Bank Soal yang fleksibel."
       ],
       "gameUrl": "games/ekspedisi-kapal/",
       "sampleQuestion": "Benua terbesar di dunia adalah...",
@@ -431,7 +429,7 @@ window.LOKAMAIN_LIVE_DATA = {
       "price": 15000,
       "image": "assets/games/game-17942174553382120.mp4",
       "coverImage": "assets/games/game-17942109454878d06.jpg",
-      "shortDesc": "Game PAUD seret-dan-taruh: seret buah jawaban yang benar dari pohon ke dalam keranjang! Soal dibacakan otomatis, cocok untuk layar sentuh. (SOAL BISA DIUBAH: tinggal tempel dari Word/WhatsApp atau buat dengan AI gratis)",
+      "shortDesc": "Game PAUD seret-dan-taruh: seret buah jawaban yang benar dari pohon ke dalam keranjang! Soal dibacakan otomatis, cocok untuk layar sentuh. (SOAL BISA DI UBAH lewat Excel)",
       "howToPlay": [
         "Soal dibacakan otomatis — dengarkan baik-baik.",
         "Seret (geser) buah yang membawa jawaban benar ke dalam keranjang.",
@@ -440,7 +438,7 @@ window.LOKAMAIN_LIVE_DATA = {
       "learningGoals": [
         "Mengenal nama dan warna buah-buahan.",
         "Melatih fokus dan koordinasi mata–tangan anak usia dini.",
-        "Ganti soal sangat mudah: tempel soal dari Word/WhatsApp atau buat dengan AI gratis — boleh pakai emoji sebagai gambar."
+        "Guru bisa mengganti soal (boleh pakai emoji sebagai gambar) lewat Excel."
       ],
       "gameUrl": "games/paud-kebun-buah/",
       "sampleQuestion": "Mana buah PISANG?",
@@ -466,7 +464,7 @@ window.LOKAMAIN_LIVE_DATA = {
       "price": 15000,
       "image": "assets/games/game-1794217496095e064.mp4",
       "coverImage": "assets/games/game-1794210945519b233.jpg",
-      "shortDesc": "Ketuk hewan satu per satu untuk menghitung (angkanya muncul & dibacakan), lalu pilih papan angka yang benar di pagar. Belajar berhitung sambil bermain! (SOAL BISA DIUBAH: tinggal tempel dari Word/WhatsApp atau buat dengan AI gratis)",
+      "shortDesc": "Ketuk hewan satu per satu untuk menghitung (angkanya muncul & dibacakan), lalu pilih papan angka yang benar di pagar. Belajar berhitung sambil bermain! (SOAL BISA DI UBAH lewat Excel)",
       "howToPlay": [
         "Hewan-hewan datang ke peternakan sesuai soal.",
         "Ketuk setiap hewan untuk menghitung — angkanya muncul dan dibacakan.",
@@ -475,7 +473,7 @@ window.LOKAMAIN_LIVE_DATA = {
       "learningGoals": [
         "Mengenal angka dan berhitung 1–10.",
         "Mengenal konsep banyak–sedikit dan penjumlahan sederhana.",
-        "Ganti soal sangat mudah di Mode Guru: tempel soal dari Word/WhatsApp, atau buat otomatis dengan AI gratis (ChatGPT/Gemini). Excel juga bisa."
+        "Soal dapat diganti guru lewat impor/ekspor Excel."
       ],
       "gameUrl": "games/paud-hitung-hewan/",
       "sampleQuestion": "Ada berapa ayam? 🐔🐔🐔",
@@ -501,7 +499,7 @@ window.LOKAMAIN_LIVE_DATA = {
       "price": 15000,
       "image": "assets/games/game-17942175221047c5e.mp4",
       "coverImage": "assets/games/game-179421094554863b9.jpg",
-      "shortDesc": "Balon-balon huruf terbang ke langit — letuskan balon dengan jawaban yang benar sebelum terbang menjauh! (SOAL BISA DIUBAH: tinggal tempel dari Word/WhatsApp atau buat dengan AI gratis)",
+      "shortDesc": "Balon-balon huruf terbang ke langit — letuskan balon dengan jawaban yang benar sebelum terbang menjauh! (SOAL BISA DI UBAH lewat Excel)",
       "howToPlay": [
         "Dengarkan soal yang dibacakan.",
         "Balon-balon jawaban terbang dari bawah ke atas.",
@@ -510,7 +508,7 @@ window.LOKAMAIN_LIVE_DATA = {
       "learningGoals": [
         "Mengenal huruf kapital dan huruf awal kata.",
         "Melatih kesiapan membaca anak usia dini.",
-        "Ganti soal sangat mudah di Mode Guru: tempel soal dari Word/WhatsApp, atau buat otomatis dengan AI gratis (ChatGPT/Gemini). Excel juga bisa."
+        "Soal dapat diganti guru lewat impor/ekspor Excel."
       ],
       "gameUrl": "games/paud-balon-huruf/",
       "sampleQuestion": "Huruf awal dari KUCING 🐱 adalah…",
@@ -536,7 +534,7 @@ window.LOKAMAIN_LIVE_DATA = {
       "price": 15000,
       "image": "assets/games/game-17942175461100c68.mp4",
       "coverImage": "assets/games/game-1794210945580e4c8.jpg",
-      "shortDesc": "Ayo mewarnai kereta! Pilih kaleng cat dengan jawaban yang benar, kuas terbang dan mewarnai gerbong satu per satu. (SOAL BISA DIUBAH: tinggal tempel dari Word/WhatsApp atau buat dengan AI gratis)",
+      "shortDesc": "Ayo mewarnai kereta! Pilih kaleng cat dengan jawaban yang benar, kuas terbang dan mewarnai gerbong satu per satu. (SOAL BISA DI UBAH lewat Excel)",
       "howToPlay": [
         "Dengarkan soal tentang warna dan bentuk.",
         "Ketuk kaleng cat yang bertuliskan jawaban benar.",
@@ -545,7 +543,7 @@ window.LOKAMAIN_LIVE_DATA = {
       "learningGoals": [
         "Mengenal warna dasar dan bentuk geometri sederhana.",
         "Melatih daya amat dan membedakan objek.",
-        "Ganti soal sangat mudah di Mode Guru: tempel soal dari Word/WhatsApp, atau buat otomatis dengan AI gratis (ChatGPT/Gemini). Excel juga bisa."
+        "Soal dapat diganti guru lewat impor/ekspor Excel."
       ],
       "gameUrl": "games/paud-kereta-warna/",
       "sampleQuestion": "Mana yang berwarna MERAH?",
@@ -571,7 +569,7 @@ window.LOKAMAIN_LIVE_DATA = {
       "price": 15000,
       "image": "assets/games/game-1794217570327769f.mp4",
       "coverImage": "assets/games/game-1794210945616e3ac.jpg",
-      "shortDesc": "Ayo memancing! Ikan-ikan berenang membawa jawaban — ketuk ikan yang benar, kail turun dan ikannya ditarik ke ember. (SOAL BISA DIUBAH: tinggal tempel dari Word/WhatsApp atau buat dengan AI gratis)",
+      "shortDesc": "Ayo memancing! Ikan-ikan berenang membawa jawaban — ketuk ikan yang benar, kail turun dan ikannya ditarik ke ember. (SOAL BISA DI UBAH lewat Excel)",
       "howToPlay": [
         "Dengarkan soal tentang hewan.",
         "Ketuk ikan yang membawa jawaban benar.",
@@ -580,7 +578,7 @@ window.LOKAMAIN_LIVE_DATA = {
       "learningGoals": [
         "Mengenal nama, suara, dan ciri hewan.",
         "Menumbuhkan rasa sayang pada makhluk hidup.",
-        "Ganti soal sangat mudah di Mode Guru: tempel soal dari Word/WhatsApp, atau buat otomatis dengan AI gratis (ChatGPT/Gemini). Excel juga bisa."
+        "Soal dapat diganti guru lewat impor/ekspor Excel."
       ],
       "gameUrl": "games/paud-akuarium/",
       "sampleQuestion": "Hewan apa yang bersuara \"MOO\"?",
@@ -606,7 +604,7 @@ window.LOKAMAIN_LIVE_DATA = {
       "price": 20000,
       "image": "assets/games/game-1794217594346b513.mp4",
       "coverImage": "assets/games/game-179421094564790c3.jpg",
-      "shortDesc": "Balapan memanjat pohon kelapa! Mode 2 tim = REBUTAN serentak (tiap tim punya tombol sendiri), jawab kurang dari 5 detik dapat bonus naik 2. Mode 1 kelas melawan waktu. (SOAL BISA DIUBAH: tinggal tempel dari Word/WhatsApp atau buat dengan AI gratis)",
+      "shortDesc": "Balapan memanjat pohon kelapa! Mode 2 tim = REBUTAN serentak (tiap tim punya tombol sendiri), jawab kurang dari 5 detik dapat bonus naik 2. Mode 1 kelas melawan waktu. (SOAL BISA DI UBAH lewat Excel)",
       "howToPlay": [
         "Pilih 1 Kelas (melawan waktu) atau 2 Tim (rebutan serentak).",
         "Tim yang pertama menjawab benar memanjat; jawab < 5 detik = naik 2!",
@@ -615,7 +613,7 @@ window.LOKAMAIN_LIVE_DATA = {
       "learningGoals": [
         "Melatih operasi hitung, bilangan, bangun datar, dan satuan.",
         "Menumbuhkan kerja sama dan sportivitas lewat mode tim.",
-        "Ganti soal sangat mudah di Mode Guru: tempel soal dari Word/WhatsApp, atau buat otomatis dengan AI gratis (ChatGPT/Gemini). Excel juga bisa."
+        "Soal dapat diganti guru lewat impor/ekspor Excel."
       ],
       "gameUrl": "games/sd-panjat-kelapa/",
       "sampleQuestion": "7 + 8 = …",
@@ -642,7 +640,7 @@ window.LOKAMAIN_LIVE_DATA = {
       "price": 20000,
       "image": "assets/games/game-1794217623175dcf1.mp4",
       "coverImage": "assets/games/game-17942109456814e29.jpg",
-      "shortDesc": "Kemudikan kapal selam! Gerbang-gerbang jawaban datang dari kanan — gerakkan kapal ▲▼ ke gerbang yang benar sebelum tiba, lalu menyelam makin dalam. (SOAL BISA DIUBAH: tinggal tempel dari Word/WhatsApp atau buat dengan AI gratis)",
+      "shortDesc": "Kemudikan kapal selam! Gerbang-gerbang jawaban datang dari kanan — gerakkan kapal ▲▼ ke gerbang yang benar sebelum tiba, lalu menyelam makin dalam. (SOAL BISA DI UBAH lewat Excel)",
       "howToPlay": [
         "Baca soal, gerbang-gerbang jawaban mendekat.",
         "Gerakkan kapal selam ▲▼ (atau sentuh jalurnya) ke gerbang yang benar.",
@@ -651,7 +649,7 @@ window.LOKAMAIN_LIVE_DATA = {
       "learningGoals": [
         "Mengulang materi pelajaran dengan tantangan menyelam yang seru.",
         "Menumbuhkan rasa ingin tahu tentang alam.",
-        "Ganti soal sangat mudah di Mode Guru: tempel soal dari Word/WhatsApp, atau buat otomatis dengan AI gratis (ChatGPT/Gemini). Excel juga bisa."
+        "Soal dapat diganti guru lewat impor/ekspor Excel."
       ],
       "gameUrl": "games/sd-kapal-selam/",
       "sampleQuestion": "Tumbuhan membuat makanannya sendiri melalui proses …",
@@ -678,7 +676,7 @@ window.LOKAMAIN_LIVE_DATA = {
       "price": 20000,
       "image": "assets/games/game-17942176475784259.mp4",
       "coverImage": "assets/games/game-1794210945715ccb1.jpg",
-      "shortDesc": "Tarik ketapel dan tembakkan roket ke lampion jawaban yang benar — DUAR! kembang api menyala dan lampu kota hidup. (SOAL BISA DIUBAH: tinggal tempel dari Word/WhatsApp atau buat dengan AI gratis)",
+      "shortDesc": "Tarik ketapel dan tembakkan roket ke lampion jawaban yang benar — DUAR! kembang api menyala dan lampu kota hidup. (SOAL BISA DI UBAH lewat Excel)",
       "howToPlay": [
         "Baca soal, lampion-lampion jawaban melayang di langit.",
         "Tarik ketapel ke bawah, bidik, lalu lepaskan (atau ketuk lampion).",
@@ -687,7 +685,7 @@ window.LOKAMAIN_LIVE_DATA = {
       "learningGoals": [
         "Memahami sinonim, antonim, kata baku, tanda baca, dan kalimat.",
         "Memperkaya kosakata dan pemahaman peribahasa.",
-        "Ganti soal sangat mudah di Mode Guru: tempel soal dari Word/WhatsApp, atau buat otomatis dengan AI gratis (ChatGPT/Gemini). Excel juga bisa."
+        "Soal dapat diganti guru lewat impor/ekspor Excel."
       ],
       "gameUrl": "games/sd-kembang-api/",
       "sampleQuestion": "Persamaan kata (sinonim) \"pandai\" adalah …",
@@ -714,7 +712,7 @@ window.LOKAMAIN_LIVE_DATA = {
       "price": 20000,
       "image": "assets/games/game-179421767181170a9.mp4",
       "coverImage": "assets/games/game-179421094574504ba.jpg",
-      "shortDesc": "Petualangan memilih jalan! Setiap jalan berakhir di papan jawaban — pilih yang benar dan Dino menemukan telur yang menetas, salah = jalan buntu. (SOAL BISA DIUBAH: tinggal tempel dari Word/WhatsApp atau buat dengan AI gratis)",
+      "shortDesc": "Petualangan memilih jalan! Setiap jalan berakhir di papan jawaban — pilih yang benar dan Dino menemukan telur yang menetas, salah = jalan buntu. (SOAL BISA DI UBAH lewat Excel)",
       "howToPlay": [
         "Baca soal, lihat papan jawaban di ujung tiap jalan.",
         "Ketuk papan — Dino berjalan ke sana.",
@@ -723,7 +721,7 @@ window.LOKAMAIN_LIVE_DATA = {
       "learningGoals": [
         "Melatih membaca soal dan memilih jawaban dengan teliti.",
         "Menumbuhkan rasa ingin tahu dan semangat belajar.",
-        "Ganti soal sangat mudah di Mode Guru: tempel soal dari Word/WhatsApp, atau buat otomatis dengan AI gratis (ChatGPT/Gemini). Excel juga bisa."
+        "Soal dapat diganti guru lewat impor/ekspor Excel."
       ],
       "gameUrl": "games/sd-telur-dino/",
       "sampleQuestion": "Lambang sila pertama Pancasila adalah …",
@@ -750,7 +748,7 @@ window.LOKAMAIN_LIVE_DATA = {
       "price": 20000,
       "image": "assets/games/game-1794217696250a077.mp4",
       "coverImage": "assets/games/game-17942109457778603.jpg",
-      "shortDesc": "Jawab soal dengan benar, lalu TEMBAK bola dengan timing tepat: zona hijau 3 poin (swish!), kuning 2, merah 1. Bisa 1 kelas atau 2 tim. (SOAL BISA DIUBAH: tinggal tempel dari Word/WhatsApp atau buat dengan AI gratis)",
+      "shortDesc": "Jawab soal dengan benar, lalu TEMBAK bola dengan timing tepat: zona hijau 3 poin (swish!), kuning 2, merah 1. Bisa 1 kelas atau 2 tim. (SOAL BISA DI UBAH lewat Excel)",
       "howToPlay": [
         "Pilih 1 Kelas atau 2 Tim (giliran bergantian).",
         "Jawab benar untuk mendapat kesempatan menembak.",
@@ -759,7 +757,7 @@ window.LOKAMAIN_LIVE_DATA = {
       "learningGoals": [
         "Mengulang materi pelajaran dengan suasana olahraga yang seru.",
         "Menumbuhkan kerja sama dan sportivitas lewat mode tim.",
-        "Ganti soal sangat mudah di Mode Guru: tempel soal dari Word/WhatsApp, atau buat otomatis dengan AI gratis (ChatGPT/Gemini). Excel juga bisa."
+        "Soal dapat diganti guru lewat impor/ekspor Excel."
       ],
       "gameUrl": "games/sd-basket-juara/",
       "sampleQuestion": "Ibu kota provinsi Jawa Barat adalah …",

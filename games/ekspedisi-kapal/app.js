@@ -323,7 +323,14 @@ class Game {
       this.detectLoop();
     } catch (e) { st('Deteksi gagal (perlu internet): pakai mouse / ← →'); }
   }
-  needFace() { return ['READY', 'SAIL', 'SQUAT'].includes(this.state); }
+  // deteksi juga berjalan di layar "siap?" & hasil, supaya titik hidung langsung bergerak (siswa tahu sensornya aktif)
+  needFace() { return ['WAIT', 'READY', 'SAIL', 'RESULT', 'TASK', 'SQUAT'].includes(this.state); }
+  faceStatus() {
+    if (!this.fdReady) return;
+    const on = this.faceActive(); if (on === this.lastFaceOn) return; this.lastFaceOn = on;
+    const h = $('camHint'); h.textContent = on ? '✅ Wajah terdeteksi — titik merah = hidungmu' : '🔍 Wajah belum terlihat: hadap kamera, jarak ±1 meter, cukup cahaya';
+    h.style.color = on ? '#15803d' : '#b45309';
+  }
   async detectLoop() {
     if (this.fdReady && this.needFace() && !this.busy && !document.hidden && this.video.readyState >= 2) {
       this.busy = true;
@@ -394,7 +401,18 @@ class Game {
   }
   startTurn() {
     this.clear();
-    if (this.qi >= this.deck.length) return this.finish();
+    // Soal habis sebelum ronde selesai (mis. guru hanya menempel sedikit soal): kocok ulang & pakai lagi,
+    // supaya semua pemain tetap dapat giliran yang sama dan ronde berjalan penuh.
+    if (this.qi >= this.deck.length) {
+      const prev = this.q ? keyOf(this.q) : null;
+      this.deck = this.buildDeck(); this.qi = 0;
+      if (this.deck.length > 1 && prev && keyOf(this.deck[0]) === prev) { const j = 1 + Math.floor(rnd() * (this.deck.length - 1)); [this.deck[0], this.deck[j]] = [this.deck[j], this.deck[0]]; }
+    }
+    if (!this.deck.length) {
+      this.state = 'IDLE';
+      this.panel({ tag: '⚠️ Bank soal kosong', bg: '#fde047', icon: '📋', title: 'Belum ada soal', text: 'Klik ⚙️ Guru (PIN 1234), lalu 📋 Tempel Soal atau 🔄 Reset Bawaan untuk mengisi soal.' });
+      return;
+    }
     const p = this.players[this.cur];
     this.renderPlayers();
     this.q = this.deck[this.qi++]; this.markSeen(this.q);
@@ -505,6 +523,7 @@ class Game {
       const sx = this.shipX; this.wake.push({ x: sx - 22, y: SHIP_Y + 30, vx: -26 - Math.random() * 14, r: 3, life: 0.9 }, { x: sx + 22, y: SHIP_Y + 30, vx: 26 + Math.random() * 14, r: 3, life: 0.9 });
     }
     this.shake = Math.max(0, this.shake - dt);
+    this.faceStatus();
     if (this.state === 'READY') {
       this.steer(dt, now);
       if (this.faceActive()) this.samples.push(1 - this.face.x), this.samples.length > 20 && this.samples.shift();
@@ -585,14 +604,16 @@ class Game {
         $('pTitle').textContent = 'JONGKOK SEKARANG!'; $('pExtra').textContent = this.baseY === null ? 'Kamera tidak melihat wajah: teman menilai ✅/❌' : '';
       }
     } else if (this.sqStage === 'go') {
-      $('pTimer').textContent = Math.max(0, Math.ceil(4 - el));
       if (this.baseY !== null) {
+        $('pTimer').textContent = Math.max(0, Math.ceil(4 - el));
         const drop = this.face.y - this.baseY, th = Math.max(0.07, this.baseH * 0.6);
         const lost = !this.faceActive() && el > 0.5 && (this.face.y - this.baseY) > 0.04;
         if (this.faceActive() && drop > th || lost) return this.manual(true);
+        if (el >= 4) this.manual(false);
+      } else {
+        // tanpa kamera: tidak dinilai otomatis — guru/teman menekan ✅ Berhasil / ❌ Gagal
+        $('pTimer').textContent = '';
       }
-      if (el >= 4 && this.baseY !== null) this.manual(false);
-      else if (el >= 8) this.manual(false);
     }
   }
   manual(ok) {
