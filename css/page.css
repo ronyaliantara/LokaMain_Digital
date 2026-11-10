@@ -1841,8 +1841,66 @@ a {
   text-align: center;
 }
 
-.soal-excel {
+.soal-two {
   margin-top: 40px;
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 18px;
+}
+
+.soal-box {
+  padding: 22px 24px;
+  background: var(--card);
+  border: var(--edge);
+  border-radius: var(--radius);
+  box-shadow: 0 4px 0 var(--ink);
+  min-width: 0;
+}
+
+.soal-box h3 {
+  font-size: 1.08rem;
+  font-weight: 700;
+}
+
+.soal-code {
+  margin: 12px 0 0;
+  padding: 12px 14px;
+  background: var(--ink);
+  color: #e2e8f0;
+  border-radius: 12px;
+  font: 600 13.5px/1.6 Consolas, 'Courier New', monospace;
+  white-space: pre-wrap;
+  overflow-wrap: anywhere;
+}
+
+.soal-box ul,
+.soal-box ol {
+  margin: 12px 0 0;
+  padding-left: 20px;
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  font-size: 14.5px;
+  color: var(--ink-soft);
+}
+
+.soal-box ul { list-style: disc; }
+.soal-box ol { list-style: decimal; }
+.soal-box li::marker { font-weight: 700; color: var(--blue-deep); }
+
+.soal-ai {
+  background: var(--blue-tint);
+}
+
+.soal-note {
+  margin-top: 10px;
+  font-size: 13.5px;
+  font-weight: 600;
+  color: var(--muted);
+}
+
+.soal-excel {
+  margin-top: 18px;
   padding: 22px 24px;
   background: var(--card);
   border: var(--edge);
@@ -1990,8 +2048,13 @@ a {
     grid-template-columns: 1fr;
   }
 
-  .soal-excel {
+  .soal-excel,
+  .soal-box {
     padding: 18px;
+  }
+
+  .soal-two {
+    grid-template-columns: 1fr;
   }
 
   .order-soal-ic {

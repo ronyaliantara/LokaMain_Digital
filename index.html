@@ -22,7 +22,7 @@
   <meta name="twitter:card" content="summary_large_image">
 
   <link rel="preload" href="assets/fonts/poppins-Bold.woff2" as="font" type="font/woff2" crossorigin>
-  <link rel="stylesheet" href="css/page.css?v=20261110c">
+  <link rel="stylesheet" href="css/page.css?v=20261111a">
 
   <script type="application/ld+json">
   {
@@ -193,41 +193,70 @@
       <div class="container">
         <div class="section-head">
           <h2 id="soal-title">Ganti soal sendiri, sesuai materi Anda</h2>
-          <p>Semua game punya <strong>Mode Guru</strong>. Soal bisa diketik langsung di game atau diisi lewat Excel, tanpa perlu menghubungi admin.</p>
+          <p>Semua game punya <strong>Mode Guru</strong>. Cara termudah: <strong>salin soal dari Word, WhatsApp, atau ChatGPT, lalu tempel</strong>. Tidak perlu Excel dan tidak perlu menghubungi admin.</p>
         </div>
 
         <div class="soal-grid">
           <ol class="soal-steps">
             <li>
-              <h3>Buka game dari link Anda</h3>
-              <p>Pakai link yang dikirim admin lewat WhatsApp, di laptop, Smart TV, atau IFP.</p>
+              <h3>Buka game, klik <span class="kbd">Guru</span>, masukkan PIN <span class="kbd">1234</span></h3>
+              <p>Pakai link dari admin, di laptop, Smart TV, atau IFP. Tombolnya bertuliskan <b>🔐 Guru</b>, <b>✏️ Guru</b>, atau <b>⚙️ Guru</b>.</p>
             </li>
             <li>
-              <h3>Klik tombol <span class="kbd">Guru</span> di bagian atas layar</h3>
-              <p>Tulisannya <b>🔐 Guru</b>, <b>✏️ Guru</b>, atau <b>⚙️ Guru</b>, tergantung gamenya.</p>
+              <h3>Klik tombol <span class="kbd">📋 Tempel Soal</span></h3>
+              <p>Tombol besar paling atas di Mode Guru.</p>
             </li>
             <li>
-              <h3>Masukkan PIN <span class="kbd">1234</span></h3>
-              <p>Lalu klik <b>Buka</b>. Daftar soal (bank soal) akan tampil.</p>
+              <h3>Salin soal Anda, lalu tempel di kotak</h3>
+              <p>Dari Word, Google Docs, chat WhatsApp, atau hasil AI. Tekan <b>Ctrl+V</b> di laptop, atau <b>tekan lama → Tempel</b> di HP/IFP. Bisa juga klik <b>📥 Tempel dari clipboard</b>.</p>
             </li>
             <li>
-              <h3>Ubah soalnya</h3>
-              <p><b>➕ Tambah Soal</b> untuk soal baru, <b>✏️</b> untuk mengedit, <b>🗑️</b> untuk menghapus. Banyak soal sekaligus? Pakai Excel (lihat di bawah).</p>
+              <h3>Cek pratinjau di sebelah kanan</h3>
+              <p>Jawaban benar ditandai hijau ✔. Soal yang salah format ditandai <b>merah</b> beserta cara memperbaikinya, dan bisa langsung diperbaiki di kotak tempel.</p>
             </li>
             <li>
-              <h3>Klik <span class="kbd">✕ Tutup</span> lalu mulai main</h3>
-              <p>Soal langsung tersimpan otomatis, tidak perlu menekan simpan lagi.</p>
+              <h3>Klik <span class="kbd">💾 Simpan</span> lalu mulai main</h3>
+              <p>Pilih <b>Ganti semua soal lama</b> atau <b>Tambahkan</b>. Soal langsung dipakai di game.</p>
             </li>
           </ol>
 
           <figure class="soal-shot">
-            <img src="assets/tutorial/mode-guru.jpg" width="1500" height="960" loading="lazy" alt="Tampilan Mode Guru: tombol Tambah Soal, Template Excel, Ekspor Excel, Impor Excel, Soal Bawaan, dan tabel daftar soal dengan kunci jawaban">
-            <figcaption>Tampilan Mode Guru di dalam game</figcaption>
+            <img src="assets/tutorial/tempel-soal.jpg" width="1188" height="764" loading="lazy" alt="Panel Tempel Soal: kotak untuk menempel soal di kiri, pratinjau kartu soal di kanan dengan jawaban benar berwarna hijau dan soal yang belum ada kuncinya ditandai merah">
+            <figcaption>Panel Tempel Soal: tempel di kiri, pratinjau soal di kanan</figcaption>
           </figure>
         </div>
 
+        <div class="soal-two">
+          <div class="soal-box">
+            <h3>📝 Format soal yang dibaca otomatis</h3>
+            <pre class="soal-code">1. Ibu kota Indonesia adalah...
+A. Jakarta
+B. Bandung
+C. Surabaya
+D. Medan
+Jawaban: A
+Pembahasan: Jakarta adalah ibu kota Indonesia.</pre>
+            <ul>
+              <li>Pembahasan boleh dikosongkan. Pilihan cukup 2–4 (A–D).</li>
+              <li>Kunci di akhir dokumen juga bisa: <b>Kunci: 1. A 2. C 3. B</b></li>
+              <li>Tanda bintang pada jawaban benar juga bisa: <b>B. Jupiter*</b></li>
+              <li>Soal 5 pilihan (A–E) otomatis dijadikan 4 tanpa membuang jawaban benar.</li>
+            </ul>
+          </div>
+          <div class="soal-box soal-ai">
+            <h3>🤖 Belum punya soal? Buat dengan AI, gratis</h3>
+            <ol>
+              <li>Di Mode Guru klik <b>🤖 Buat Soal dengan AI</b>.</li>
+              <li>Isi <b>materi</b>, <b>kelas</b>, dan <b>jumlah soal</b> (sampai 50), lalu klik <b>📋 Salin perintah untuk AI</b>.</li>
+              <li>Buka <b>ChatGPT</b>, <b>Gemini</b>, atau <b>Claude</b> (versi gratis), tempel perintahnya, lalu kirim.</li>
+              <li>Salin semua soal dari jawaban AI, kembali ke game, klik <b>📥 Tempel dari clipboard</b>, lalu <b>💾 Simpan</b>.</li>
+            </ol>
+            <p class="soal-note">Baca ulang soal dari AI sebelum dipakai, karena AI kadang keliru.</p>
+          </div>
+        </div>
+
         <div class="soal-excel">
-          <h3>Isi banyak soal sekaligus lewat Excel</h3>
+          <h3>Cara lain (lanjutan): lewat Excel</h3>
           <ol>
             <li>Di Mode Guru, klik <b>📄 Template Excel</b>. File contoh akan terunduh.</li>
             <li>Buka di Excel, WPS, atau Google Sheets. Isi <b>satu soal per baris</b>: Kategori, Pertanyaan, Pilihan A sampai D, <b>Kunci Jawaban</b> (cukup huruf A/B/C/D), dan Penjelasan (boleh kosong).</li>
@@ -237,10 +266,10 @@
         </div>
 
         <ul class="soal-tips">
-          <li><strong>Soal tersimpan di perangkat yang dipakai.</strong> Mengubah soal di laptop tidak otomatis pindah ke IFP. Klik <b>📤 Ekspor Excel</b> di laptop, lalu <b>Impor Excel</b> di IFP.</li>
-          <li><strong>Simpan file Excel Anda</strong> sebagai cadangan. Kalau data browser dihapus, soal bisa dimasukkan lagi dalam sekali impor.</li>
-          <li><strong>Pakai template dari game yang sama.</strong> Pilihan C dan D boleh dikosongkan untuk soal 2 pilihan. Beberapa game, seperti Ekspedisi Kapal dan Ular Tangga, memang hanya memakai 2 pilihan.</li>
-          <li><strong>Fitur Excel butuh internet.</strong> Tombol <b>🔄 Soal Bawaan</b> mengembalikan soal awal dari kami.</li>
+          <li><strong>Soal tersimpan di perangkat yang dipakai.</strong> Mengubah soal di laptop tidak otomatis pindah ke IFP. Cara paling mudah: simpan teks soal Anda di Word atau WhatsApp, lalu <b>tempel lagi</b> di IFP.</li>
+          <li><strong>Satu teks soal bisa dipakai di semua game.</strong> Soal yang sama tinggal ditempel di game lain. Ekspedisi Kapal dan Ular Tangga memakai 2 pilihan, jadi pilihan lainnya otomatis dikurangi.</li>
+          <li><strong>Simpan teks soal Anda</strong> sebagai cadangan. Kalau data browser dihapus, soal bisa dimasukkan lagi dalam sekali tempel.</li>
+          <li><strong>Tombol 🔄 Soal Bawaan</strong> mengembalikan soal awal dari kami. Fitur Excel butuh internet, sedangkan Tempel Soal tidak.</li>
         </ul>
       </div>
     </section>
@@ -364,16 +393,33 @@
           <p>Setelah link diterima, buka game lalu klik tombol <b>Guru</b> di bagian atas, masukkan PIN <b>1234</b>.</p>
 
           <details class="order-soal-how" open>
-            <summary>Cara 1: Ketik langsung di game</summary>
+            <summary>Cara 1 (paling mudah): Tempel Soal</summary>
             <ol>
-              <li>Klik <b>➕ Tambah Soal</b> untuk soal baru.</li>
-              <li>Klik <b>✏️</b> untuk mengubah soal, <b>🗑️</b> untuk menghapus.</li>
-              <li>Klik <b>Simpan Soal</b>, lalu <b>✕ Tutup</b>. Soal tersimpan otomatis.</li>
+              <li>Salin soal Anda dari Word, Google Docs, atau WhatsApp. Formatnya: nomor + pertanyaan, pilihan <b>A. B. C. D.</b>, lalu <b>Jawaban: A</b>.</li>
+              <li>Klik <b>📋 Tempel Soal</b>, tempel di kotak, lalu cek pratinjaunya.</li>
+              <li>Klik <b>💾 Simpan</b>. Soal langsung dipakai di game.</li>
             </ol>
           </details>
 
           <details class="order-soal-how">
-            <summary>Cara 2: Unduh, ubah di Excel, lalu impor</summary>
+            <summary>Cara 2: Buat soal dengan AI (gratis)</summary>
+            <ol>
+              <li>Klik <b>🤖 Buat Soal dengan AI</b>, isi materi, kelas, dan jumlah soal, lalu <b>Salin perintah</b>.</li>
+              <li>Tempel di ChatGPT, Gemini, atau Claude, lalu kirim.</li>
+              <li>Salin hasilnya, kembali ke game, klik <b>📥 Tempel dari clipboard</b>, lalu <b>💾 Simpan</b>.</li>
+            </ol>
+          </details>
+
+          <details class="order-soal-how">
+            <summary>Cara 3: Ketik satu per satu</summary>
+            <ol>
+              <li>Klik <b>➕ Tambah 1 Soal</b> untuk soal baru, <b>✏️</b> untuk mengubah, <b>🗑️</b> untuk menghapus.</li>
+              <li>Klik <b>Simpan Soal</b>, lalu <b>✕ Tutup</b>.</li>
+            </ol>
+          </details>
+
+          <details class="order-soal-how">
+            <summary>Cara 4 (lanjutan): Unduh, ubah di Excel, lalu impor</summary>
             <ol>
               <li><b>Unduh:</b> klik <b>📄 Template Excel</b> (file contoh kosong) atau <b>📤 Ekspor Excel</b> (berisi soal yang sudah ada di game).</li>
               <li><b>Ubah:</b> buka file di Excel, WPS, atau Google Sheets. Satu baris = satu soal. Isi Pertanyaan, Pilihan A–D, dan <b>Kunci Jawaban</b> cukup huruf A/B/C/D. Simpan sebagai <b>.xlsx</b>.</li>
@@ -385,8 +431,8 @@
             <summary>Pindah ke IFP / laptop lain</summary>
             <ol>
               <li>Soal tersimpan di perangkat yang dipakai saja.</li>
-              <li>Di perangkat lama klik <b>📤 Ekspor Excel</b>, kirim filenya (WA, flashdisk, atau Drive).</li>
-              <li>Di IFP / perangkat baru buka game, masuk Mode Guru, lalu <b>📥 Impor Excel</b>.</li>
+              <li>Paling mudah: buka game di IFP / perangkat baru, masuk Mode Guru, lalu <b>📋 Tempel Soal</b> dengan teks soal yang sama.</li>
+              <li>Atau klik <b>📤 Ekspor Excel</b> di perangkat lama, kirim filenya, lalu <b>📥 Impor Excel</b> di perangkat baru.</li>
             </ol>
           </details>
 
