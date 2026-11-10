@@ -1,5 +1,5 @@
 {
-  "updatedAt": 1794326418556,
+  "updatedAt": 1794326434786,
   "settings": {
     "storeName": "rnalt_Digital",
     "siteSubtitle": "Pilih game pembelajaran digital, lalu klik tombol WhatsApp di bawahnya untuk memesan.",
@@ -462,7 +462,7 @@
       "grade": "✏️ Soal Bisa Diubah",
       "duration": "10–15 menit",
       "device": "Smart TV / IFP, Laptop & Tablet (layar sentuh)",
-      "price": 15000,
+      "price": 10000,
       "image": "assets/games/game-1794217496095e064.mp4",
       "coverImage": "assets/games/game-1794210945519b233.jpg",
       "shortDesc": "Ketuk hewan satu per satu untuk menghitung (angkanya muncul & dibacakan), lalu pilih papan angka yang benar di pagar. Belajar berhitung sambil bermain! (SOAL BISA DI UBAH lewat Excel)",
@@ -487,7 +487,8 @@
       "levels": [
         "PAUD"
       ],
-      "originalPrice": 25000
+      "originalPrice": 15000,
+      "coverHd": ""
     },
     {
       "id": "LM-PBH",
