@@ -23,6 +23,20 @@ class GuruMixin {
     $('expBtn').onclick = () => this.downloadExcel('bank_soal.xlsx', this.questions.filter(isValid));
     $('impBtn').onclick = () => $('impFile').click();
     $('impFile').onchange = (e) => this.importExcel(e);
+    // ---- Tempel Soal (dari Word / WhatsApp / AI) — game ini memakai 2 pilihan (A/B) ----
+    const tempel = async (ai) => {
+      if (!window.TempelSoal) { alert('Fitur Tempel Soal belum termuat. Muat ulang halaman.'); return; }
+      await window.TempelSoal.open({
+        maxOpt: 2, minOpt: 2, ai, current: this.questions.filter(isValid).length,
+        onSave: (list, mode) => {
+          const qs = list.map((x) => mk(x.question, x.options[0], x.options[1], x.correct === 1 ? 'B' : 'A', x.explanation));
+          this.questions = mode === 'append' ? [...this.questions, ...qs] : qs;
+          saveQuestions(); this.renderTable();
+        }
+      }); // pesan "tersimpan" ditampilkan oleh TempelSoal (tanpa alert browser)
+    };
+    $('pasteBtn').onclick = () => tempel(false);
+    $('aiBtn').onclick = () => tempel(true);
   }
 
   openTeacher() { this.loadXLSX(); this.pause(); $('teacherModal').classList.remove('hidden'); this.renderTable(); }

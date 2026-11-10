@@ -630,7 +630,13 @@
 
       <!-- Action Toolbar -->
       <div class="p-3.5 bg-slate-900/90 border-b border-white/10 flex flex-wrap items-center justify-between gap-2">
-        <div class="flex items-center gap-2">
+        <div class="flex flex-wrap items-center gap-2">
+          <button id="pasteQuestionsBtn" class="px-4 py-2.5 rounded-xl bg-gradient-to-br from-emerald-500 to-teal-600 hover:from-emerald-400 text-white text-sm font-extrabold shadow-md shadow-emerald-600/30 flex items-center gap-1.5 cursor-pointer">
+            📋 Tempel Soal <span class="text-[11px] font-semibold opacity-90">(paling mudah)</span>
+          </button>
+          <button id="aiQuestionsBtn" class="px-4 py-2.5 rounded-xl bg-gradient-to-br from-violet-600 to-pink-600 hover:from-violet-500 text-white text-sm font-extrabold shadow-md shadow-violet-600/30 flex items-center gap-1.5 cursor-pointer">
+            🤖 Buat Soal dengan AI
+          </button>
           <button id="addQuestionBtn" class="px-3 py-2 rounded-xl bg-emerald-600 hover:bg-emerald-500 text-white text-xs font-bold shadow-md shadow-emerald-600/20 flex items-center gap-1.5 cursor-pointer">
             ➕ Tambah Soal Baru
           </button>
@@ -753,7 +759,8 @@
 
   <!-- Script Game Engine & Pose Engine -->
   <script src="pose.js?v=20261110"></script>
-  <script src="app.js?v=20261110"></script>
+  <script src="tempel-soal.js?v=1"></script>
+  <script src="app.js?v=20261111"></script>
   <script src="../lokamain-license.js?v=20261109"></script>
 </body>
 </html>

@@ -871,7 +871,8 @@ class SnakeAndLaddersGame {
       const stored = localStorage.getItem(STORAGE_KEY);
       if (stored) {
         const parsed = JSON.parse(stored);
-        if (Array.isArray(parsed) && parsed.length >= 50) {
+        // soal guru boleh berapa pun jumlahnya (dulu < 50 soal kembali ke bawaan saat dibuka ulang)
+        if (Array.isArray(parsed) && parsed.length >= 1 && parsed.every((q) => q && q.question && q.optionA && q.optionB)) {
           return parsed;
         }
       }
@@ -2376,6 +2377,25 @@ class SnakeAndLaddersGame {
     });
 
     closeDash?.addEventListener('click', () => dashModal?.classList.add('hidden'));
+
+    // Tempel Soal (dari Word / WhatsApp / AI) — Ular Tangga memakai 2 pilihan (A/B)
+    const tempelSoal = async (ai) => {
+      if (!window.TempelSoal) { alert('Fitur Tempel Soal belum termuat. Muat ulang halaman.'); return; }
+      await window.TempelSoal.open({
+        maxOpt: 2, minOpt: 2, ai, current: this.questions.length,
+        onSave: (list, mode) => {
+          let curId = mode === 'append' && this.questions.length ? Math.max(...this.questions.map((x) => x.id || 0)) + 1 : 1;
+          const qs = list.map((x) => {
+            const correct = x.correct === 1 ? 'B' : 'A';
+            return { id: curId++, category: x.category || 'Umum', question: x.question, optionA: x.options[0], optionB: x.options[1], correct, explanation: x.explanation || `Jawaban yang tepat adalah Pilihan ${correct}.` };
+          });
+          this.saveQuestions(mode === 'append' ? [...this.questions, ...qs] : qs);
+          this.renderQuestionsTable();
+        }
+      }); // pesan "tersimpan" ditampilkan oleh TempelSoal (tanpa alert browser)
+    };
+    document.getElementById('pasteQuestionsBtn')?.addEventListener('click', () => tempelSoal(false));
+    document.getElementById('aiQuestionsBtn')?.addEventListener('click', () => tempelSoal(true));
 
     // Tombol Tambah Soal
     document.getElementById('addQuestionBtn')?.addEventListener('click', () => {
