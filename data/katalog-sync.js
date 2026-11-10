@@ -1,5 +1,5 @@
 window.LOKAMAIN_LIVE_DATA = {
-  "updatedAt": 1794242674292,
+  "updatedAt": 1794273190705,
   "settings": {
     "storeName": "LokaMain Digital",
     "siteSubtitle": "Pilih game pembelajaran digital, lalu klik tombol WhatsApp di bawahnya untuk memesan.",
@@ -614,5 +614,6 @@ window.LOKAMAIN_LIVE_DATA = {
       "amount": 32000,
       "status": "Link Terkirim"
     }
-  ]
+  ],
+  "testimonials": []
 };
