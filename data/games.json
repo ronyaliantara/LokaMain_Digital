@@ -1,5 +1,5 @@
 {
-  "updatedAt": 1794326611433,
+  "updatedAt": 1794326670049,
   "settings": {
     "storeName": "rnalt_Digital",
     "siteSubtitle": "Pilih game pembelajaran digital, lalu klik tombol WhatsApp di bawahnya untuk memesan.",
@@ -99,7 +99,7 @@
       "grade": "✏️ Soal Bisa Diubah",
       "duration": "15–30 menit",
       "device": "Smart TV / IFP (layar sentuh), Laptop & Proyektor",
-      "price": 30000,
+      "price": 25000,
       "image": "assets/games/game-17942827533065b0d.mp4",
       "coverImage": "assets/games/game-tarik-tambang-cover.jpg",
       "shortDesc": "Lomba tarik tambang di kelas! Dua tim menjawab soal yang sama — jawaban benar mengisi tenaga, lalu babak ADU TENAGA: tekan secepat-cepatnya untuk menarik tali. Kuda-kuda serempak, meter sorakan & lawan jatuh ke lumpur! (SOAL BISA DI UBAH lewat Excel)",
@@ -126,7 +126,8 @@
         "SMP",
         "SMA"
       ],
-      "originalPrice": 40000
+      "originalPrice": 35000,
+      "coverHd": ""
     },
     {
       "id": "LM-PK",
