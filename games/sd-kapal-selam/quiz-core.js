@@ -1,6 +1,6 @@
 /**
  * ==========================================================================
- * quiz-core.js — Mesin bersama LokaMain Game Kuis
+ * quiz-core.js — Mesin bersama rnalt Game Kuis
  * - Bank soal (localStorage per game) + soal bawaan
  * - Mode Guru (PIN), tambah/edit/hapus soal
  * - Impor & Ekspor Excel (.xlsx) / CSV / JSON + Template
@@ -591,7 +591,7 @@
       { 'No': 1, 'Kategori': 'Geografi Indonesia', 'Pertanyaan': 'Indonesia beriklim tropis karena dilalui oleh garis...', 'Pilihan A': 'Khatulistiwa (Ekuator)', 'Pilihan B': 'Bujur Nol Derajat', 'Pilihan C': '', 'Pilihan D': '', 'Kunci Jawaban (A/B/C/D)': 'A', 'Penjelasan': 'Garis khatulistiwa melintasi Indonesia sehingga beriklim tropis.' },
       { 'No': 2, 'Kategori': 'Sejarah', 'Pertanyaan': 'Teks proklamasi kemerdekaan Indonesia dibacakan pada tanggal...', 'Pilihan A': '28 Oktober 1928', 'Pilihan B': '17 Agustus 1945', 'Pilihan C': '20 Mei 1908', 'Pilihan D': '1 Juni 1945', 'Kunci Jawaban (A/B/C/D)': 'B', 'Penjelasan': 'Proklamasi dibacakan 17 Agustus 1945 di Jl. Pegangsaan Timur 56.' },
       { 'No': 3, 'Kategori': 'Ekonomi', 'Pertanyaan': 'Kebutuhan pokok seperti makan, pakaian, dan rumah disebut kebutuhan...', 'Pilihan A': 'Tersier', 'Pilihan B': 'Sekunder', 'Pilihan C': 'Primer', 'Pilihan D': '', 'Kunci Jawaban (A/B/C/D)': 'C', 'Penjelasan': 'Kebutuhan primer adalah kebutuhan dasar untuk bertahan hidup.' }
-    ], 'Template_Soal_LokaMain', 'Template_Soal');
+    ], 'Template_Soal_rnalt', 'Template_Soal');
     QC.toast('📄 Template diunduh. Isi lalu impor kembali.', 'good');
   }
   function parseCSV(text) {

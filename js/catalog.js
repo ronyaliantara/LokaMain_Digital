@@ -138,7 +138,7 @@
           const src = staticQrUrl || dynamicQrUrl;
           qrisImg.src = src;
           qrisDownload.href = src;
-          qrisDownload.download = 'QRIS-DANA-LokaMain.jpg';
+          qrisDownload.download = 'QRIS-DANA-rnalt.jpg';
           qrisBadge.style.display = 'none';
           manualBox.style.display = 'flex';
           manualPrice.textContent = `Rp ${formatIdr(game.price)}`;
@@ -512,14 +512,14 @@
     if (logo) {
       if (logoSrc) {
         logo.src = logoSrc;
-        logo.alt = settings.storeName || 'LokaMain Digital';
+        logo.alt = settings.storeName || 'rnalt_Digital';
         logo.hidden = false;
         if (title) title.hidden = true;
       } else {
         logo.hidden = true;
         if (title) {
           title.hidden = false;
-          title.textContent = settings.storeName || 'LokaMain Digital';
+          title.textContent = settings.storeName || 'rnalt_Digital';
         }
       }
     }
@@ -533,7 +533,7 @@
     const footerNote = $('display-footer-note');
     if (footerText) {
       footerText.textContent = settings.footerText
-        || `Hak Cipta © 2026 ${settings.storeName || 'LokaMain Digital'}. Pembelajaran Game Edukasi Interaktif.`;
+        || `Hak Cipta © 2026 ${settings.storeName || 'rnalt_Digital'}. Pembelajaran Game Edukasi Interaktif.`;
     }
     if (footerNote) {
       footerNote.textContent = settings.footerNote
@@ -542,7 +542,7 @@
 
     // Semua tautan WhatsApp mengikuti nomor di admin
     const phone = normalizePhone(settings.whatsappNumber);
-    const hello = `Halo ${settings.sellerName || 'Admin'}, saya ingin bertanya tentang game edukasi di ${settings.storeName || 'LokaMain Digital'}.`;
+    const hello = `Halo ${settings.sellerName || 'Admin'}, saya ingin bertanya tentang game edukasi di ${settings.storeName || 'rnalt_Digital'}.`;
     const askUrl = waLink(settings, hello);
     ['nav-wa', 'hero-wa', 'footer-wa', 'float-wa'].forEach((id) => {
       const el = $(id);

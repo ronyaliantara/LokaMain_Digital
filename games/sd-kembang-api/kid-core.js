@@ -1,5 +1,5 @@
 /* ==========================================================================
-   KidGame v2 — mesin bersama game anak PAUD & SD (LokaMain)
+   KidGame v2 — mesin bersama game anak PAUD & SD (rnalt)
    Dibangun di atas QuizCore (bank soal, Mode Guru, impor/ekspor Excel).
    answerMode:
      'buttons' : panel jawaban di bawah (bawaan). Mode 2 tim = giliran + kesempatan lempar.

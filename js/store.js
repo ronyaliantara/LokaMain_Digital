@@ -1,4 +1,4 @@
-// Shared catalog & WhatsApp helper store for LokaMain Digital
+// Shared catalog & WhatsApp helper store for rnalt_Digital
 // Persists in localStorage ('lokamain_store_v1') with full JSON import/export support.
 
 (() => {
@@ -6,12 +6,12 @@ const STORAGE_KEY = 'lokamain_store_v1';
 
 const DEFAULT_STORE = {
   settings: {
-    storeName: 'LokaMain Digital',
+    storeName: 'rnalt_Digital',
     siteSubtitle: 'Pilih game pembelajaran digital, lalu klik tombol WhatsApp di bawahnya untuk memesan.',
-    logoImage: 'assets/branding/banner-lokamain.png',
-    footerText: 'Hak Cipta © 2026 LokaMain Digital. Pembelajaran Game Edukasi Interaktif.',
+    logoImage: 'assets/branding/banner-rnalt.png',
+    footerText: 'Hak Cipta © 2026 rnalt_Digital. Pembelajaran Game Edukasi Interaktif.',
     footerNote: 'Semua game dapat dimainkan langsung di Smart TV, HP, Tablet, dan Komputer tanpa instalasi.',
-    sellerName: 'Admin LokaMain',
+    sellerName: 'Admin rnalt',
     whatsappNumber: '6287881258019',
     qrisImage: 'assets/qris/qris-1793952371588.jpeg',
     qrisName: 'LokaMain_Store',
@@ -177,7 +177,7 @@ function buildBuyerMessage(game, settings) {
   const tpl = settings?.buyerTemplate || DEFAULT_STORE.settings.buyerTemplate;
   return fillTemplate(tpl, {
     sellerName: settings?.sellerName || 'Admin',
-    storeName: settings?.storeName || 'LokaMain Digital',
+    storeName: settings?.storeName || 'rnalt_Digital',
     title: game.title,
     code: game.code || game.id,
     price: formatIdr(game.price)
@@ -194,7 +194,7 @@ function buildSellerReplyText(game, buyerName, settings) {
   const tpl = settings?.sellerTemplate || DEFAULT_STORE.settings.sellerTemplate;
   return fillTemplate(tpl, {
     buyerName: (buyerName || 'Pembeli').trim() || 'Pembeli',
-    storeName: settings?.storeName || 'LokaMain Digital',
+    storeName: settings?.storeName || 'rnalt_Digital',
     title: game.title,
     code: game.code || game.id,
     price: formatIdr(game.price),

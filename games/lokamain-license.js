@@ -1,5 +1,5 @@
 /**
- * LokaMain Digital - Engine Pengaman Lisensi & Anti-Pembajakan Otomatis
+ * rnalt_Digital - Engine Pengaman Lisensi & Anti-Pembajakan Otomatis
  * Pasang di game apa pun dengan menambahkan 1 baris sebelum </body>:
  * <script src="../lokamain-license.js"></script>
  */
@@ -161,7 +161,7 @@
       <div class="lokamain-card">
         <div style="font-size: 44px; margin-bottom: 6px;">🔒</div>
         <h2 style="margin: 0 0 4px; font-size: 21px; font-weight: 800;">Akses Game Terkunci</h2>
-        <p style="font-size: 13px; color: #64748b; margin: 0 0 16px;">Game Edukasi Berlisensi Resmi LokaMain Digital</p>
+        <p style="font-size: 13px; color: #64748b; margin: 0 0 16px;">Game Edukasi Berlisensi Resmi rnalt_Digital</p>
         <div style="background: #f8fafc; border: 1.5px solid #cbd5e1; border-radius: 12px; padding: 12px; text-align: left; margin-bottom: 16px; font-size: 12px; line-height: 1.5; color: #334155;">
           <p style="margin: 0 0 4px; font-weight: 800; color: #0f172a;">🛡️ Lisensi Pembeli Resmi</p>
           <p style="margin: 0;">Game ini hanya dapat dimainkan melalui <strong>Link Khusus Pembeli</strong> yang dikirimkan Admin ke nomor WhatsApp Anda.</p>
@@ -177,11 +177,11 @@
           </div>
         </div>
         <div style="border-top: 1px dashed #cbd5e1; padding-top: 14px;">
-          <a href="https://wa.me/${WA_NUMBER}?text=Halo%20Admin%20LokaMain,%20saya%20ingin%20memesan%20lisensi%20resmi%20game%20ini" target="_blank" class="lokamain-btn lokamain-btn-wa">
+          <a href="https://wa.me/${WA_NUMBER}?text=Halo%20Admin%20rnalt,%20saya%20ingin%20memesan%20lisensi%20resmi%20game%20ini" target="_blank" class="lokamain-btn lokamain-btn-wa">
             💬 Pesan Lisensi Resmi via WhatsApp
           </a>
         </div>
-        <p style="font-size: 11px; color: #94a3b8; margin: 12px 0 0;">LokaMain Digital © 2026 • Hak Cipta Dilindungi</p>
+        <p style="font-size: 11px; color: #94a3b8; margin: 12px 0 0;">rnalt_Digital © 2026 • Hak Cipta Dilindungi</p>
       </div>
     `;
     document.body.appendChild(gate);

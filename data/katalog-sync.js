@@ -1,12 +1,12 @@
 window.LOKAMAIN_LIVE_DATA = {
-  "updatedAt": 1794283930398,
+  "updatedAt": 1794286973738,
   "settings": {
-    "storeName": "LokaMain Digital",
+    "storeName": "rnalt_Digital",
     "siteSubtitle": "Pilih game pembelajaran digital, lalu klik tombol WhatsApp di bawahnya untuk memesan.",
-    "logoImage": "assets/branding/banner-lokamain.png",
-    "footerText": "Hak Cipta © 2026 LokaMain Digital. Pembelajaran Game Edukasi Interaktif.",
+    "logoImage": "assets/branding/banner-rnalt.png",
+    "footerText": "Hak Cipta © 2026 rnalt_Digital. Pembelajaran Game Edukasi Interaktif.",
     "footerNote": "Semua game dapat dimainkan langsung di Smart TV, HP, Tablet, dan Komputer tanpa instalasi.",
-    "sellerName": "Admin LokaMain",
+    "sellerName": "Admin rnalt",
     "whatsappNumber": "6287881258019",
     "qrisImage": "assets/qris/qris-17942306572678e14.jpeg",
     "qrisName": "LokaMain_Store",

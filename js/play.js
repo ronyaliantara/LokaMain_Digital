@@ -29,7 +29,7 @@
 
   // Footer & WA umum
   const phone = normalizePhone(settings.whatsappNumber);
-  const hello = `Halo ${settings.sellerName || 'Admin'}, saya ingin bertanya tentang game edukasi di ${settings.storeName || 'LokaMain Digital'}.`;
+  const hello = `Halo ${settings.sellerName || 'Admin'}, saya ingin bertanya tentang game edukasi di ${settings.storeName || 'rnalt_Digital'}.`;
   const askUrl = (phone ? `https://wa.me/${phone}` : 'https://wa.me/') + '?text=' + encodeURIComponent(hello);
   $('footer-wa').href = askUrl;
   if (phone) $('footer-wa-info').textContent = `Pesan & bantuan via WhatsApp: +${phone}`;
@@ -38,11 +38,11 @@
 
   if (!game) {
     $('play-root').innerHTML = `<div class="empty-state" style="grid-column:1/-1"><h3>Game tidak ditemukan</h3><p>Game ini mungkin sudah tidak tersedia.</p><a class="btn btn-primary" href="index.html#katalog">Lihat semua game</a></div>`;
-    document.title = 'Game tidak ditemukan – LokaMain Digital';
+    document.title = 'Game tidak ditemukan – rnalt_Digital';
     return;
   }
 
-  document.title = `${game.title} – LokaMain Digital`;
+  document.title = `${game.title} – rnalt_Digital`;
   const metaDesc = document.querySelector('meta[name="description"]');
   if (metaDesc && game.shortDesc) metaDesc.content = game.shortDesc.slice(0, 160);
   $('crumb-title').textContent = game.title;
