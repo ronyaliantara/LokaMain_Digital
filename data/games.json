@@ -1,5 +1,5 @@
 {
-  "updatedAt": 1794326670049,
+  "updatedAt": 1794326695774,
   "settings": {
     "storeName": "rnalt_Digital",
     "siteSubtitle": "Pilih game pembelajaran digital, lalu klik tombol WhatsApp di bawahnya untuk memesan.",
@@ -25,7 +25,7 @@
       "grade": "✏️ Soal Bisa Diubah",
       "duration": "15–30 menit",
       "device": "Smart TV / IFP (layar sentuh), Laptop & Proyektor",
-      "price": 35000,
+      "price": 30000,
       "image": "assets/games/game-179428270468332c6.mp4",
       "coverImage": "assets/games/game-jinak-bom-cover.jpg",
       "shortDesc": "Bom aktif di markas! Tiap kabel berwarna berisi satu pilihan jawaban — regu harus MENYAYAT semua kabel jawaban SALAH dan menyisakan kabel yang benar sebelum waktu habis. Salah sayat? DUARR! Ada Pemindai, +10 detik, Bom Kilat & Bom Emas. (SOAL BISA DI UBAH lewat Excel)",
@@ -52,7 +52,8 @@
         "SMP",
         "SMA"
       ],
-      "originalPrice": 45000
+      "originalPrice": 40000,
+      "coverHd": ""
     },
     {
       "id": "LM-RW",
