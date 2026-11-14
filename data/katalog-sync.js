@@ -1,5 +1,5 @@
 window.LOKAMAIN_LIVE_DATA = {
-  "updatedAt": 1794326695774,
+  "updatedAt": 1794654724757,
   "settings": {
     "storeName": "rnalt_Digital",
     "siteSubtitle": "Pilih game pembelajaran digital, lalu klik tombol WhatsApp di bawahnya untuk memesan.",
@@ -17,6 +17,43 @@ window.LOKAMAIN_LIVE_DATA = {
     "sellerTemplate": "Halo Kak {buyerName}, terima kasih sudah memesan di {storeName}!\n\nBerikut akses game pembelajaran digital pesanan Anda:\nJudul Game: {title} ({code})\nLink Akses Game: {gameUrl}\n\nCara Pakai:\n1. Klik link di atas melalui browser HP, tablet, atau laptop.\n2. Game langsung berjalan tanpa instalasi tambahan.\n3. Simpan link ini untuk digunakan kembali kapan saja.\n\nSelamat bermain dan belajar!"
   },
   "games": [
+    {
+      "id": "LM-SN",
+      "code": "SERI-SN",
+      "title": "Saudagar Nusantara",
+      "category": "Kuis Dagang 2–4 Tim (Soal Bisa Diubah)",
+      "grade": "✏️ Soal Bisa Diubah",
+      "duration": "15–25 menit",
+      "device": "Smart TV / IFP (layar sentuh), Laptop & Proyektor",
+      "price": 40000,
+      "originalPrice": 50000,
+      "image": "assets/games/game-saudagar-nusantara.mp4",
+      "coverImage": "assets/games/game-saudagar-nusantara-cover.jpg",
+      "gameUrl": "games/saudagar-nusantara/",
+      "levels": [
+        "SMP",
+        "SMA"
+      ],
+      "shortDesc": "Keliling Nusantara, beli kota, tarik sewa — dan BERTAHANLAH! Setiap keputusan dagang diuji soal kuis: benar = diskon beli 20% atau sewa cuma 50%. Kartu Untung/Rugi, Krisis, dan Soal Rebutan bikin tim terus berdiskusi. Uang habis = tersingkir, tim terakhir yang bertahan juara! (SOAL BISA DIUBAH: tinggal tempel dari Word/WhatsApp atau buat dengan AI gratis)",
+      "howToPlay": [
+        "Bagi kelas menjadi 2–4 tim (anggota menjawab bergiliran). Pengaturan bawaan sudah pas — tinggal klik Mulai.",
+        "Lempar dadu, lalu jawab soal: benar = beli kota diskon 20% atau bayar sewa lawan cuma 50%. Punya 2 kota satu warna = boleh membangun warung sampai mal.",
+        "Jaga uang tim! Ada Kartu Kejutan, Krisis yang menaikkan sewa, dan Soal Rebutan (tim lain cepat klik tombol timnya). Uang habis = tersingkir; tim terakhir yang bertahan menang."
+      ],
+      "learningGoals": [
+        "Mengulang materi sambil berlatih mengambil keputusan dan mengelola uang secara sederhana.",
+        "Melatih diskusi, kerja sama, dan sportivitas dalam tim.",
+        "Ganti soal sangat mudah di Mode Guru: tempel soal dari Word/WhatsApp, atau buat otomatis dengan AI gratis (ChatGPT/Gemini). Excel juga bisa."
+      ],
+      "sampleQuestion": "Teks Proklamasi Kemerdekaan Indonesia dibacakan pada tanggal...",
+      "sampleOptions": [
+        "28 Oktober 1928",
+        "17 Agustus 1945",
+        "20 Mei 1908",
+        "1 Juni 1945"
+      ],
+      "sampleAnswer": 1
+    },
     {
       "id": "LM-JB",
       "code": "SERI-JB",

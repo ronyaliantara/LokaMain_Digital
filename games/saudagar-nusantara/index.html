@@ -1,0 +1,70 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Saudagar Nusantara — Kuis Dagang Eliminasi untuk 2–4 Tim</title>
+  <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Ctext y='.9em' font-size='90'%3E%F0%9F%9A%A2%3C/text%3E%3C/svg%3E">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Baloo+2:wght@600;700;800&family=Nunito:wght@600;700;800;900&family=Titan+One&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="quiz-core.css?v=20261111">
+  <link rel="stylesheet" href="style.css?v=6">
+</head>
+<body>
+  <div class="app" id="app">
+    <header class="topbar">
+      <div class="brand">
+        <div class="logo" aria-hidden="true">🚢</div>
+        <div>
+          <h1>SAUDAGAR <span>NUSANTARA</span></h1>
+          <p>KUIS DAGANG KELILING NUSANTARA</p>
+        </div>
+      </div>
+      <div class="mission">
+        <div class="m-item"><small>RONDE</small><b><span id="roundNo">1</span><em id="roundMax">/15</em></b></div>
+        <div class="m-item"><small id="clockLbl">WAKTU</small><b id="clockNo">00:00</b></div>
+        <div class="m-item"><small id="aliveLbl">TIM BERTAHAN</small><b id="aliveNo">0</b></div>
+        <div class="m-item kr" id="krBox" hidden><small>📉 KRISIS</small><b id="krNo">—</b></div>
+      </div>
+      <nav class="tools">
+        <button class="tbtn" id="btnMusic" title="Musik gamelan (M)">🎵<span>Musik</span></button>
+        <button class="tbtn" data-qc="sound" title="Suara"></button>
+        <button class="tbtn" data-qc="fullscreen" title="Layar penuh">⛶</button>
+        <button class="tbtn" id="btnRules" title="Peraturan">📜</button>
+        <button class="tbtn" id="btnSetup" title="Pengaturan / ubah tim">⚙️</button>
+        <button class="tbtn wide" data-qc="teacher" title="Mode Guru (kelola soal)">🔐<span>Guru</span></button>
+      </nav>
+    </header>
+
+    <div class="play" id="play">
+      <main class="stage" id="stage">
+        <canvas id="cv" aria-label="Papan Saudagar Nusantara"></canvas>
+        <div class="center" id="center">
+          <div class="c-turn" id="turnChip"></div>
+          <div class="dice" id="dice" aria-label="Dadu"></div>
+          <div class="c-hint" id="hint" role="status" aria-live="polite"></div>
+          <div class="c-acts" id="acts"></div>
+          <div class="c-pop" id="cpop" hidden></div>
+        </div>
+        <div class="cardov" id="cardOv" hidden></div>
+        <div class="stampbig" id="stamp" hidden></div>
+        <div class="brief" id="brief" hidden></div>
+      </main>
+      <aside class="side" id="side">
+        <div class="players" id="players"></div>
+        <section class="logbox">
+          <h3>📒 Catatan Dagang</h3>
+          <ol class="log" id="log"></ol>
+        </section>
+      </aside>
+    </div>
+  </div>
+  <div class="anchor" id="anchor" aria-hidden="true"></div>
+
+<script src="questions-default.js"></script>
+<script src="quiz-core.js?v=20261111"></script>
+<script src="game.js?v=8"></script>
+<script src="../lokamain-license.js?v=20261109"></script>
+</body>
+</html>
